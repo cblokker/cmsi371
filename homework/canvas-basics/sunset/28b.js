@@ -36,7 +36,7 @@
         // The sky: a combination of both radial and linear gradient
         renderingContext.globalAlpha = 0.5;
         renderingContext.fillStyle = radialSkyGradient;
-        renderingContext.fillRect (0, 0, 512, 200);
+        renderingContext.fillRect (0, 0, 512, 450);
         renderingContext.fillStyle = linearSkyGradient;
         renderingContext.fillRect (0, 0, 512, 200);
 
