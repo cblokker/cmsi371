@@ -8,21 +8,23 @@
  */
 
 (function () {
-    var canvas = document.getElementById('canvas');
-        var renderingContext = canvas.getContext("2d");
+    var canvas = document.getElementById('canvas'),
+        renderingContext = canvas.getContext("2d"),
+        topLeftBackCoordinate = [300, 250],
+        topLeftFrontCoordinate = [350, 300],
+        cubeLength = 150;
     
-    renderingContext.strokeStyle = "rgba(0, 200, 0, 0.99)";
-    renderingContext.strokeRect (300, 250, 150, 150);
-    renderingContext.strokeRect (350, 300, 150, 150);
+    renderingContext.strokeStyle = 'green';
+    renderingContext.strokeRect (topLeftBackCoordinate[0], topLeftBackCoordinate[1], cubeLength, cubeLength);
+    renderingContext.strokeRect (topLeftFrontCoordinate[0], topLeftFrontCoordinate[1], cubeLength, cubeLength);
 
     for (var i = 0; i <= 1; i++) {
-        renderingContext.translate(150*i,0);
+        renderingContext.translate(cubeLength * i, 0);
         renderingContext.beginPath();
-        renderingContext.moveTo(300, 250);
-        renderingContext.lineTo(350, 300);
-        renderingContext.moveTo(350, 450);
-        renderingContext.lineTo(300, 400);
+        renderingContext.moveTo(topLeftBackCoordinate[0], topLeftBackCoordinate[1]);
+        renderingContext.lineTo(topLeftFrontCoordinate[0], topLeftFrontCoordinate[1]);
+        renderingContext.moveTo(topLeftFrontCoordinate[0], topLeftFrontCoordinate[1] + cubeLength);
+        renderingContext.lineTo(topLeftBackCoordinate[0], topLeftBackCoordinate[1] + cubeLength);
         renderingContext.stroke();
     };
-
 }());
