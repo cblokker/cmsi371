@@ -8,20 +8,20 @@
  
 (function () {
     var canvas = document.getElementById('canvas');
-        var renderingContext = canvas.getContext("2d");
+        renderingContext = canvas.getContext("2d"),
         
         // Variables for defining polygon shape
-        var numberOfSides = 6,
-            size = 100,
-            Xcenter = 200,
-            Ycenter = 200;
+        numberOfSides = 6,
+        size = 100,
+        Xcenter = 200,
+        Ycenter = 200;
         
-        // Itterative formula for polygon
-        for (var i = 1; i <= numberOfSides; i++) {
-            renderingContext.lineTo (Xcenter + size * Math.cos(i * 2 * Math.PI / numberOfSides), Ycenter + size * Math.sin(i * 2 * Math.PI / numberOfSides));
-        }
+    // Itterative formula for polygon
+    for (var i = 1; i <= numberOfSides; i++) {
+        renderingContext.lineTo (Xcenter + size * Math.cos(i * 2 * Math.PI / numberOfSides), Ycenter + size * Math.sin(i * 2 * Math.PI / numberOfSides));
+    }
 
-        renderingContext.fillStyle = "#802A2A";
-        renderingContext.fill();
+    renderingContext.fillStyle = "#802A2A";
+    renderingContext.fill();
 
 }());
