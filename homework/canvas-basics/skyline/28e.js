@@ -9,38 +9,50 @@
 
 
 (function () {
-    var canvas = document.getElementById('canvas');
+    var canvas = document.getElementById('canvas'),
+        renderingContext = canvas.getContext("2d"),
 
-    var renderingContext = canvas.getContext("2d");
-        yBottom = 400;
-        xRight = 630;
+        // Skyline variables
+        windowWidth = 7,
+        windowHeight = 10,
+        buildingMinWidth = 50,
+        buildingMaxWidth = 150,
+        buildingMinHeight = 100,
+        buildingMaxHeight = 400;
         
     // Define gradient variables
     linearSkyGradient = renderingContext.createLinearGradient(0, 0, 0, 200);
 
-    // Colorstops for above gradients
+    // Colorstops for above gradient
     linearSkyGradient.addColorStop(0, '#000088');
     linearSkyGradient.addColorStop(1, '#000022');
 
     // The sky
     renderingContext.fillStyle = linearSkyGradient;
-    renderingContext.fillRect (0, 0, xRight, yBottom);
+    renderingContext.fillRect (0, 0, canvas.width, canvas.height);
     
-    // Render the buildings
+    // Render the buildings with random height and width
     for(var i = 0; i <= 9; i++) {
-        buildingWidth = Math.floor((Math.random() * 100) + 50);
-        buildingHeight = Math.floor((Math.random() * 200) + 100);
+        buildingWidth = Math.floor(Math.random() * (buildingMaxWidth - buildingMinWidth + 1) + buildingMinWidth);
+        buildingHeight = Math.floor(Math.random() * (buildingMaxHeight - buildingMinHeight + 1) + buildingMinHeight);
         renderingContext.fillStyle = 'black';
-        renderingContext.strokeStyle = "green";
-        renderingContext.fillRect (50 * i + 10, yBottom - buildingHeight, buildingWidth, buildingHeight);
-        renderingContext.strokeRect(50 * i + 10, yBottom - buildingHeight, buildingWidth, buildingHeight);
+        renderingContext.strokeStyle = '#077';
+        renderingContext.fillRect (50 * i, canvas.height - buildingHeight, buildingWidth, buildingHeight);
+        renderingContext.strokeRect(50 * i, canvas.height - buildingHeight, buildingWidth, buildingHeight);
+
+        // variables for windows which depend on random variables buildingWidth and buildingHeight
+        numOfWindows = Math.floor(buildingWidth / (windowWidth + 5));
+        windowSeperation = (buildingWidth - (numOfWindows * windowWidth)) / (numOfWindows + 1);
 
         // Add the lights
-        for (var j = 1; j <= buildingWidth / 10; j++) {
-            for (var k = 0; k <= buildingHeight / 25; k++) {
-                renderingContext.fillStyle = 'yellow';
-                renderingContext.fillRect (6 + (50 * i) + (10 * j), 6 + (yBottom - buildingHeight) + k*20, 4, 10)
-            }
-        }
-    }
+        for (var windowRow = 0; windowRow < numOfWindows; windowRow++) {
+            for (var windowCollumn = 0; windowCollumn < (buildingHeight / 10); windowCollumn++) {
+                windowOpacity = Math.random();
+                
+                renderingContext.fillStyle = 'rgba(200, 200, 75, ' + windowOpacity +')';
+                renderingContext.fillRect (windowSeperation * (windowRow + 1) + windowWidth * windowRow + i * 50,
+                                          (canvas.height - buildingHeight) + windowCollumn * 20 + windowHeight, windowWidth, windowHeight);
+            };
+        };
+    };
 }());
