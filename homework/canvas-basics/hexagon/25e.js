@@ -13,12 +13,15 @@
         // Variables for defining polygon shape
         numberOfSides = 6,
         size = 100,
-        Xcenter = 200,
-        Ycenter = 200;
+        Xcenter = 200, // JD: Variable names have lowercase preferred,
+        Ycenter = 200; //     e.g., xCenter, yCenter
         
-    // Itterative formula for polygon
+    // Iterative formula for polygon
     for (var i = 1; i <= numberOfSides; i++) {
+        // JD: See comment in 27a.js
         renderingContext.lineTo (Xcenter + size * Math.cos(i * 2 * Math.PI / numberOfSides), Ycenter + size * Math.sin(i * 2 * Math.PI / numberOfSides));
+        // JD: ^^^ This line is long enough that you can justify breaking
+        //     it into multiple lines for better readability.
     }
 
     renderingContext.fillStyle = "#802A2A";

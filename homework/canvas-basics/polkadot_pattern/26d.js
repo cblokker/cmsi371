@@ -6,7 +6,11 @@
  * 01/29/13
  *
  */
-
+// JD: ...well, this didn't *quite* turn out to be the polka-dot pattern
+//     that was specified, but it still turned out to be pretty nice to
+//     look at.  Strictly speaking, you weren't following directions here,
+//     but the other exercises do show that you can draw something to-spec
+//     when needed.
 (function () {
     var canvas = document.getElementById('canvas'),
         renderingContext = canvas.getContext("2d"),
@@ -25,6 +29,7 @@
 
     // Loop through rings
     for (var i = 0; i < numOfRings; i++) {
+        // JD: Comments in 27a.js and 25e.js apply here.
 
         // slowly increase the size of the circular dots for every ring itteration
         renderingContext.scale(1.05,1.05);
