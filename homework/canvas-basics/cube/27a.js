@@ -9,6 +9,8 @@
 
 (function () {
     var canvas = document.getElementById('canvas'),
+        // JD: When do you use ' vs. "?  ^^^^^^^^ (no right/wrong answer,
+        //     but ideally whatever you choose, it is consistent)
         renderingContext = canvas.getContext("2d"),
 
         // Cube variables
@@ -23,6 +25,8 @@
 
     // Connect the corners of the two squares to form a wireframe cube
     for (var i = 0; i <= 1; i++) {
+        // JD: Strictly speaking, even the "i" should be declared up top.
+        //     Also, i += 1 is preferred in JavaScript over i++.
         renderingContext.translate(cubeLength * i, 0);
         renderingContext.beginPath();
         renderingContext.moveTo(topLeftBackCoordinate[0], topLeftBackCoordinate[1]);

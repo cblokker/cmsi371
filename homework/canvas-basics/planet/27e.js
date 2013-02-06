@@ -10,6 +10,7 @@
 
 (function () {
     var canvas = document.getElementById("canvas"),
+        // JD: See, now you are using double-quotes above.
         renderingContext = canvas.getContext("2d"),
 
         // Gradient variables
@@ -32,6 +33,7 @@
     
     // The loop to create multiple rings around the planet.
     for (var i = 0; i < 12; i++) {
+        // JD: Comments in 27a.js and 25e.js apply here.
         renderingContext.beginPath();
         renderingContext.translate(0,20);
         renderingContext.scale(0.97, 0.97);

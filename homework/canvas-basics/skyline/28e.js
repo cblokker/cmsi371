@@ -7,6 +7,7 @@
  * 01/29/13
  */
 
+// JD: Comments in 27a.js and 25e.js apply here.
 
 (function () {
     var canvas = document.getElementById('canvas'),
