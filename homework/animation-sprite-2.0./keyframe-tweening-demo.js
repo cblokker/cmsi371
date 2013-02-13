@@ -51,9 +51,6 @@
             // Background color
             renderingContext.fillStyle = 'transparent';
             renderingContext.fillRect (0, 0, 512, 512);
-            
-            // Center the spiral
-            renderingContext.translate(256,256);
 
             // Loop through rings
             for (var i = 0; i < numOfRings; i++) {
@@ -79,6 +76,87 @@
             }
         }
 
+        kanjiLove = function (renderingContext) {
+            var kanjiLove = new Image();
+            kanjiLove.src = 'kanji_love.png';
+            renderingContext.drawImage(kanjiLove, 0, 0);
+        },
+
+        kilt1 = function (renderingContext) {
+            var kilt1 = new Image();
+            kilt1.src = 'kilt1.png';
+            renderingContext.drawImage(kilt1, 0, 0);
+        },
+
+        kilt2 = function (renderingContext) {
+            var kilt2 = new Image();
+            kilt2.src = 'kilt2.png';
+            renderingContext.drawImage(kilt2, 0, 0);
+        },
+
+        kilt3 = function (renderingContext) {
+            var kilt3 = new Image();
+            kilt3.src = 'kilt3.png';
+            renderingContext.drawImage(kilt3, 0, 0);
+        },
+
+        kilt4 = function (renderingContext) {
+            var kilt4 = new Image();
+            kilt4.src = 'kilt4.png';
+            renderingContext.drawImage(kilt4, 0, 0);
+        },
+
+        fireball = function (renderingContext) {
+
+            radialGradient = renderingContext.createRadialGradient(0, 0, 1, 0, 0, 10);
+            radialGradient.addColorStop(0, "red");
+            radialGradient.addColorStop(1, "yellow");
+            
+            renderingContext.fillStyle = radialGradient;
+            renderingContext.beginPath();
+            renderingContext.scale(2, 1);
+            renderingContext.arc(0, 0,  10, 0, Math.PI * 2);
+            renderingContext.fill();
+        },
+
+        kiltwalk1 = function (renderingContext) {
+            var kiltwalk1 = new Image();
+            kiltwalk1.src = 'kiltwalk1.png';
+            renderingContext.drawImage(kiltwalk1, 0, 0);
+        },
+
+        kiltwalk2 = function (renderingContext) {
+            var kiltwalk2 = new Image();
+            kiltwalk2.src = 'kiltwalk2.png';
+            renderingContext.drawImage(kiltwalk2, 0, 0);
+        },
+
+        kiltwalk3 = function (renderingContext) {
+            var kiltwalk3 = new Image();
+            kiltwalk3.src = 'kiltwalk3.png';
+            renderingContext.drawImage(kiltwalk3, 0, 0);
+        },
+
+        kiltwalk4 = function (renderingContext) {
+            var kiltwalk4 = new Image();
+            kiltwalk4.src = 'kiltwalk4.png';
+            renderingContext.drawImage(kiltwalk4, 0, 0);
+        },
+
+        kiltLift = function () {
+            draw = [kilt1, kilt2, kilt3, kilt4, kilt3, kilt2, kilt1];
+        },
+
+        kiltWalk = function () {
+            draw = [kiltWalk1, kiltWalk2, kiltWialt3, kiltWalk4];
+        },
+
+        // kiltDisplay = function (renderingContext) {
+        //     var kiltz = new Image();
+        //     kiltz.src = 'spritesheet.png';
+        //     renderingContext.drawImage(kiltz, 0, 0);
+        // },
+
         // Then, we have "easing functions" that determine how
         // intermediate frames are computed.
 
@@ -88,34 +166,281 @@
         sprites = [
 
             {
-                draw: cube,
+                draw: fireball,
+                keyframes: [
+                    {
+                        frame: 15,
+                        tx: 150,
+                        ty: 450,
+                    },
+
+                    {
+                        frame: 30,
+                        tx: 300,
+                        ty: 450,
+                    },
+
+                    {
+                        frame: 35,
+                        tx: 320,
+                        ty: 450,
+                        sx: 0.1,
+                        sy: 3
+                    },
+                ]
+            },
+
+            {
+                draw: kilt1,
                 keyframes: [
                     {
                         frame: 0,
-                        tx: 100,
-                        ty: 100,
-                        sy: 0.25,
-                        sx: 0.25,
-                        ease: KeyframeTweener.quadEaseIn
+                        tx: 110,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 3,
+                        tx: 110,
+                        ty: 380,
+                    },
+                ]
+            },
+
+            {
+                draw: kilt2,
+                keyframes: [
+                    {
+                        frame: 3,
+                        tx: 110,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 6,
+                        tx: 110,
+                        ty: 380,
+                    },
+                ]
+            },
+
+            {
+                draw: kilt3,
+                keyframes: [
+                    {
+                        frame: 6,
+                        tx: 110,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 10,
+                        tx: 110,
+                        ty: 380,
+                    },
+                ]
+            },
+
+            {
+                draw: kilt4,
+                keyframes: [
+                    {
+                        frame: 10,
+                        tx: 110,
+                        ty: 380,
                     },
 
                     {
                         frame: 50,
-                        tx: 500,
-                        ty: 250,
-                        sy: 1,
-                        sx: 1,
-                        rotate: 90,
-                        ease: KeyframeTweener.quadEaseOut
+                        tx: 110,
+                        ty: 380,
+                    },
+                ]
+            },
+
+            {
+                draw: kilt3,
+                keyframes: [
+                    {
+                        frame: 50,
+                        tx: 110,
+                        ty: 380,
                     },
 
                     {
-                        frame: 150,
-                        tx: 1000,
-                        ty: 100,
-                        sy: 0.25,
-                        sx: 0.25,
-                        rotate: 180,
+                        frame: 55,
+                        tx: 110,
+                        ty: 380,
+                    },
+                ]
+            },
+
+            {
+                draw: kilt2,
+                keyframes: [
+                    {
+                        frame: 55,
+                        tx: 110,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 60,
+                        tx: 110,
+                        ty: 380,
+                    },
+                ]
+            },
+
+            {
+                draw: kilt1,
+                keyframes: [
+                    {
+                        frame: 60,
+                        tx: 110,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 65,
+                        tx: 110,
+                        ty: 380,
+                    },
+                ]
+            },
+
+            {
+                draw: kiltwalk1,
+                keyframes: [
+                    {
+                        frame: 65,
+                        tx: 110,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 70,
+                        tx: 120,
+                        ty: 380,
+                    },
+                ]
+            },
+
+            {
+                draw: kiltwalk2,
+                keyframes: [
+                    {
+                        frame: 70,
+                        tx: 120,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 76,
+                        tx: 140,
+                        ty: 380,
+                    },
+                ]
+            },
+
+            {
+                draw: kiltwalk3,
+                keyframes: [
+                    {
+                        frame: 76,
+                        tx: 140,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 81,
+                        tx: 160,
+                        ty: 380,
+                    },
+                ]
+            },
+
+            {
+                draw: kiltwalk4,
+                keyframes: [
+                    {
+                        frame: 81,
+                        tx: 160,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 87,
+                        tx: 180,
+                        ty: 380,
+                    },
+                ]
+            },
+
+            {
+                draw: kiltwalk1,
+                keyframes: [
+                    {
+                        frame: 87,
+                        tx: 180,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 90,
+                        tx: 200,
+                        ty: 380,
+                    },
+                ]
+            },
+
+            {
+                draw: kiltwalk2,
+                keyframes: [
+                    {
+                        frame: 90,
+                        tx: 200,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 94,
+                        tx: 220,
+                        ty: 380,
+                    },
+                ]
+            },
+
+            {
+                draw: kiltwalk3,
+                keyframes: [
+                    {
+                        frame: 94,
+                        tx: 220,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 98,
+                        tx: 240,
+                        ty: 380,
+                    },
+                ]
+            },
+
+            {
+                draw: kiltwalk4,
+                keyframes: [
+                    {
+                        frame: 98,
+                        tx: 240,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 103,
+                        tx: 260,
+                        ty: 380,
                     },
                 ]
             },
@@ -124,28 +449,69 @@
                 draw: spiral,
                 keyframes: [
                     {
-                        frame: 50,
-                        tx: 300,
-                        ty: 300,
-                        opacity: 0.2,
+                        frame: 75,
+                        tx: 512,
+                        ty: 512,
+                        sx: 0.01,
+                        sy: 0.01,
+                        opacity: 0.01,
+                        ease: KeyframeTweener.quadEaseIn
                     },
 
                     {
                         frame: 100,
-                        tx: 300,
-                        ty: 300,
-                        rotate: 180,
+                        tx: 512,
+                        ty: 512,
+                        sx: 1,
+                        sy: 1,
+                        rotate: 360 * 2,
                         opacity: 1,
+                        ease: KeyframeTweener.quadEaseOut
+                    },
+
+                    {
+                        frame: 125,
+                        tx: 512,
+                        ty: 512,
+                        sx: 0.01,
+                        sy: 0.01,
+                        rotate: 360 * 2 + 360 * 2,
+                        opacity: 0.01,
+                    },
+                ]
+            },
+
+            {
+                draw: kanjiLove,
+                keyframes: [
+                    {
+                        frame: 75,
+                        tx: 512,
+                        ty: 512,
+                        sx: 0.8,
+                        sy: 0.8,
+                        opacity: 0.01,
+                        ease: KeyframeTweener.quadEaseOut
+                    },
+
+                    {
+                        frame: 125,
+                        tx: 512,
+                        ty: 512,
+                        sx: 0.8,
+                        sy: 0.8,
+                        rotate: 360 * 3,
                     },
 
                     {
                         frame: 150,
-                        tx: 300,
-                        ty: 300,
-                        rotate: 360,
-                        opacity: 0.2,
+                        tx: 512,
+                        ty: 512,
+                        sx: 0.8,
+                        sy: 0.8,
+                        rotate: 360 * 3,
+                        opacity: 0.01,
                     },
-
                 ]
             },
         ];
