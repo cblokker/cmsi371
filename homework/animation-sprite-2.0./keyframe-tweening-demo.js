@@ -129,31 +129,29 @@
 
         kiltwalk1 = function (renderingContext) {
             var kiltwalk1 = new Image();
-            kiltwalk1.src = 'kiltwalk1.png';
+            kiltwalk1.src = 'kiltwalk_1.png';
+            renderingContext.scale(0.75, 0.75);
             renderingContext.drawImage(kiltwalk1, 0, 0);
         },
 
         kiltwalk2 = function (renderingContext) {
             var kiltwalk2 = new Image();
-            kiltwalk2.src = 'kiltwalk2.png';
+            kiltwalk2.src = 'kiltwalk_2.png';
+            renderingContext.scale(0.75, 0.75);
             renderingContext.drawImage(kiltwalk2, 0, 0);
         },
 
         kiltwalk3 = function (renderingContext) {
             var kiltwalk3 = new Image();
-            kiltwalk3.src = 'kiltwalk3.png';
+            kiltwalk3.src = 'kiltwalk_3.png';
+            renderingContext.scale(0.75, 0.75);
             renderingContext.drawImage(kiltwalk3, 0, 0);
         },
 
         kiltwalk4 = function (renderingContext) {
             var kiltwalk4 = new Image();
-            kiltwalk4.src = 'kiltwalk4.png';
-            renderingContext.drawImage(kiltwalk4, 0, 0);
-        },
-
-        kiltwalk4 = function (renderingContext) {
-            var kiltwalk4 = new Image();
-            kiltwalk4.src = 'kiltwalk4.png';
+            kiltwalk4.src = 'kiltwalk_4.png';
+            renderingContext.scale(0.75, 0.75);
             renderingContext.drawImage(kiltwalk4, 0, 0);
         },
 
@@ -197,6 +195,24 @@
             var streetFighter3 = new Image();
             streetFighter3.src = 'streetfighter_fall_4.png';
             renderingContext.translate(0, 20);
+            renderingContext.drawImage(streetFighter3, 0, 0);
+        },
+
+        streetFighterGetup1 = function (renderingContext) {
+            var streetFighter3 = new Image();
+            streetFighter3.src = 'streetfighter_getup_1.png';
+            renderingContext.drawImage(streetFighter3, 0, 0);
+        },
+
+        streetFighterGetup2 = function (renderingContext) {
+            var streetFighter3 = new Image();
+            streetFighter3.src = 'streetfighter_getup_2.png';
+            renderingContext.drawImage(streetFighter3, 0, 0);
+        },
+
+        streetFighterGetup3 = function (renderingContext) {
+            var streetFighter3 = new Image();
+            streetFighter3.src = 'streetfighter_getup_3.png';
             renderingContext.drawImage(streetFighter3, 0, 0);
         },
 
@@ -560,6 +576,77 @@
                 ]
             },
 
+            // Kilt guy walking left to right
+            {
+                draw: [kiltwalk1, kiltwalk2, kiltwalk3, kiltwalk4,
+                       kiltwalk1, kiltwalk2, kiltwalk3, kiltwalk4,
+                       kiltwalk1, kiltwalk2, kiltwalk3, kiltwalk4],
+                keyframes: [
+                    {
+                        frame: 125,
+                        tx: 130,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 130,
+                        tx: 140,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 135,
+                        tx: 150,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 140,
+                        tx: 160,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 145,
+                        tx: 170,
+                        ty: 380,
+                    },
+
+
+                    {
+                        frame: 150,
+                        tx: 180,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 155,
+                        tx: 190,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 160,
+                        tx: 200,
+                        ty: 380,
+                    },
+
+
+                    {
+                        frame: 165,
+                        tx: 210,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 170,
+                        tx: 220,
+                        ty: 380,
+                    },
+
+                ]
+            },
+
             // Streetfighter falling
             {
                 draw: [streetFighterFall2, streetFighterFall3, streetFighterFall4, streetFighterFall4],
@@ -597,8 +684,37 @@
                     },
                 ]
             },
-        ];
 
+            // Streetfighter getting up
+            {
+                draw: [streetFighterGetup1, streetFighterGetup2, streetFighterGetup3],
+                keyframes: [
+                    {
+                        frame: 150,
+                        tx: 400,
+                        ty: 390,
+                    },
+
+                    {
+                        frame: 155,
+                        tx: 400,
+                        ty: 390,
+                    },
+
+                    {
+                        frame: 160,
+                        tx: 400,
+                        ty: 390,
+                    },
+
+                    {
+                        frame: 165,
+                        tx: 400,
+                        ty: 390,
+                    },
+                ]
+            },
+        ];
 
     // Finally, we initialize the engine.  Mainly, it needs
     // to know the rendering context to use.  And the animations
