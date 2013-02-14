@@ -58,6 +58,19 @@ var KeyframeTweener = {
         return -(a * Math.pow(2, 10 * (currentTime -= 1)) * Math.sin((currentTime * duration - s) * (2 * Math.PI) / p)) + start;
     },
 
+    // Adaptation of https://github.com/danro/jquery-easing/blob/master/jquery.easing.js
+    easeOutBounce: function (currentTime, start, distance, duration) {
+        if ((currentTime /= duration) < (1 / 2.75)) {
+            return distance * (7.5625 * currentTime * currentTime) + start;
+        } else if (currentTime < (2/2.75)) {
+            return distance * (7.5625 * (currentTime -= (1.5 / 2.75)) * currentTime + 0.75) + start;
+        } else if (currentTime < (2.5/2.75)) {
+            return distance * (7.5625 * (currentTime -= (2.25 / 2.75)) * currentTime + 0.9375) + start;
+        } else {
+            return distance * (7.5625 * (currentTime -= (2.625 / 2.75)) * currentTime + 0.984375) + start;
+        }
+    },
+
     // The big one: animation initialization.  The settings parameter
     // is expected to be a JavaScript object with the following
     // properties:

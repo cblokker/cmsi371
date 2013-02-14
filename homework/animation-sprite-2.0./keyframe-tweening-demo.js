@@ -8,40 +8,6 @@
         // First, a selection of "drawing functions" from which we
         // can choose.  Their common trait: they all accept a single
         // renderingContext argument.
-        square = function (renderingContext) {
-            renderingContext.fillStyle = "blue";
-            renderingContext.fillRect(-20, -20, 40, 40);
-        },
-
-        circle = function (renderingContext) {
-            renderingContext.filleStyle = "blue";
-            renderingContext.beginPath();
-            renderingContext.arc(0, 0, 50, 0, Math.PI * 2);
-            renderingContext.fill();
-        },
-
-        cube = function (renderingContext) {
-
-        var topLeftBackCoordinate = [50, 0],
-            topLeftFrontCoordinate = [100, 50],
-            cubeLength = 150;
-
-            renderingContext.strokeStyle = 'green';
-            renderingContext.strokeRect (topLeftBackCoordinate[0], topLeftBackCoordinate[1], cubeLength, cubeLength);
-            renderingContext.strokeRect (topLeftFrontCoordinate[0], topLeftFrontCoordinate[1], cubeLength, cubeLength);
-
-            // Connect the corners of the two squares to form a wireframe cube
-            for (var i = 0; i <= 1; i++) {
-                renderingContext.translate(cubeLength * i, 0);
-                renderingContext.beginPath();
-                renderingContext.moveTo(topLeftBackCoordinate[0], topLeftBackCoordinate[1]);
-                renderingContext.lineTo(topLeftFrontCoordinate[0], topLeftFrontCoordinate[1]);
-                renderingContext.moveTo(topLeftFrontCoordinate[0], topLeftFrontCoordinate[1] + cubeLength);
-                renderingContext.lineTo(topLeftBackCoordinate[0], topLeftBackCoordinate[1] + cubeLength);
-                renderingContext.stroke();
-            }
-        },
-
         spiral = function (renderingContext) {
 
             var numOfRings = 55,
@@ -76,49 +42,10 @@
             }
         }
 
-        kanjiLove = function (renderingContext) {
-            var kanjiLove = new Image();
-            kanjiLove.src = 'kanji_love.png';
-            renderingContext.scale(0.7, 0.7);
-            renderingContext.drawImage(kanjiLove, 0, 0);
-        },
-
         healthBar = function (renderingContext) {
             renderingContext.fillStyle = 'red';
             renderingContext.fillRect (0, 0, 188, 10);            
         }
-
-        kilt1 = function (renderingContext) {
-            var kilt1 = new Image();
-            kilt1.src = 'kilt_fireball_1.png';
-            renderingContext.scale(0.75, 0.75);
-            renderingContext.translate(12, 10);
-            renderingContext.drawImage(kilt1, 0, 0);
-        },
-
-        kilt2 = function (renderingContext) {
-            var kilt2 = new Image();
-            kilt2.src = 'kilt_fireball_2.png';
-            renderingContext.scale(0.75, 0.75);
-            renderingContext.translate(12, 10);
-            renderingContext.drawImage(kilt2, 0, 0);
-        },
-
-        kilt3 = function (renderingContext) {
-            var kilt3 = new Image();
-            kilt3.src = 'kilt_fireball_3.png';
-            renderingContext.scale(0.75, 0.75);
-            renderingContext.translate(12, 10);
-            renderingContext.drawImage(kilt3, 0, 0);
-        },
-
-        kilt4 = function (renderingContext) {
-            var kilt4 = new Image();
-            kilt4.src = 'kilt_fireball_4.png';
-            renderingContext.scale(0.75, 0.75);
-            renderingContext.translate(12, 10);
-            renderingContext.drawImage(kilt4, 0, 0);
-        },
 
         fireball = function (renderingContext) {
 
@@ -133,9 +60,41 @@
             renderingContext.fill();
         },
 
+        kilt1 = function (renderingContext) {
+            var kilt1 = new Image();
+            kilt1.src = 'kilt_pictures/kilt_fireball_1.png';
+            renderingContext.scale(0.75, 0.75);
+            renderingContext.translate(12, 10);
+            renderingContext.drawImage(kilt1, 0, 0);
+        },
+
+        kilt2 = function (renderingContext) {
+            var kilt2 = new Image();
+            kilt2.src = 'kilt_pictures/kilt_fireball_2.png';
+            renderingContext.scale(0.75, 0.75);
+            renderingContext.translate(12, 10);
+            renderingContext.drawImage(kilt2, 0, 0);
+        },
+
+        kilt3 = function (renderingContext) {
+            var kilt3 = new Image();
+            kilt3.src = 'kilt_pictures/kilt_fireball_3.png';
+            renderingContext.scale(0.75, 0.75);
+            renderingContext.translate(12, 10);
+            renderingContext.drawImage(kilt3, 0, 0);
+        },
+
+        kilt4 = function (renderingContext) {
+            var kilt4 = new Image();
+            kilt4.src = 'kilt_pictures/kilt_fireball_4.png';
+            renderingContext.scale(0.75, 0.75);
+            renderingContext.translate(12, 10);
+            renderingContext.drawImage(kilt4, 0, 0);
+        },
+
         kiltwalk1 = function (renderingContext) {
             var kiltwalk1 = new Image();
-            kiltwalk1.src = 'kiltwalk_1.png';
+            kiltwalk1.src = 'kilt_pictures/kiltwalk_1.png';
             renderingContext.scale(0.75, 0.75);
             renderingContext.translate(5, 5);
             renderingContext.drawImage(kiltwalk1, 0, 0);
@@ -143,7 +102,7 @@
 
         kiltwalk2 = function (renderingContext) {
             var kiltwalk2 = new Image();
-            kiltwalk2.src = 'kiltwalk_2.png';
+            kiltwalk2.src = 'kilt_pictures/kiltwalk_2.png';
             renderingContext.scale(0.75, 0.75);
             renderingContext.translate(5, 5);
             renderingContext.drawImage(kiltwalk2, 0, 0);
@@ -151,7 +110,7 @@
 
         kiltwalk3 = function (renderingContext) {
             var kiltwalk3 = new Image();
-            kiltwalk3.src = 'kiltwalk_3.png';
+            kiltwalk3.src = 'kilt_pictures/kiltwalk_3.png';
             renderingContext.scale(0.75, 0.75);
             renderingContext.translate(5, 5);
             renderingContext.drawImage(kiltwalk3, 0, 0);
@@ -159,76 +118,15 @@
 
         kiltwalk4 = function (renderingContext) {
             var kiltwalk4 = new Image();
-            kiltwalk4.src = 'kiltwalk_4.png';
+            kiltwalk4.src = 'kilt_pictures/kiltwalk_4.png';
             renderingContext.scale(0.75, 0.75);
             renderingContext.translate(0, 5);
             renderingContext.drawImage(kiltwalk4, 0, 0);
         },
 
-        streetFighter1 = function (renderingContext) {
-            var streetFighter1 = new Image();
-            streetFighter1.src = 'street_fighter_standing_1.png';
-            renderingContext.drawImage(streetFighter1, 0, 0);
-        },
-
-        streetFighter2 = function (renderingContext) {
-            var streetFighter2= new Image();
-            streetFighter2.src = 'street_fighter_standing_2.png';
-            renderingContext.drawImage(streetFighter2, 0, 0);
-        },
-
-        streetFighter3 = function (renderingContext) {
-            var streetFighter3 = new Image();
-            streetFighter3.src = 'street_fighter_standing_3.png';
-            renderingContext.drawImage(streetFighter3, 0, 0);
-        },
-
-        streetFighterFall1 = function (renderingContext) {
-            var streetFighter3 = new Image();
-            streetFighter3.src = 'streetfighter_fall_1.png';
-            renderingContext.drawImage(streetFighter3, 0, 0);
-        },
-
-        streetFighterFall2 = function (renderingContext) {
-            var streetFighter3 = new Image();
-            streetFighter3.src = 'streetfighter_fall_2.png';
-            renderingContext.drawImage(streetFighter3, 0, 0);
-        },
-
-        streetFighterFall3 = function (renderingContext) {
-            var streetFighter3 = new Image();
-            streetFighter3.src = 'streetfighter_fall_3.png';
-            renderingContext.drawImage(streetFighter3, 0, 0);
-        },
-
-        streetFighterFall4 = function (renderingContext) {
-            var streetFighter3 = new Image();
-            streetFighter3.src = 'streetfighter_fall_4.png';
-            renderingContext.translate(0, 20);
-            renderingContext.drawImage(streetFighter3, 0, 0);
-        },
-
-        streetFighterGetup1 = function (renderingContext) {
-            var streetFighter3 = new Image();
-            streetFighter3.src = 'streetfighter_getup_1.png';
-            renderingContext.drawImage(streetFighter3, 0, 0);
-        },
-
-        streetFighterGetup2 = function (renderingContext) {
-            var streetFighter3 = new Image();
-            streetFighter3.src = 'streetfighter_getup_2.png';
-            renderingContext.drawImage(streetFighter3, 0, 0);
-        },
-
-        streetFighterGetup3 = function (renderingContext) {
-            var streetFighter3 = new Image();
-            streetFighter3.src = 'streetfighter_getup_3.png';
-            renderingContext.drawImage(streetFighter3, 0, 0);
-        },
-
         kiltStanding1 = function (renderingContext) {
             var kiltStanding1 = new Image();
-            kiltStanding1.src = 'kilt_standing_1.png';
+            kiltStanding1.src = 'kilt_pictures/kilt_standing_1.png';
             renderingContext.scale(0.75, 0.75);
             renderingContext.translate(0, 5);
             renderingContext.drawImage(kiltStanding1, 0, 0);
@@ -237,7 +135,7 @@
 
         kiltStanding2 = function (renderingContext) {
             var kiltStanding2 = new Image();
-            kiltStanding2.src = 'kilt_standing_2.png';
+            kiltStanding2.src = 'kilt_pictures/kilt_standing_2.png';
             renderingContext.scale(0.75, 0.75);
             renderingContext.drawImage(kiltStanding2, 0, 0);
             
@@ -245,7 +143,7 @@
 
         kiltStanding3 = function (renderingContext) {
             var kiltStanding3 = new Image();
-            kiltStanding3.src = 'kilt_standing_3.png';
+            kiltStanding3.src = 'kilt_pictures/kilt_standing_3.png';
             renderingContext.scale(0.75, 0.75);
             renderingContext.translate(0, -3);
             renderingContext.drawImage(kiltStanding3, 0, 0);
@@ -254,7 +152,7 @@
 
         kiltStanding4 = function (renderingContext) {
             var kiltStanding4 = new Image();
-            kiltStanding4.src = 'kilt_standing_4.png';
+            kiltStanding4.src = 'kilt_pictures/kilt_standing_4.png';
             renderingContext.scale(0.75, 0.75);
             renderingContext.drawImage(kiltStanding4, 0, 0);
             
@@ -262,44 +160,14 @@
 
         kiltStanding5 = function (renderingContext) {
             var kiltStanding5 = new Image();
-            kiltStanding5.src = 'kilt_standing_5.png';
+            kiltStanding5.src = 'kilt_pictures/kilt_standing_5.png';
             renderingContext.scale(0.75, 0.75);
-            renderingContext.drawImage(kiltStanding5, 0, 0);
-        },
-
-        streetFighterLowKick1 = function (renderingContext) {
-            var kiltStanding5 = new Image();
-            kiltStanding5.src = 'streetfighter_low_kick_1.png';
-            renderingContext.drawImage(kiltStanding5, 0, 0);
-        },
-
-        streetFighterLowKick2 = function (renderingContext) {
-            var kiltStanding5 = new Image();
-            kiltStanding5.src = 'streetfighter_low_kick_2.png';
-            renderingContext.drawImage(kiltStanding5, 0, 0);
-        },
-
-        streetFighterSlide1 = function (renderingContext) {
-            var kiltStanding5 = new Image();
-            kiltStanding5.src = 'streetfighter_slide_1.png';
-            renderingContext.drawImage(kiltStanding5, 0, 0);
-        },
-
-        streetFighterSlide2 = function (renderingContext) {
-            var kiltStanding5 = new Image();
-            kiltStanding5.src = 'streetfighter_slide_2.png';
-            renderingContext.drawImage(kiltStanding5, 0, 0);
-        },
-
-        streetFighterSlide3 = function (renderingContext) {
-            var kiltStanding5 = new Image();
-            kiltStanding5.src = 'streetfighter_slide_3.png';
             renderingContext.drawImage(kiltStanding5, 0, 0);
         },
 
         kiltJump1 = function (renderingContext) {
             var kiltStanding5 = new Image();
-            kiltStanding5.src = 'kilt_jump_1.png';
+            kiltStanding5.src = 'kilt_pictures/kilt_jump_1.png';
             renderingContext.scale(0.75, 0.75);
             renderingContext.translate(0, 15);
             renderingContext.drawImage(kiltStanding5, 0, 0);
@@ -307,7 +175,7 @@
 
         kiltJump2 = function (renderingContext) {
             var kiltStanding5 = new Image();
-            kiltStanding5.src = 'kilt_jump_2.png';
+            kiltStanding5.src = 'kilt_pictures/kilt_jump_2.png';
             renderingContext.scale(0.75, 0.75);
             renderingContext.translate(0, 15);
             renderingContext.drawImage(kiltStanding5, 0, 0);
@@ -315,39 +183,135 @@
 
         kiltJump3 = function (renderingContext) {
             var kiltStanding5 = new Image();
-            kiltStanding5.src = 'kilt_jump_3.png';
+            kiltStanding5.src = 'kilt_pictures/kilt_jump_3.png';
             renderingContext.scale(0.75, 0.75);
-            //renderingContext.translate(0, -10);
             renderingContext.drawImage(kiltStanding5, 0, 0);
         },
 
         kiltJump4 = function (renderingContext) {
             var kiltStanding5 = new Image();
-            kiltStanding5.src = 'kilt_jump_4.png';
+            kiltStanding5.src = 'kilt_pictures/kilt_jump_4.png';
             renderingContext.scale(0.75, 0.75);
-            //renderingContext.translate(0, -30);
             renderingContext.drawImage(kiltStanding5, 0, 0);
         },
 
         kiltJump5 = function (renderingContext) {
             var kiltStanding5 = new Image();
-            kiltStanding5.src = 'kilt_jump_5.png';
+            kiltStanding5.src = 'kilt_pictures/kilt_jump_5.png';
             renderingContext.scale(0.75, 0.75);
             renderingContext.drawImage(kiltStanding5, 0, 0);
         },
 
         kiltJump6 = function (renderingContext) {
             var kiltStanding5 = new Image();
-            kiltStanding5.src = 'kilt_jump_6.png';
+            kiltStanding5.src = 'kilt_pictures/kilt_jump_6.png';
             renderingContext.scale(0.75, 0.75);
             renderingContext.translate(0, -20);
             renderingContext.drawImage(kiltStanding5, 0, 0);
         },
 
+        streetFighter1 = function (renderingContext) {
+            var streetFighter1 = new Image();
+            streetFighter1.src = 'streetfighter_pictures/street_fighter_standing_1.png';
+            renderingContext.drawImage(streetFighter1, 0, 0);
+        },
+
+        streetFighter2 = function (renderingContext) {
+            var streetFighter2= new Image();
+            streetFighter2.src = 'streetfighter_pictures/street_fighter_standing_2.png';
+            renderingContext.drawImage(streetFighter2, 0, 0);
+        },
+
+        streetFighter3 = function (renderingContext) {
+            var streetFighter3 = new Image();
+            streetFighter3.src = 'streetfighter_pictures/street_fighter_standing_3.png';
+            renderingContext.drawImage(streetFighter3, 0, 0);
+        },
+
+        streetFighterFall1 = function (renderingContext) {
+            var streetFighter3 = new Image();
+            streetFighter3.src = 'streetfighter_pictures/streetfighter_fall_1.png';
+            renderingContext.drawImage(streetFighter3, 0, 0);
+        },
+
+        streetFighterFall2 = function (renderingContext) {
+            var streetFighter3 = new Image();
+            streetFighter3.src = 'streetfighter_pictures/streetfighter_fall_2.png';
+            renderingContext.drawImage(streetFighter3, 0, 0);
+        },
+
+        streetFighterFall3 = function (renderingContext) {
+            var streetFighter3 = new Image();
+            streetFighter3.src = 'streetfighter_pictures/streetfighter_fall_3.png';
+            renderingContext.drawImage(streetFighter3, 0, 0);
+        },
+
+        streetFighterFall4 = function (renderingContext) {
+            var streetFighter3 = new Image();
+            streetFighter3.src = 'streetfighter_pictures/streetfighter_fall_4.png';
+            renderingContext.translate(0, 20);
+            renderingContext.drawImage(streetFighter3, 0, 0);
+        },
+
+        streetFighterGetup1 = function (renderingContext) {
+            var streetFighter3 = new Image();
+            streetFighter3.src = 'streetfighter_pictures/streetfighter_getup_1.png';
+            renderingContext.drawImage(streetFighter3, 0, 0);
+        },
+
+        streetFighterGetup2 = function (renderingContext) {
+            var streetFighter3 = new Image();
+            streetFighter3.src = 'streetfighter_pictures/streetfighter_getup_2.png';
+            renderingContext.drawImage(streetFighter3, 0, 0);
+        },
+
+        streetFighterGetup3 = function (renderingContext) {
+            var streetFighter3 = new Image();
+            streetFighter3.src = 'streetfighter_pictures/streetfighter_getup_3.png';
+            renderingContext.drawImage(streetFighter3, 0, 0);
+        },
+
+        streetFighterLowKick1 = function (renderingContext) {
+            var kiltStanding5 = new Image();
+            kiltStanding5.src = 'streetfighter_pictures/streetfighter_low_kick_1.png';
+            renderingContext.drawImage(kiltStanding5, 0, 0);
+        },
+
+        streetFighterLowKick2 = function (renderingContext) {
+            var kiltStanding5 = new Image();
+            kiltStanding5.src = 'streetfighter_pictures/streetfighter_low_kick_2.png';
+            renderingContext.drawImage(kiltStanding5, 0, 0);
+        },
+
+        streetFighterSlide1 = function (renderingContext) {
+            var kiltStanding5 = new Image();
+            kiltStanding5.src = 'streetfighter_pictures/streetfighter_slide_1.png';
+            renderingContext.drawImage(kiltStanding5, 0, 0);
+        },
+
+        streetFighterSlide2 = function (renderingContext) {
+            var kiltStanding5 = new Image();
+            kiltStanding5.src = 'streetfighter_pictures/streetfighter_slide_2.png';
+            renderingContext.drawImage(kiltStanding5, 0, 0);
+        },
+
+        streetFighterSlide3 = function (renderingContext) {
+            var kiltStanding5 = new Image();
+            kiltStanding5.src = 'streetfighter_pictures/streetfighter_slide_3.png';
+            renderingContext.drawImage(kiltStanding5, 0, 0);
+        },
+
         fight = function (renderingContext) {
             var fight = new Image();
-            fight.src = 'fight.png';
+            fight.src = 'misc_pictures/fight.png';
             renderingContext.drawImage(fight, 0, 0);
+        },
+
+        kanjiLove = function (renderingContext) {
+            var kanjiLove = new Image();
+            kanjiLove.src = 'misc_pictures/kanji_love.png';
+            renderingContext.scale(0.7, 0.7);
+            renderingContext.drawImage(kanjiLove, 0, 0);
         },
 
         // Then, we have "easing functions" that determine how
@@ -406,7 +370,7 @@
                     },
 
                     {
-                        frame: 450,
+                        frame: 500,
                         tx: 30,
                         ty: 35,
                         opacity: 0.01
@@ -448,7 +412,7 @@
                     },
 
                     {
-                        frame: 450,
+                        frame: 500,
                         tx: 286,
                         ty: 35,
                         sx: 0.8,
@@ -963,12 +927,14 @@
                         frame: 225,
                         tx: 280,
                         ty: 400,
+                        ease: KeyframeTweener.easeOutBounce
                     },
 
                     {
-                        frame: 230,
+                        frame: 300,
                         tx: 280,
                         ty: 400,
+                        opacity: 0.01
                     },
                 ]
             },
@@ -994,7 +960,6 @@
                         frame: 195,
                         tx: 250,
                         ty: 380,
-                        // ease: KeyframeTweener.quadEaseOut
                     },
 
                     {
@@ -1045,6 +1010,111 @@
                     {
                         frame: 245,
                         tx: 370,
+                        ty: 380,
+                    },
+                ]
+            },
+
+            // Kilt guy standing
+            {
+                draw: [kiltwalk1, kiltwalk2, kiltwalk3, kiltwalk4,
+                       kiltwalk1, kiltwalk2, kiltwalk3, kiltwalk4,
+                       kiltwalk1, kiltwalk2, kiltwalk3, kiltwalk4,
+                       kiltwalk1, kiltwalk2, kiltwalk3, kiltwalk4],
+                keyframes: [
+                    {
+                        frame: 245,
+                        tx: 370,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 250,
+                        tx: 380,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 255,
+                        tx: 390,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 260,
+                        tx: 400,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 265,
+                        tx: 410,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 270,
+                        tx: 420,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 275,
+                        tx: 430,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 280,
+                        tx: 440,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 285,
+                        tx: 450,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 290,
+                        tx: 460,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 295,
+                        tx: 470,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 300,
+                        tx: 480,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 305,
+                        tx: 490,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 310,
+                        tx: 500,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 315,
+                        tx: 510,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 320,
+                        tx: 520,
                         ty: 380,
                     },
                 ]
