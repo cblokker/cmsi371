@@ -26,6 +26,38 @@ var KeyframeTweener = {
                 (-distance / 2) * ((percentComplete - 1) * (percentComplete - 3) - 1) + start;
     },
 
+    // Adaptation of https://github.com/danro/jquery-easing/blob/master/jquery.easing.js
+    easeOutElastic: function (currentTime, start, distance, duration) {
+        var s = 1.70158,
+            p = 0,
+            a = distance;
+        if (currentTime == 0) return start;
+        if ((currentTime /= duration) == 1) return (start + distance);
+        if (!p) p = duration * 0.3;
+        if (a < Math.abs(distance)) { 
+            a = distance;
+            var s = (p / 4);
+        }
+        else var s = p / (2 * Math.PI) * Math.asin (distance / a);
+        return a * Math.pow(2, -10 * currentTime) * Math.sin((currentTime * duration - s) * (2 * Math.PI) / p) + distance + start;
+    },
+
+    // Adaptation of https://github.com/danro/jquery-easing/blob/master/jquery.easing.js
+    easeInElastic: function (currentTime, start, distance, duration) {
+        var s = 1.70158;
+            p = 0;
+            a = distance;
+        if (currentTime == 0) return start;
+        if ((currentTime /= duration) == 1) return start + distance;
+        if (!p) p = duration * 0.3;
+        if (a < Math.abs(distance)) {
+            a = distance;
+            var s = (p / 4);
+        }
+        else var s = p / (2 * Math.PI) * Math.asin (distance / a);
+        return -(a * Math.pow(2, 10 * (currentTime -= 1)) * Math.sin((currentTime * duration - s) * (2 * Math.PI) / p)) + start;
+    },
+
     // The big one: animation initialization.  The settings parameter
     // is expected to be a JavaScript object with the following
     // properties:
@@ -65,11 +97,6 @@ var KeyframeTweener = {
             width = settings.width,
             height = settings.height,
             sprites = settings.sprites;
-
-            dropStartx = -500;
-            dropStarty = -500;
-            dropEndx = 400;
-            dropEndy = 400;
 
         setInterval(function () {
             // Some reusable loop variables.
@@ -113,17 +140,13 @@ var KeyframeTweener = {
 
             renderingContext.fillStyle = linearGrassGradient;
             renderingContext.fillRect(0, height * ( 2 / 3), width, height);
-            renderingContext.strokeStyle = 'blue';
 
             renderingContext.strokeStyle = 'black';
             renderingContext.strokeRect(29, 34, (width / 2) - 66, 12);
-
-            renderingContext.strokeStyle = 'black';
             renderingContext.strokeRect(29 + (width / 2), 34, (width / 2) - 66, 12);
 
             // For every sprite, go to the current pair of keyframes.
             // Then, draw the sprite based on the current frame.
-
             for (i = 0, maxI = sprites.length; i < maxI; i += 1) {                
                 for (j = 0, maxJ = sprites[i].keyframes.length - 1; j < maxJ; j += 1) {
                     // for (var k = 0; k < 2; k++) {

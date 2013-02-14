@@ -79,6 +79,7 @@
         kanjiLove = function (renderingContext) {
             var kanjiLove = new Image();
             kanjiLove.src = 'kanji_love.png';
+            renderingContext.scale(0.7, 0.7);
             renderingContext.drawImage(kanjiLove, 0, 0);
         },
 
@@ -343,6 +344,12 @@
             renderingContext.drawImage(kiltStanding5, 0, 0);
         },
 
+        fight = function (renderingContext) {
+            var fight = new Image();
+            fight.src = 'fight.png';
+            renderingContext.drawImage(fight, 0, 0);
+        },
+
         // Then, we have "easing functions" that determine how
         // intermediate frames are computed.
 
@@ -350,9 +357,41 @@
         // has a drawing function and an array of keyframes.
         sprites = [
 
+            {
+                draw: [fight, fight, fight],
+                keyframes: [
+                    {
+                        frame: 0,
+                        tx: 50,
+                        ty: 50,
+                        sx: 0.5,
+                        sy: 0.5,
+                        ease: KeyframeTweener.easeOutElastic
+                    },
+
+                    {
+                        frame: 50,
+                        tx: 200,
+                        ty: 60,
+                        sx: 1,
+                        sy: 1,
+                        ease: KeyframeTweener.easeInElastic
+                    },
+
+                    {
+                        frame: 100,
+                        tx: 50,
+                        ty: 50,
+                        sx: 0.5,
+                        sy: 0.5,
+                    },
+                ]
+            },
+
+
             // healthBar left
             {
-                draw: [healthBar, healthBar],
+                draw: [healthBar, healthBar, healthBar],
                 keyframes: [
                     {
                         frame: 0,
@@ -361,16 +400,23 @@
                     },
 
                     {
-                        frame: 500,
+                        frame: 325,
                         tx: 30,
                         ty: 35,
+                    },
+
+                    {
+                        frame: 450,
+                        tx: 30,
+                        ty: 35,
+                        opacity: 0.01
                     },
                 ]
             },
 
             // healthBar right
             {
-                draw: [healthBar, healthBar, healthBar],
+                draw: [healthBar, healthBar, healthBar, healthBar],
                 keyframes: [
                     {
                         frame: 0,
@@ -394,12 +440,22 @@
                     },
 
                     {
-                        frame: 500,
+                        frame: 325,
                         tx: 286,
                         ty: 35,
                         sx: 0.8,
                         sy: 1
                     },
+
+                    {
+                        frame: 450,
+                        tx: 286,
+                        ty: 35,
+                        sx: 0.8,
+                        sy: 1,
+                        opacity: 0.01
+                    },
+
                 ]
             },
 
@@ -990,6 +1046,70 @@
                         frame: 245,
                         tx: 370,
                         ty: 380,
+                    },
+                ]
+            },
+
+            {
+                draw: [spiral, spiral, kanjiLove, kanjiLove, kanjiLove, kanjiLove, kanjiLove, kanjiLove],
+                keyframes: [
+                    {
+                        frame: 275,
+                        tx: 256,
+                        ty: 256,
+                        sx: 0.01,
+                        sy: 0.01,
+                        opacity: 0.01,
+                        ease: KeyframeTweener.quadEaseIn
+                    },
+
+                    {
+                        frame: 300,
+                        tx: 256,
+                        ty: 256,
+                        sx: 1,
+                        sy: 1,
+                        rotate: 360 * 2,
+                        opacity: 1,
+                        ease: KeyframeTweener.quadEaseOut
+                    },
+
+                    {
+                        frame: 325,
+                        tx: 256,
+                        ty: 256,
+                        sx: 0.01,
+                        sy: 0.01,
+                        rotate: 360 * 2 + 360 * 2,
+                        opacity: 0.01,
+                    },
+
+                    {
+                        frame: 275,
+                        tx: 256,
+                        ty: 256,
+                        sx: 0.01,
+                        sy: 0.01,
+                        opacity: 0.01,
+                        ease: KeyframeTweener.quadEaseOut
+                    },
+
+                    {
+                        frame: 325,
+                        tx: 256,
+                        ty: 256,
+                        rotate: 360 * 3,
+                        ease: KeyframeTweener.easeInElastic
+                    },
+
+                    {
+                        frame: 500,
+                        tx: 150,
+                        ty: 150,
+                        sx: 0.2,
+                        sy: 0.2,
+                        rotate: 360 * 3.8,
+                        opacity: 0.01
                     },
                 ]
             },
