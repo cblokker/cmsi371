@@ -26,8 +26,6 @@ var KeyframeTweener = {
                 (-distance / 2) * ((percentComplete - 1) * (percentComplete - 3) - 1) + start;
     },
 
-
-
     // The big one: animation initialization.  The settings parameter
     // is expected to be a JavaScript object with the following
     // properties:
@@ -98,12 +96,18 @@ var KeyframeTweener = {
             // Clear the canvas.
             renderingContext.clearRect(0, 0, width, height);
             renderingContext.fillStyle = 'blue';
-            renderingContext.fillRect(0, 0, width, height);
+            renderingContext.fillRect(0, 0, width, height * ( 2 / 3));
+
+            renderingContext.fillStyle = 'green';
+            renderingContext.fillRect(0, height * ( 2 / 3), width, height);
 
             // For every sprite, go to the current pair of keyframes.
             // Then, draw the sprite based on the current frame.
+
             for (i = 0, maxI = sprites.length; i < maxI; i += 1) {
+                
                 for (j = 0, maxJ = sprites[i].keyframes.length - 1; j < maxJ; j += 1) {
+                    // for (var k = 0; k < 2; k++) {
                     // We look for keyframe pairs such that the current
                     // frame is between their frame numbers.
                     if ((sprites[i].keyframes[j].frame <= currentFrame) &&
@@ -149,7 +153,7 @@ var KeyframeTweener = {
                         renderingContext.globalAlpha = ease(currentTweenFrame, opacityStart, opacityDistance, duration);
                         
                         // Draw the sprite.
-                        sprites[i].draw(renderingContext);
+                        sprites[i].draw[j](renderingContext);
 
                         // Clean up.
                         renderingContext.restore();
@@ -157,10 +161,9 @@ var KeyframeTweener = {
                 }
             }
 
-
             // Move to the next frame.
             currentFrame += 1;
 
         }, 1000 / (settings.frameRate || 24));
-        }
+    }
 };
