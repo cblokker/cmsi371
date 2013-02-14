@@ -66,6 +66,11 @@ var KeyframeTweener = {
             height = settings.height,
             sprites = settings.sprites;
 
+            dropStartx = -500;
+            dropStarty = -500;
+            dropEndx = 400;
+            dropEndy = 400;
+
         setInterval(function () {
             // Some reusable loop variables.
             var i,
@@ -93,19 +98,33 @@ var KeyframeTweener = {
                 opacityDistance,
                 duration;
 
-            // Clear the canvas.
-            renderingContext.clearRect(0, 0, width, height);
-            renderingContext.fillStyle = 'blue';
+            // Draw the canvas.
+            linearSkyGradient = renderingContext.createLinearGradient(0, 0, 0, 300);
+            linearGrassGradient = renderingContext.createLinearGradient(0, 300, 0, 425);
+
+            linearSkyGradient.addColorStop(1, 'grey');
+            linearSkyGradient.addColorStop(0, 'blue');
+
+            linearGrassGradient.addColorStop(0, '#003300');
+            linearGrassGradient.addColorStop(1, 'green');
+
+            renderingContext.fillStyle = linearSkyGradient;
             renderingContext.fillRect(0, 0, width, height * ( 2 / 3));
 
-            renderingContext.fillStyle = 'green';
+            renderingContext.fillStyle = linearGrassGradient;
             renderingContext.fillRect(0, height * ( 2 / 3), width, height);
+            renderingContext.strokeStyle = 'blue';
+
+            renderingContext.strokeStyle = 'black';
+            renderingContext.strokeRect(29, 34, (width / 2) - 66, 12);
+
+            renderingContext.strokeStyle = 'black';
+            renderingContext.strokeRect(29 + (width / 2), 34, (width / 2) - 66, 12);
 
             // For every sprite, go to the current pair of keyframes.
             // Then, draw the sprite based on the current frame.
 
-            for (i = 0, maxI = sprites.length; i < maxI; i += 1) {
-                
+            for (i = 0, maxI = sprites.length; i < maxI; i += 1) {                
                 for (j = 0, maxJ = sprites[i].keyframes.length - 1; j < maxJ; j += 1) {
                     // for (var k = 0; k < 2; k++) {
                     // We look for keyframe pairs such that the current
@@ -164,6 +183,6 @@ var KeyframeTweener = {
             // Move to the next frame.
             currentFrame += 1;
 
-        }, 1000 / (settings.frameRate || 24));
+        }, 1000 / (settings.frameRate || 30));
     }
 };

@@ -82,6 +82,11 @@
             renderingContext.drawImage(kanjiLove, 0, 0);
         },
 
+        healthBar = function (renderingContext) {
+            renderingContext.fillStyle = 'red';
+            renderingContext.fillRect (0, 0, 188, 10);            
+        }
+
         kilt1 = function (renderingContext) {
             var kilt1 = new Image();
             kilt1.src = 'kilt_fireball_1.png';
@@ -131,6 +136,7 @@
             var kiltwalk1 = new Image();
             kiltwalk1.src = 'kiltwalk_1.png';
             renderingContext.scale(0.75, 0.75);
+            renderingContext.translate(5, 5);
             renderingContext.drawImage(kiltwalk1, 0, 0);
         },
 
@@ -138,6 +144,7 @@
             var kiltwalk2 = new Image();
             kiltwalk2.src = 'kiltwalk_2.png';
             renderingContext.scale(0.75, 0.75);
+            renderingContext.translate(5, 5);
             renderingContext.drawImage(kiltwalk2, 0, 0);
         },
 
@@ -145,6 +152,7 @@
             var kiltwalk3 = new Image();
             kiltwalk3.src = 'kiltwalk_3.png';
             renderingContext.scale(0.75, 0.75);
+            renderingContext.translate(5, 5);
             renderingContext.drawImage(kiltwalk3, 0, 0);
         },
 
@@ -152,6 +160,7 @@
             var kiltwalk4 = new Image();
             kiltwalk4.src = 'kiltwalk_4.png';
             renderingContext.scale(0.75, 0.75);
+            renderingContext.translate(0, 5);
             renderingContext.drawImage(kiltwalk4, 0, 0);
         },
 
@@ -220,6 +229,7 @@
             var kiltStanding1 = new Image();
             kiltStanding1.src = 'kilt_standing_1.png';
             renderingContext.scale(0.75, 0.75);
+            renderingContext.translate(0, 5);
             renderingContext.drawImage(kiltStanding1, 0, 0);
             
         },
@@ -236,6 +246,7 @@
             var kiltStanding3 = new Image();
             kiltStanding3.src = 'kilt_standing_3.png';
             renderingContext.scale(0.75, 0.75);
+            renderingContext.translate(0, -3);
             renderingContext.drawImage(kiltStanding3, 0, 0);
             
         },
@@ -255,13 +266,142 @@
             renderingContext.drawImage(kiltStanding5, 0, 0);
         },
 
+        streetFighterLowKick1 = function (renderingContext) {
+            var kiltStanding5 = new Image();
+            kiltStanding5.src = 'streetfighter_low_kick_1.png';
+            renderingContext.drawImage(kiltStanding5, 0, 0);
+        },
+
+        streetFighterLowKick2 = function (renderingContext) {
+            var kiltStanding5 = new Image();
+            kiltStanding5.src = 'streetfighter_low_kick_2.png';
+            renderingContext.drawImage(kiltStanding5, 0, 0);
+        },
+
+        streetFighterSlide1 = function (renderingContext) {
+            var kiltStanding5 = new Image();
+            kiltStanding5.src = 'streetfighter_slide_1.png';
+            renderingContext.drawImage(kiltStanding5, 0, 0);
+        },
+
+        streetFighterSlide2 = function (renderingContext) {
+            var kiltStanding5 = new Image();
+            kiltStanding5.src = 'streetfighter_slide_2.png';
+            renderingContext.drawImage(kiltStanding5, 0, 0);
+        },
+
+        streetFighterSlide3 = function (renderingContext) {
+            var kiltStanding5 = new Image();
+            kiltStanding5.src = 'streetfighter_slide_3.png';
+            renderingContext.drawImage(kiltStanding5, 0, 0);
+        },
+
+        kiltJump1 = function (renderingContext) {
+            var kiltStanding5 = new Image();
+            kiltStanding5.src = 'kilt_jump_1.png';
+            renderingContext.scale(0.75, 0.75);
+            renderingContext.translate(0, 15);
+            renderingContext.drawImage(kiltStanding5, 0, 0);
+        },
+
+        kiltJump2 = function (renderingContext) {
+            var kiltStanding5 = new Image();
+            kiltStanding5.src = 'kilt_jump_2.png';
+            renderingContext.scale(0.75, 0.75);
+            renderingContext.translate(0, 15);
+            renderingContext.drawImage(kiltStanding5, 0, 0);
+        },
+
+        kiltJump3 = function (renderingContext) {
+            var kiltStanding5 = new Image();
+            kiltStanding5.src = 'kilt_jump_3.png';
+            renderingContext.scale(0.75, 0.75);
+            //renderingContext.translate(0, -10);
+            renderingContext.drawImage(kiltStanding5, 0, 0);
+        },
+
+        kiltJump4 = function (renderingContext) {
+            var kiltStanding5 = new Image();
+            kiltStanding5.src = 'kilt_jump_4.png';
+            renderingContext.scale(0.75, 0.75);
+            //renderingContext.translate(0, -30);
+            renderingContext.drawImage(kiltStanding5, 0, 0);
+        },
+
+        kiltJump5 = function (renderingContext) {
+            var kiltStanding5 = new Image();
+            kiltStanding5.src = 'kilt_jump_5.png';
+            renderingContext.scale(0.75, 0.75);
+            renderingContext.drawImage(kiltStanding5, 0, 0);
+        },
+
+        kiltJump6 = function (renderingContext) {
+            var kiltStanding5 = new Image();
+            kiltStanding5.src = 'kilt_jump_6.png';
+            renderingContext.scale(0.75, 0.75);
+            renderingContext.translate(0, -20);
+            renderingContext.drawImage(kiltStanding5, 0, 0);
+        },
+
         // Then, we have "easing functions" that determine how
         // intermediate frames are computed.
 
         // Now, to actually define the animated sprites.  Each sprite
         // has a drawing function and an array of keyframes.
-
         sprites = [
+
+            // healthBar left
+            {
+                draw: [healthBar, healthBar],
+                keyframes: [
+                    {
+                        frame: 0,
+                        tx: 30,
+                        ty: 35,
+                    },
+
+                    {
+                        frame: 500,
+                        tx: 30,
+                        ty: 35,
+                    },
+                ]
+            },
+
+            // healthBar right
+            {
+                draw: [healthBar, healthBar, healthBar],
+                keyframes: [
+                    {
+                        frame: 0,
+                        tx: 286,
+                        ty: 35,
+                    },
+
+                    {
+                        frame: 110,
+                        tx: 286,
+                        ty: 35,
+                        ease: KeyframeTweener.quadEaseOut
+                    },
+
+                    {
+                        frame: 130,
+                        tx: 286,
+                        ty: 35,
+                        sx: 0.8,
+                        sy: 1
+                    },
+
+                    {
+                        frame: 500,
+                        tx: 286,
+                        ty: 35,
+                        sx: 0.8,
+                        sy: 1
+                    },
+                ]
+            },
 
             // Streetfighter standing
             {
@@ -580,7 +720,9 @@
             {
                 draw: [kiltwalk1, kiltwalk2, kiltwalk3, kiltwalk4,
                        kiltwalk1, kiltwalk2, kiltwalk3, kiltwalk4,
-                       kiltwalk1, kiltwalk2, kiltwalk3, kiltwalk4],
+                       kiltwalk1, kiltwalk2, kiltwalk3, kiltwalk4,
+                       kiltwalk1, kiltwalk2, kiltwalk3, kiltwalk4,
+                       kiltwalk1, kiltwalk2, kiltwalk3, kiltwalk4,],
                 keyframes: [
                     {
                         frame: 125,
@@ -631,7 +773,6 @@
                         ty: 380,
                     },
 
-
                     {
                         frame: 165,
                         tx: 210,
@@ -644,6 +785,24 @@
                         ty: 380,
                     },
 
+                    {
+                        frame: 175,
+                        tx: 230,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 180,
+                        tx: 240,
+                        ty: 380,
+                    },
+
+
+                    {
+                        frame: 185,
+                        tx: 250,
+                        ty: 380,
+                    },
                 ]
             },
 
@@ -674,13 +833,13 @@
                     {
                         frame: 130,
                         tx: 400,
-                        ty: 390,
+                        ty: 400,
                     },
 
                     {
-                        frame: 150,
+                        frame: 165,
                         tx: 400,
-                        ty: 390,
+                        ty: 400,
                     },
                 ]
             },
@@ -690,27 +849,147 @@
                 draw: [streetFighterGetup1, streetFighterGetup2, streetFighterGetup3],
                 keyframes: [
                     {
-                        frame: 150,
-                        tx: 400,
-                        ty: 390,
-                    },
-
-                    {
-                        frame: 155,
-                        tx: 400,
-                        ty: 390,
-                    },
-
-                    {
-                        frame: 160,
-                        tx: 400,
-                        ty: 390,
-                    },
-
-                    {
                         frame: 165,
                         tx: 400,
-                        ty: 390,
+                        ty: 400,
+                    },
+
+                    {
+                        frame: 170,
+                        tx: 400,
+                        ty: 400,
+                    },
+
+                    {
+                        frame: 175,
+                        tx: 400,
+                        ty: 400,
+                    },
+
+                    {
+                        frame: 190,
+                        tx: 400,
+                        ty: 400,
+                    },
+                ]
+            },
+
+            // Streetfighter low kick
+            {
+                draw: [streetFighterSlide1, streetFighterSlide2, streetFighterSlide3, streetFighterSlide3, streetFighterSlide1],
+                keyframes: [
+                    {
+                        frame: 190,
+                        tx: 400,
+                        ty: 400,
+                    },
+
+                    {
+                        frame: 195,
+                        tx: 380,
+                        ty: 400,
+                    },
+
+                    {
+                        frame: 200,
+                        tx: 360,
+                        ty: 400,
+                        ease: KeyframeTweener.quadEaseOut
+                    },
+
+                    {
+                        frame: 215,
+                        tx: 280,
+                        ty: 400,
+                    },
+
+                    {
+                        frame: 225,
+                        tx: 280,
+                        ty: 400,
+                    },
+
+                    {
+                        frame: 230,
+                        tx: 280,
+                        ty: 400,
+                    },
+                ]
+            },
+
+            // Kilt guy jumps
+            {
+                draw: [kiltJump1, kiltJump2, kiltJump3, kiltJump4, kiltJump5, kiltJump6,
+                kiltJump1, kiltJump2, kiltJump2, kiltStanding1],
+                keyframes: [
+                    {
+                        frame: 185,
+                        tx: 250,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 190,
+                        tx: 250,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 195,
+                        tx: 250,
+                        ty: 380,
+                        // ease: KeyframeTweener.quadEaseOut
+                    },
+
+                    {
+                        frame: 200,
+                        tx: 250,
+                        ty: 380,
+                        ease: KeyframeTweener.quadEaseOut
+                    },
+
+                    {
+                        frame: 210,
+                        tx: 300,
+                        ty: 300,
+                        
+                    },
+
+                    {
+                        frame: 215,
+                        tx: 310,
+                        ty: 300,
+                        ease: KeyframeTweener.quadEaseIn
+                    },
+
+                    {
+                        frame: 225,
+                        tx: 360,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 230,
+                        tx: 370,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 235,
+                        tx: 370,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 240,
+                        tx: 370,
+                        ty: 380,
+                    },
+
+                    {
+                        frame: 245,
+                        tx: 370,
+                        ty: 380,
                     },
                 ]
             },
