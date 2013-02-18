@@ -38,8 +38,7 @@ var NanoshopNeighborhood = {
     },
 
     /*
-     * A basic "averager"---this one returns the average of all the pixels in the
-     * given neighborhood.
+     * A basic "inverter"
      */
     inverter: function (rgbaNeighborhood) {
         return [
@@ -49,6 +48,29 @@ var NanoshopNeighborhood = {
             rgbaNeighborhood[4].a
         ];
     },
+
+    /*
+     * A basic "noise" filter
+     */
+    noise: function (rgbaNeighborhood) {
+        var rTotal = 0,
+            gTotal = 0,
+            bTotal = 0,
+            aTotal = 0,
+            i,
+            n;
+
+        for (i = 0; i < 9; i += 1) {
+            n = Math.random();
+            rTotal += n * rgbaNeighborhood[i].r;
+            gTotal += n * rgbaNeighborhood[i].g; 
+            bTotal += n * rgbaNeighborhood[i].b;
+            aTotal += n * rgbaNeighborhood[i].a;
+        }
+
+        return [ rTotal / 9, gTotal / 9, bTotal / 9, aTotal / 9 ];
+    },
+
 
     /*
      * Applies the given filter to the given ImageData object,
