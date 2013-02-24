@@ -11,6 +11,17 @@
         // Below consists of the image functions for drawing the kilt guy.
         // Note that some images are scaled and/or translated specific amounts
         // for smooth transitions between animated images.
+        //
+        // JD: I can understand why your applied sort of "universal" transforms
+        //     to your sprites at this level, and that works out fine for the
+        //     scope of your scene.  Just keep in mind that when performance is
+        //     truly an issue, you will probably want to (a) pre-scale your image
+        //     assets to begin with, so that they don't need to be scaled every
+        //     time, and (b) pre-load them into Image objects beforehand, so
+        //     that you don't have to recreate them at every frame (which is
+        //     what you are effectively doing here).
+        //
+        //     This stuff adds up more quickly than it might seem.
         kilt1 = function (renderingContext) {
             var kilt1 = new Image();
             kilt1.src = 'kilt_pictures/kilt_fireball_1.png';
@@ -292,6 +303,9 @@
             }
         }
 
+        // JD: Missed some commas here.  Fortunately, JavaScript recovers fine,
+        //     but remember to keep track of this.
+
         healthBar = function (renderingContext) {
             renderingContext.fillStyle = 'red';
             renderingContext.fillRect (0, 0, 188, 10);            
@@ -309,12 +323,14 @@
             renderingContext.fill();
         },
 
-
         // I decided to break up the sprites into "moves" for easy manipulation, where each move
         // is to be called by its corresponding "move" function.
 
         // Since the draw arrays and keyframe object arrays of the sprites are inherently linked together,
         // I decided to create functions that returns both .draw and .keyFrame for specific sprite "moves".
+
+        // JD: Nice approach; good move.
+
         streetFighterStanding = function (startFrame, endFrame, tx, ty) {
             var draw = [],
                 keyFrame = [],
@@ -402,6 +418,9 @@
         sprites = [
 
             // Initial Kanji symbols
+            // JD: I'm not clear about this---why the repeated draw functions when they
+            //     are all the same?  It appears that you think the inner animation must
+            //     match the number of keyframes; they should actually be independent.
             {
                 draw: [fight, fight, fight],
                 keyframes: [

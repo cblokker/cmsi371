@@ -140,6 +140,13 @@ var KeyframeTweener = {
                 duration;
 
             // Draw the canvas.
+
+            // JD: This wasn't separated right.  Note that this background is specific
+            //     to your scene.  This code should actually be in the demo file, then
+            //     *passed* into KeyframeTweener as a parameter.  This way, you keep
+            //     the animation library reusable and other scenes can be built from
+            //     it with different backgrounds.
+
             linearSkyGradient = renderingContext.createLinearGradient(0, 0, 0, 300);
             linearGrassGradient = renderingContext.createLinearGradient(0, 300, 0, 425);
 
@@ -209,6 +216,17 @@ var KeyframeTweener = {
                         renderingContext.globalAlpha = ease(currentTweenFrame, opacityStart, opacityDistance, duration);
                         
                         // Draw the sprite.
+
+                        // JD: OK, there is a misunderstanding here in terms of how the draw array
+                        //     was to be used.  This also explains why your demo code forced one
+                        //     draw function per keyframe.  They should actually be independent,
+                        //     the inner animation "looping" on its own while the tweening was
+                        //     happening (for reference, see the Pacman cut scene---note how Pacman
+                        //     opens/closes his mouth repeatedly even while moving along.
+                        //
+                        //     It is clear, though, that your code worked as you intended; the
+                        //     gap was in understanding the requested functionality.
+
                         sprites[i].draw[j](renderingContext);
 
                         // Clean up.
