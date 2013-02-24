@@ -51,7 +51,7 @@
     // (end of adapted code by Tyler Nichols)
 
     // Set a little event handler to apply the filter.
-    $("#apply-filter-button").click(function () {
+    $("#apply-filter-darken").click(function () {
         // Filter time.
         renderingContext.putImageData(
             Nanoshop.applyFilter(
@@ -59,6 +59,39 @@
                 // This is a basic "darkener."
                 function (r, g, b, a) {
                     return [r / 2, g / 2, b / 2, a];
+                }
+            ),
+            0, 0
+        );
+    });
+
+
+    $("#apply-filter-inverter").click(function () {
+        // Filter time.
+        renderingContext.putImageData(
+            Nanoshop.applyFilter(
+                renderingContext.getImageData(0, 0, canvas.width, canvas.height),
+                // This is a basic "inverter."
+                function (r, g, b, a) {
+                    return [255 - r, 255 - g, 255 - b, a];
+                }
+            ),
+            0, 0
+        );
+    });
+
+
+
+
+    $("#apply-filter-opacity").click(function () {
+                // Filter time.
+        renderingContext.putImageData(
+            Nanoshop.applyFilter(
+                renderingContext.getImageData(0, 0, canvas.width, canvas.height),
+                // This is a basic "lightener."
+                function (r, g, b, a) {
+                    var n = Math.random();
+                    return [r, g, b, a / 2];
                 }
             ),
             0, 0

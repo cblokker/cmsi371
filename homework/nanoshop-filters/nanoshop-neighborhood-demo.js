@@ -7,7 +7,7 @@
         renderingContext = canvas.getContext("2d"),
         gradient;
 
-    // Some edge lines to test for wraparound bleeding.
+    //Some edge lines to test for wraparound bleeding.
     renderingContext.strokeStyle = "yellow";
     renderingContext.beginPath();
     renderingContext.moveTo(0, 0);
@@ -83,7 +83,7 @@
 
     // Set a little event handler to apply the filter.
     $("#apply-filter-button-darkener").click(function () {
-        // Filter time.
+        //Filter time.
         renderingContext.putImageData(
             NanoshopNeighborhood.applyFilter(
                 renderingContext,
@@ -93,6 +93,7 @@
             0, 0
         );
     });
+    
 
     $("#apply-filter-button-averager").click(function () {
         // Filter time.
@@ -106,29 +107,35 @@
         );
     });
 
-    $("#apply-filter-button-inverter").click(function () {
+
+    $("#apply-filter-button-edge").click(function () {
         // Filter time.
         renderingContext.putImageData(
             NanoshopNeighborhood.applyFilter(
                 renderingContext,
                 renderingContext.getImageData(0, 0, canvas.width, canvas.height),
-                NanoshopNeighborhood.inverter
+                NanoshopNeighborhood.edge
             ),
             0, 0
         );
     });
 
-    $("#apply-filter-button-noise").click(function () {
+
+    $("#apply-filter-button-sand").click(function () {
         // Filter time.
         renderingContext.putImageData(
             NanoshopNeighborhood.applyFilter(
                 renderingContext,
                 renderingContext.getImageData(0, 0, canvas.width, canvas.height),
-                NanoshopNeighborhood.noise
+                NanoshopNeighborhood.sand
             ),
             0, 0
         );
     });
 
+
+    $("#reload-page").click(function () {
+        window.location.reload();
+    });
 
 }());

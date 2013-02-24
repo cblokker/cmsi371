@@ -37,38 +37,38 @@ var NanoshopNeighborhood = {
         return [ rTotal / 9, gTotal / 9, bTotal / 9, aTotal / 9 ];
     },
 
+
     /*
-     * A basic "inverter"
+     * Randomizes each pixel based on the "pixel-neighborhood".  A granular
+     * appearance occurs
      */
-    inverter: function (rgbaNeighborhood) {
-        return [
-            255 - rgbaNeighborhood[4].r,
-            255 - rgbaNeighborhood[4].g / 2,
-            255 - rgbaNeighborhood[4].b / 2,
-            rgbaNeighborhood[4].a
-        ];
+    sand: function (rgbaNeighborhood) {
+        var n = Math.floor(Math.random() * 9)
+        return [ rgbaNeighborhood[n].r, rgbaNeighborhood[n].g, 
+                 rgbaNeighborhood[n].b, rgbaNeighborhood[n].a ];
     },
 
-    /*
-     * A basic "noise" filter
+    /* 
+     * Detects the difference between opposite pixels [1] and [7], [3] and [5]
+     * and if that difference is great enough, the center pixel will be set to black.
      */
-    noise: function (rgbaNeighborhood) {
-        var rTotal = 0,
-            gTotal = 0,
-            bTotal = 0,
-            aTotal = 0,
-            i,
-            n;
-
-        for (i = 0; i < 9; i += 1) {
-            n = Math.random();
-            rTotal += n * rgbaNeighborhood[i].r;
-            gTotal += n * rgbaNeighborhood[i].g; 
-            bTotal += n * rgbaNeighborhood[i].b;
-            aTotal += n * rgbaNeighborhood[i].a;
+    edge: function (rgbaNeighborhood) {
+        var i,
+            j,
+            PIXEL_DIFFERENCE = 10;
+        
+        // Just check the difference between opposite pixels to determine 
+        // if that difference is significant to warrent an "edge"
+        for (i = 1, j = 7; i <= 7; i += 2, j -= 2) {
+            if (rgbaNeighborhood[i].r > (rgbaNeighborhood[j].r + PIXEL_DIFFERENCE) |
+                rgbaNeighborhood[i].g > (rgbaNeighborhood[i].g + PIXEL_DIFFERENCE) |
+                rgbaNeighborhood[i].b > (rgbaNeighborhood[i].b + PIXEL_DIFFERENCE)) 
+            {
+                return [ 0, 0, 0, rgbaNeighborhood[4].a ];
+            }
         }
-
-        return [ rTotal / 9, gTotal / 9, bTotal / 9, aTotal / 9 ];
+        
+        return [ 255, 255, 255, rgbaNeighborhood[4].a ];
     },
 
 
