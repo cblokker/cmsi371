@@ -24,11 +24,11 @@
     Primitives.lineBresenham(renderingContext, 825, 210, 1024, 110, 20, 3);
 
     // A few circles.
-    Primitives.circleTrig(renderingContext, 105, 315, 100);
-    Primitives.circleDDA(renderingContext, 310, 315, 100);
-    Primitives.circleBres1(renderingContext, 515, 315, 100);
-    Primitives.circleBres2(renderingContext, 720, 315, 100);
-    Primitives.circleBres3(renderingContext, 925, 315, 100);
+    Primitives.circleTrig(renderingContext, 105, 315, 50, [255, 0, 255], [0, 126, 255]);
+    Primitives.circleDDA(renderingContext, 310, 315, 50);
+    Primitives.circleBres1(renderingContext, 515, 315, 50);
+    Primitives.circleBres2(renderingContext, 720, 315, 50);
+    Primitives.circleBres3(renderingContext, 925, 315, 50);
 
     // And finally...polygon fills!
     renderingContext.save();
