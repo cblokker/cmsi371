@@ -282,13 +282,16 @@ var Primitives = {
      * permutations of that eighth's coordinates.  So we define a helper
      * function that all of the circle implementations will use...
      */
+    // JD: Decent setup here---you just need to carry over this new function signature
+    //     to all of the circle functions beyond circleTrig and everything will fall
+    //     into place once the filling routine is complete.
     plotCirclePoints: function (context, xc, yc, x, y, colorStart, colorEnd, r) {
         var n,
             i,
             j,
 
             colorStart = colorStart || [255, 0, 0],
-            colorEnd = colorEnd || [255, 0, 0],
+            colorEnd = colorEnd || [0, 0, 0],
 
             colorDifR = colorStart[0] - colorEnd[0],
             colorDifG = colorStart[1] - colorEnd[1],
@@ -303,6 +306,9 @@ var Primitives = {
         this.setPixel(context, xc - y, yc + x, colorStart[0], colorStart[1], colorStart[2]);
         this.setPixel(context, xc - y, yc - x, colorStart[0], colorStart[1], colorStart[2]);
 
+        // JD: Not bad---you're actually pretty close.  Just compare what this loop is
+        //     covering to the vertices covered by the original version above, and you'll
+        //     see what remains to be done to fill the remaining areas.
         for (i = xc - x, n = 0; i < xc + x ; i += 1, n += 1) {
             for (j = yc - y; j < yc + y; j += 1) {
                 this.setPixel(context, i, j, colorStart[0] - n * colorDifR / (2 * r),

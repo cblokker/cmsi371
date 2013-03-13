@@ -66,6 +66,9 @@
     });
 
 
+    // JD: This is simple and sweet, the only caveat being that these filters
+    //     were supposed to be added to the Nanoshop object to build a "library"
+    //     of filters, similarly to how NanoshopNeighborhood is set up.
     $("#apply-filter-inverter").click(function () {
         // Filter time.
         renderingContext.putImageData(
