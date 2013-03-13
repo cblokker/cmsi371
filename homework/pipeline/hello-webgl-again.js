@@ -36,6 +36,8 @@
         maxi,
         j,
         maxj,
+        k,
+        maxk,
 
 
         /*
@@ -127,33 +129,45 @@
     objectsToDraw = [
 
         {
-            colors: Shapes.ring().colors,
-            vertices: Shapes.ring().result,
-            mode: gl.TRIANGLE_STRIP
-        },
+            shapes: [
+                {
+                    colors: Shapes.ring().colors,
+                    vertices: Shapes.ring(0.0, 0.0, 0.0).result,
+                    mode: gl.TRIANGLE_STRIP
+                },
 
+                {
+                    colors: Shapes.ring().colors,
+                    vertices: Shapes.ring(0.0, 0.0, 0.0, 0.2, 0.1).result,
+                    mode: gl.TRIANGLE_STRIP
+                }
+            ]
+        }
+        
     ];
 
     // Pass the vertices to WebGL.
     for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-        objectsToDraw[i].buffer = GLSLUtilities.initVertexBuffer(gl,
-                objectsToDraw[i].vertices);
+        for(k = 0, maxk = objectsToDraw[i].shapes.length; k < maxk; k += 1) {
+            objectsToDraw[i].shapes[k].buffer = GLSLUtilities.initVertexBuffer(gl,
+                    objectsToDraw[i].shapes[k].vertices);
 
-        if (!objectsToDraw[i].colors) {
-            // If we have a single color, we expand that into an array
-            // of the same color over and over.
-            objectsToDraw[i].colors = [];
-            for (j = 0, maxj = objectsToDraw[i].vertices.length / 3;
-                    j < maxj; j += 1) {
-                objectsToDraw[i].colors = objectsToDraw[i].colors.concat(
-                    objectsToDraw[i].color.r,
-                    objectsToDraw[i].color.g,
-                    objectsToDraw[i].color.b
-                );
+            if (!objectsToDraw[i].shapes[k].colors) {
+                // If we have a single color, we expand that into an array
+                // of the same color over and over.
+                objectsToDraw[i].shapes[k].colors = [];
+                for (j = 0, maxj = objectsToDraw[i][j].vertices.length / 3;
+                        j < maxj; j += 1) {
+                    objectsToDraw[i].shapes[k].colors = objectsToDraw[i].shapes[k].colors.concat(
+                        objectsToDraw[i].shapes[k].color.r,
+                        objectsToDraw[i].shapes[k].color.g,
+                        objectsToDraw[i].shapes[k].color.b
+                    );
+                }
             }
+            objectsToDraw[i].shapes[k].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
+                    objectsToDraw[i].shapes[k].colors);
         }
-        objectsToDraw[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
-                objectsToDraw[i].colors);
     }
 
     // Initialize the shaders.
@@ -196,14 +210,16 @@
      * Displays an individual object.
      */
     drawObject = function (object) {
-        // Set the varying colors.
-        gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
-        gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
-
-        // Set the varying vertex coordinates.
-        gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer);
-        gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
-        gl.drawArrays(object.mode, 0, object.vertices.length / 3);
+        for(i = 0; i < object.shapes.length; i += 1) {
+            // Set the varying colors.
+            gl.bindBuffer(gl.ARRAY_BUFFER, object.shapes[i].colorBuffer);
+            gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
+            
+            // Set the varying vertex coordinates.
+            gl.bindBuffer(gl.ARRAY_BUFFER, object.shapes[i].buffer);
+            gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
+            gl.drawArrays(object.shapes[i].mode, 0, object.shapes[i].vertices.length / 3);
+        }
     };
 
     /*

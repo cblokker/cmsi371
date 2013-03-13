@@ -61,17 +61,21 @@ var Shapes = {
             x = [],
             y = [],
 
+            // Default parameters
             xPos = xPos || 0.0,
             yPos = yPos || 0.0,
             zPos = zPos || 0.0,
-            numOfSides = numOfSides || 10,
             ringRadius = ringRadius || 1.0,
             ringWidth = ringWidth || 0.5,
             ringHeight = ringHeight || 0.5,
+            numOfSides = numOfSides || 10,
 
+            // Reusable loop variables
             i;
 
-        // Set up x and y arrays to be used in circle computations
+        // Add error control
+
+        // Set up x and y arrays to be used in circle computation
         for(i = 0; i <= numOfSides; i += 1) {
             x.push(Math.sin((2 * Math.PI * i) / numOfSides));
             y.push(Math.cos((2 * Math.PI * i) / numOfSides));
@@ -133,7 +137,7 @@ var Shapes = {
             );
         }
  
-        // Color gradient
+        // //Color gradient
         for (i = 0; i < (result.length / 3); i += 1) {
             colors.push((0.9 * i) / (result.length / 3), 0.5, 0.0)
         }
