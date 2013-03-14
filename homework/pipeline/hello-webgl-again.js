@@ -127,23 +127,95 @@
 
     // Build the objects to display.
     objectsToDraw = [
-
+        
         {
             shapes: [
+
                 {
                     colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(0.0, 0.0, 0.0).result,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.5, 0.05, 0.1).result,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
                     colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(0.0, 0.0, 0.0, 0.2, 0.1).result,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.4, 0.05, 0.1).result,
+                    mode: gl.TRIANGLE_STRIP
+                },
+
+                {
+                    colors: Shapes.ring().colors,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.3, 0.05, 0.1).result,
+                    mode: gl.TRIANGLE_STRIP
+                },
+
+                {
+                    colors: Shapes.ring().colors,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.2, 0.05, 0.1).result,
+                    mode: gl.TRIANGLE_STRIP
+                },
+
+                {
+                    colors: Shapes.ring().colors,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.1, 0.05, 0.1).result,
+                    mode: gl.TRIANGLE_STRIP
+                },
+
+                {
+                    colors: Shapes.ring().colors,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.0, 0.05, 0.1).result,
+                    mode: gl.TRIANGLE_STRIP
+                },
+
+                {
+                    colors: Shapes.ring().colors,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 0.9, 0.05, 0.1).result,
+                    mode: gl.TRIANGLE_STRIP
+                },
+
+                {
+                    colors: Shapes.ring().colors,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 0.8, 0.05, 0.1).result,
+                    mode: gl.TRIANGLE_STRIP
+                },
+
+                {
+                    colors: Shapes.ring().colors,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.3, 0.8, 0.2).result,
+                    mode: gl.TRIANGLE_STRIP
+                },
+
+                {
+                    colors: Shapes.ring().colors,
+                    vertices: Shapes.ring(-0.2, -0.5, 0.0, 0.6, 0.2).result,
+                    mode: gl.TRIANGLE_STRIP
+                },
+
+                {
+                    colors: Shapes.ring().colors,
+                    vertices: Shapes.ring(-0.2, -0.5, 0.3, 0.4, 0.2).result,
+                    mode: gl.TRIANGLE_STRIP
+                },
+
+                {
+                    colors: Shapes.ring().colors,
+                    vertices: Shapes.ring(-0.2, -0.5, 0.6, 0.2, 0.2).result,
+                    mode: gl.TRIANGLE_STRIP
+                }
+
+            ]
+        },
+
+        {
+            shapes: [
+                {
+                    colors: Shapes.mobius().colors,
+                    vertices: Shapes.mobius(0.0, 0.3, 0.5, 0.4).result,
                     mode: gl.TRIANGLE_STRIP
                 }
             ]
         }
-        
+
     ];
 
     // Pass the vertices to WebGL.
@@ -210,16 +282,14 @@
      * Displays an individual object.
      */
     drawObject = function (object) {
-        for(i = 0; i < object.shapes.length; i += 1) {
-            // Set the varying colors.
-            gl.bindBuffer(gl.ARRAY_BUFFER, object.shapes[i].colorBuffer);
-            gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
-            
-            // Set the varying vertex coordinates.
-            gl.bindBuffer(gl.ARRAY_BUFFER, object.shapes[i].buffer);
-            gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
-            gl.drawArrays(object.shapes[i].mode, 0, object.shapes[i].vertices.length / 3);
-        }
+        // Set the varying colors.
+        gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
+        gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
+        
+        // Set the varying vertex coordinates.
+        gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer);
+        gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
+        gl.drawArrays(object.mode, 0, object.vertices.length / 3);
     };
 
     /*
@@ -234,7 +304,9 @@
 
         // Display the objects.
         for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-            drawObject(objectsToDraw[i]);
+            for(j = 0, maxj = objectsToDraw[i].shapes.length; j < maxj; j += 1) {
+                drawObject(objectsToDraw[i].shapes[j]);
+            }
         }
 
         // All done.

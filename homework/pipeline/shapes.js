@@ -54,7 +54,8 @@ var Shapes = {
     },
 
     // Some of the given parameters for this shape function may be unnessisary if matrix
-    // transforms can be applied to the shape.
+    // transforms can be applied to the shape. But it does allow for easy customization,
+    // especially when it comes to the subshapes!
     ring: function (xPos, yPos, zPos, ringRadius, ringWidth, ringHeight, numOfSides) {
         var result = [],
             colors = [],
@@ -68,7 +69,7 @@ var Shapes = {
             ringRadius = ringRadius || 1.0,
             ringWidth = ringWidth || 0.5,
             ringHeight = ringHeight || 0.5,
-            numOfSides = numOfSides || 10,
+            numOfSides = numOfSides || 5,
 
             // Reusable loop variables
             i;
@@ -137,7 +138,7 @@ var Shapes = {
             );
         }
  
-        // //Color gradient
+        // Color gradient
         for (i = 0; i < (result.length / 3); i += 1) {
             colors.push((0.9 * i) / (result.length / 3), 0.5, 0.0)
         }
@@ -148,6 +149,76 @@ var Shapes = {
         }
     },
 
+    mobius: function (xPos, yPos, zPos, size) {
+        var result = [],
+            colors = [],
+            x = [],
+            y = [],
+            z = [],
+
+            // Default parameters
+            xPos = xPos || 0.0,
+            yPos = yPos || 0.0,
+            zPos = zPos || 0.0,
+            size = size || 0.5,
+
+            // Reusable loop variables
+            i,
+            u,
+            v,
+
+            // Some constants
+            U_INTERVAL = 0.05,
+            V_INTERVAL = 0.1
+            U_START = -0.5,
+            U_END = 0.5,
+            V_END = 2.1 * Math.PI
+            iNext = ((U_START - U_END) / U_INTERVAL);
+
+        // Set up x, y, and z mobius parametric eqautions in the form of arrays
+        // to be passed into the result array
+        for (v = 0; v <= V_END; v += V_INTERVAL) {
+            for (u = U_START; u <= U_END; u += U_INTERVAL) {
+                x.push((size + u * Math.cos(v / 2)) * Math.cos(v));
+                y.push((size + u * Math.cos(v / 2)) * Math.sin(v));
+                z.push(u * Math.sin(v / 2));
+            }
+        }
+
+        // Set up result array (indended mode for these vertices is gl.TRIANGLE_STRIP)
+        for (i = 0; i < x.length; i += 1) {
+            result.push(
+                x[i] + xPos,
+                y[i] + yPos,
+                z[i] + zPos,
+                x[i + iNext] + xPos,
+                y[i + iNext] + yPos,
+                z[i + iNext] + zPos
+            );
+        }
+ 
+        // Color gradient: Created for smooth transition throughout the strip
+        for (i = 0; i < (result.length / 6); i += 1) {
+            colors.push(
+                (1.0 * i) / (result.length / 6),
+                ((0.25 * (result.length / 6)) / i),
+                0.0
+            );
+        }
+
+        for (i = (result.length / 6); i > 0; i -= 1) {
+            colors.push(
+                (1.0 * i) / (result.length / 6),
+                ((0.25 * (result.length / 6)) / i),
+                0.0
+            );
+        }
+
+        return {
+            result: result,
+            colors: colors
+        }
+    },
  
     /*
      * Utility function for turning indexed vertices into a "raw" coordinate array
