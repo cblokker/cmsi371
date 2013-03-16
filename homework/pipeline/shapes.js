@@ -53,11 +53,14 @@ var Shapes = {
         };
     },
 
-    // Some of the given parameters for this shape function may be unnessisary if matrix
-    // transforms can be applied to the shape. But it does allow for easy customization,
-    // especially when it comes to the subshapes!
-    ring: function (xPos, yPos, zPos, ringRadius, ringWidth, ringHeight, numOfSides) {
-        var result = [],
+    /*
+     * Returns vertices for a 3D polygon in an order intended for gl.TRIANGLE_STRIP.  
+     * Default value makes it a pentagon. Some of the given parameters for this shape 
+     * function may be unnessisary if matrix transforms can be applied to the shape. 
+     * But it does allow for easy customization, especially when it comes to the subshapes!
+     */
+    polygon: function (xPos, yPos, zPos, ringRadius, ringWidth, ringHeight, numOfSides) {
+        var vertices = [],
             colors = [],
             x = [],
             y = [],
@@ -69,7 +72,7 @@ var Shapes = {
             ringRadius = ringRadius || 1.0,
             ringWidth = ringWidth || 0.5,
             ringHeight = ringHeight || 0.5,
-            numOfSides = numOfSides || 3,
+            numOfSides = numOfSides || 5,
 
             // Reusable loop variables
             i;
@@ -84,12 +87,11 @@ var Shapes = {
 
         // Inner ring
         for (i = 0; i <= numOfSides; i += 1) {
-            result.push(
+            vertices.push(
                 x[i] * (ringRadius - ringWidth) + xPos,
                 y[i] * (ringRadius - ringWidth) + yPos,
-                -(ringHeight / 2) + zPos
-            );
-            result.push(
+                -(ringHeight / 2) + zPos,
+
                 x[i] * (ringRadius - ringWidth) + xPos,
                 y[i] * (ringRadius - ringWidth) + yPos,
                 (ringHeight / 2) + zPos
@@ -98,12 +100,11 @@ var Shapes = {
         
         // Outer ring
         for (i = 0; i <= numOfSides; i += 1) {
-            result.push(
+            vertices.push(
                 x[i] * ringRadius + xPos,
                 y[i] * ringRadius + yPos,
-                -(ringHeight / 2) + zPos
-            );
-            result.push(
+                -(ringHeight / 2) + zPos,
+
                 x[i] * ringRadius + xPos,
                 y[i] * ringRadius + yPos,
                 (ringHeight / 2) + zPos
@@ -112,12 +113,11 @@ var Shapes = {
 
         // Bottom of ring
         for (i = 0; i <= numOfSides; i += 1) {
-            result.push(
+            vertices.push(
                 x[i] * ringRadius + xPos,
                 y[i] * ringRadius + yPos,
-                -(ringHeight / 2) + zPos
-            );
-            result.push(
+                -(ringHeight / 2) + zPos,
+
                 x[i] * (ringRadius - ringWidth) + xPos,
                 y[i] * (ringRadius - ringWidth) + yPos,
                 -(ringHeight / 2) + zPos
@@ -126,12 +126,11 @@ var Shapes = {
 
         // Top of ring
         for (i = 0; i <= numOfSides; i += 1) {
-            result.push(
+            vertices.push(
                 x[i] * ringRadius + xPos,
                 y[i] * ringRadius + yPos,
-                (ringHeight / 2) + zPos
-            );
-            result.push(
+                (ringHeight / 2) + zPos,
+
                 x[i] * (ringRadius - ringWidth) + xPos,
                 y[i] * (ringRadius - ringWidth) + yPos,
                 (ringHeight / 2) + zPos
@@ -139,20 +138,22 @@ var Shapes = {
         }
  
         // Color gradient
-        for (i = 0; i < (result.length / 3); i += 1) {
-            colors.push((0.9 * i) / (result.length / 3), 0.5, 0.0)
+        for (i = 0; i < (vertices.length / 3); i += 1) {
+            colors.push((0.9 * i) / (vertices.length / 3), 0.5, 0.0)
         }
 
         return {
-            result: result,
+            vertices: vertices,
             colors: colors
         }
     },
 
-
-    // This shape creates a mobius strip with a green to redish gradient
+    /* 
+     * Returns vertices for a mobius strip with a continuous gradient in an order
+     * intended for gl.TRIANGLE_STRIP
+     */
     mobius: function (xPos, yPos, zPos, size) {
-        var result = [],
+        var vertices = [],
             colors = [],
             x = [],
             y = [],
@@ -174,11 +175,11 @@ var Shapes = {
             V_INTERVAL = 0.1
             U_START = -0.5,
             U_END = 0.5,
-            V_END = 2.1 * Math.PI
+            V_END = 2.1 * Math.PI,
             iNext = ((U_START - U_END) / U_INTERVAL);
 
         // Set up x, y, and z mobius parametric eqautions in the form of arrays
-        // to be passed into the result array
+        // to be passed into the vertices array
         for (v = 0; v <= V_END; v += V_INTERVAL) {
             for (u = U_START; u <= U_END; u += U_INTERVAL) {
                 x.push((size + u * Math.cos(v / 2)) * Math.cos(v));
@@ -187,9 +188,9 @@ var Shapes = {
             }
         }
 
-        // Set up result array (indended mode for these vertices is gl.TRIANGLE_STRIP)
+        // Set up vertices array (indended mode for these vertices is gl.TRIANGLE_STRIP)
         for (i = 0; i < x.length; i += 1) {
-            result.push(
+            vertices.push(
                 x[i] + xPos,
                 y[i] + yPos,
                 z[i] + zPos,
@@ -200,25 +201,92 @@ var Shapes = {
         }
  
         // Color gradient: Created for smooth transition throughout the strip
-        for (i = 0; i < (result.length / 6); i += 1) {
+        for (i = 0; i < (vertices.length / 6); i += 1) {
             colors.push(
-                (1.0 * i) / (result.length / 6),
-                ((0.25 * (result.length / 6)) / i),
+                (1.0 * i) / (vertices.length / 6),
+                ((0.25 * (vertices.length / 6)) / i),
                 0.0
             );
         }
 
-        for (i = (result.length / 6); i > 0; i -= 1) {
+        for (i = (vertices.length / 6); i > 0; i -= 1) {
             colors.push(
-                (1.0 * i) / (result.length / 6),
-                ((0.25 * (result.length / 6)) / i),
+                (1.0 * i) / (vertices.length / 6),
+                ((0.25 * (vertices.length / 6)) / i),
                 0.0
             );
         }
 
         return {
-            result: result,
+            vertices: vertices,
             colors: colors
+        }
+    },
+
+    /* 
+     * Returns vertices for a sphere in an order intended for gl.TRIANGLE_STRIP
+     * where color stops are at equator and poles. Adapted from http://learningwebgl.com/blog/?p=1253
+     */
+    sphere: function () {
+        var vertices = [],
+            colors = [],
+            x = [],
+            y = [],
+            z = [],
+            latitudeBands = 100,
+            longitudeBands = latitudeBands,
+            radius = 0.8,
+            i;
+
+        for (var latNumber = 0; latNumber <= latitudeBands; latNumber += 1) {
+            var theta = latNumber * Math.PI / latitudeBands,
+                sinTheta = Math.sin(theta),
+                cosTheta = Math.cos(theta);
+
+            for (var longNumber = 0; longNumber <= longitudeBands; longNumber += 1) {
+                var phi = longNumber * 2 * Math.PI / longitudeBands,
+                    sinPhi = Math.sin(phi),
+                    cosPhi = Math.cos(phi);
+
+                x.push(cosPhi * sinTheta);
+                y.push(cosTheta);
+                z.push(sinPhi * sinTheta);
+            }
+        }
+
+        // Set up vertices array for order for gl.TRIANGLE_STRIP
+        for (i = 0; i < x.length; i += 1) {
+            vertices.push(
+                radius * x[i],
+                radius * y[i],
+                radius * z[i],
+                radius * x[i + latitudeBands + 1],
+                radius * y[i + latitudeBands + 1],
+                radius * z[i + latitudeBands + 1]
+            );
+
+        }
+
+        // Color gradient: Created for color stops to be at equator and poles.
+        for (i = 0; i < (vertices.length / 6); i += 1) {
+            colors.push(
+                (1.0 * i) / (vertices.length / 6),
+                ((0.25 * (vertices.length / 6)) / i),
+                ((0.5 * (vertices.length / 6)) / i)
+            );
+        }
+
+        for (i = (vertices.length / 6); i > 0; i -= 1) {
+            colors.push(
+                (1.0 * i) / (vertices.length / 6),
+                ((0.25 * (vertices.length / 6)) / i),
+                ((0.5 * (vertices.length / 6)) / i)
+            );
+        }
+
+        return {
+            vertices: vertices,
+            colors: colors,
         }
     },
  
@@ -227,7 +295,7 @@ var Shapes = {
      * arranged as triangles.
      */
     toRawTriangleArray: function (indexedVertices) {
-        var result = [],
+        var vertices = [],
             i,
             j,
             maxi,
@@ -235,7 +303,7 @@ var Shapes = {
 
         for (i = 0, maxi = indexedVertices.indices.length; i < maxi; i += 1) {
             for (j = 0, maxj = indexedVertices.indices[i].length; j < maxj; j += 1) {
-                result = result.concat(
+                vertices = vertices.concat(
                     indexedVertices.vertices[
                         indexedVertices.indices[i][j]
                     ]
@@ -243,7 +311,7 @@ var Shapes = {
             }
         }
 
-        return result;
+        return vertices;
     },
 
     /*
@@ -251,7 +319,7 @@ var Shapes = {
      * arranged as line segments.
      */
     toRawLineArray: function (indexedVertices) {
-        var result = [],
+        var vertices = [],
             i,
             j,
             maxi,
@@ -259,7 +327,7 @@ var Shapes = {
 
         for (i = 0, maxi = indexedVertices.indices.length; i < maxi; i += 1) {
             for (j = 0, maxj = indexedVertices.indices[i].length; j < maxj; j += 1) {
-                result = result.concat(
+                vertices = vertices.concat(
                     indexedVertices.vertices[
                         indexedVertices.indices[i][j]
                     ],
@@ -271,7 +339,7 @@ var Shapes = {
             }
         }
 
-        return result;
+        return vertices;
     },
 
 };

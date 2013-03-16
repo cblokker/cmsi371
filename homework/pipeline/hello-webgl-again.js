@@ -109,7 +109,7 @@
             ];
         };
 
-    // Grab the WebGL rendering context.
+    // Grab the WebGL rendepolygon context.
     gl = GLSLUtilities.getGL(canvas);
     if (!gl) {
         alert("No WebGL context found...sorry.");
@@ -135,74 +135,74 @@
             shapes: [
 
                 {
-                    colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.5, 0.05, height).result,
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(-0.2, -0.5, -0.6, 1.5, 0.05, height).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
-                    colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.4, 0.05, height).result,
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(-0.2, -0.5, -0.6, 1.4, 0.05, height).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
-                    colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.3, 0.05, height).result,
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(-0.2, -0.5, -0.6, 1.3, 0.05, height).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
-                    colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.2, 0.05, height).result,
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(-0.2, -0.5, -0.6, 1.2, 0.05, height).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
-                    colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.1, 0.05, height).result,
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(-0.2, -0.5, -0.6, 1.1, 0.05, height).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
-                    colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.0, 0.05, height).result,
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(-0.2, -0.5, -0.6, 1.0, 0.05, height).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
-                    colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 0.9, 0.05, height).result,
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(-0.2, -0.5, -0.6, 0.9, 0.05, height).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
-                    colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 0.8, 0.05, height).result,
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(-0.2, -0.5, -0.6, 0.8, 0.05, height).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
-                    colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.3, 0.8, 0.2).result,
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(-0.2, -0.5, -0.3, 0.8, 0.2).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
-                    colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, 0.0, 0.6, 0.2).result,
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(-0.2, -0.5, 0.0, 0.6, 0.2).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
-                    colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, 0.3, 0.4, 0.2).result,
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(-0.2, -0.5, 0.3, 0.4, 0.2).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
-                    colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, 0.6, 0.2, 0.2).result,
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(-0.2, -0.5, 0.6, 0.2, 0.2).vertices,
                     mode: gl.TRIANGLE_STRIP
                 }
 
@@ -213,7 +213,17 @@
             shapes: [
                 {
                     colors: Shapes.mobius().colors,
-                    vertices: Shapes.mobius(0.0, 0.3, 0.5, 0.4).result,
+                    vertices: Shapes.mobius(0.0, 0.3, 0.5, 0.4).vertices,
+                    mode: gl.TRIANGLE_STRIP
+                }
+            ]
+        },
+
+        {
+            shapes: [
+                {
+                    colors: Shapes.sphere().colors,
+                    vertices: Shapes.sphere().vertices,
                     mode: gl.TRIANGLE_STRIP
                 }
             ]
@@ -225,24 +235,24 @@
     for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
         for(k = 0, maxk = objectsToDraw[i].shapes.length; k < maxk; k += 1) {
             subShape = objectsToDraw[i].shapes[k];
-            objectsToDraw[i].shapes[k].buffer = GLSLUtilities.initVertexBuffer(gl,
-                    objectsToDraw[i].shapes[k].vertices);
+            subShape.buffer = GLSLUtilities.initVertexBuffer(gl,
+                    subShape.vertices);
 
-            if (!objectsToDraw[i].shapes[k].colors) {
+            if (!subShape.colors) {
                 // If we have a single color, we expand that into an array
                 // of the same color over and over.
-                objectsToDraw[i].shapes[k].colors = [];
+                subShape.colors = [];
                 for (j = 0, maxj = objectsToDraw[i][j].vertices.length / 3;
                         j < maxj; j += 1) {
-                    objectsToDraw[i].shapes[k].colors = objectsToDraw[i].shapes[k].colors.concat(
-                        objectsToDraw[i].shapes[k].color.r,
-                        objectsToDraw[i].shapes[k].color.g,
-                        objectsToDraw[i].shapes[k].color.b
+                    subShape.colors = subShape.colors.concat(
+                        subShape.color.r,
+                        subShape.color.g,
+                        subShape.color.b
                     );
                 }
             }
-            objectsToDraw[i].shapes[k].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
-                    objectsToDraw[i].shapes[k].colors);
+            subShape.colorBuffer = GLSLUtilities.initVertexBuffer(gl,
+                    subShape.colors);
         }
     }
 
@@ -310,13 +320,6 @@
         // Set up the rotation matrix.
         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(getRotationMatrix(currentRotation, 1, 0, 0)));
 
-        // Display the objects.
-        // for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-        //     for(j = 0, maxj = objectsToDraw[i].shapes.length; j < maxj; j += 1) {
-        //         drawObject(objectsToDraw[i].shapes[j]);
-        //     }
-        // }
-
         if (boolSHAPE_1) {
             for(j = 0, maxj = objectsToDraw[0].shapes.length; j < maxj; j += 1) {
                 drawObject(objectsToDraw[0].shapes[j]);
@@ -329,6 +332,12 @@
             }
         }
 
+        if (boolSHAPE_3) {
+            for(j = 0, maxj = objectsToDraw[2].shapes.length; j < maxj; j += 1) {
+                drawObject(objectsToDraw[2].shapes[j]);
+            }
+        }
+
         // All done.
         gl.flush();
     };
@@ -336,7 +345,7 @@
     // Draw the initial scene.
     drawScene();
 
-    // Set a little event handler toggling
+    // Set a little event handler toggling to display shapes
     $("#telescope").click(function () {
         boolSHAPE_1 = !boolSHAPE_1;
         drawScene();
@@ -347,8 +356,8 @@
         drawScene();
     });
 
-    $("#apply-filter-button-edge").click(function () {
-        height += 0.1;
+    $("#sphere").click(function () {
+        boolSHAPE_3 = !boolSHAPE_3;
         drawScene();
     });
 
