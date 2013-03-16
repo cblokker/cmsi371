@@ -69,7 +69,7 @@ var Shapes = {
             ringRadius = ringRadius || 1.0,
             ringWidth = ringWidth || 0.5,
             ringHeight = ringHeight || 0.5,
-            numOfSides = numOfSides || 5,
+            numOfSides = numOfSides || 3,
 
             // Reusable loop variables
             i;
@@ -110,7 +110,7 @@ var Shapes = {
             );
         }
 
-        // Bottom
+        // Bottom of ring
         for (i = 0; i <= numOfSides; i += 1) {
             result.push(
                 x[i] * ringRadius + xPos,
@@ -124,7 +124,7 @@ var Shapes = {
             );
         }
 
-        // Top 
+        // Top of ring
         for (i = 0; i <= numOfSides; i += 1) {
             result.push(
                 x[i] * ringRadius + xPos,
@@ -149,6 +149,8 @@ var Shapes = {
         }
     },
 
+
+    // This shape creates a mobius strip with a green to redish gradient
     mobius: function (xPos, yPos, zPos, size) {
         var result = [],
             colors = [],

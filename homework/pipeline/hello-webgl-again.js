@@ -125,6 +125,9 @@
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.viewport(0, 0, canvas.width, canvas.height);
 
+    
+    var height = 0.5;
+
     // Build the objects to display.
     objectsToDraw = [
         
@@ -133,49 +136,49 @@
 
                 {
                     colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.5, 0.05, 0.1).result,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.5, 0.05, height).result,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
                     colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.4, 0.05, 0.1).result,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.4, 0.05, height).result,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
                     colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.3, 0.05, 0.1).result,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.3, 0.05, height).result,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
                     colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.2, 0.05, 0.1).result,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.2, 0.05, height).result,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
                     colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.1, 0.05, 0.1).result,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.1, 0.05, height).result,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
                     colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.0, 0.05, 0.1).result,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 1.0, 0.05, height).result,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
                     colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 0.9, 0.05, 0.1).result,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 0.9, 0.05, height).result,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
                     colors: Shapes.ring().colors,
-                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 0.8, 0.05, 0.1).result,
+                    vertices: Shapes.ring(-0.2, -0.5, -0.6, 0.8, 0.05, height).result,
                     mode: gl.TRIANGLE_STRIP
                 },
 
@@ -221,6 +224,7 @@
     // Pass the vertices to WebGL.
     for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
         for(k = 0, maxk = objectsToDraw[i].shapes.length; k < maxk; k += 1) {
+            subShape = objectsToDraw[i].shapes[k];
             objectsToDraw[i].shapes[k].buffer = GLSLUtilities.initVertexBuffer(gl,
                     objectsToDraw[i].shapes[k].vertices);
 
@@ -292,6 +296,10 @@
         gl.drawArrays(object.mode, 0, object.vertices.length / 3);
     };
 
+    boolSHAPE_1 = true;
+    boolSHAPE_2 = true;
+    boolSHAPE_3 = true;
+
     /*
      * Displays the scene.
      */
@@ -303,9 +311,21 @@
         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(getRotationMatrix(currentRotation, 1, 0, 0)));
 
         // Display the objects.
-        for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-            for(j = 0, maxj = objectsToDraw[i].shapes.length; j < maxj; j += 1) {
-                drawObject(objectsToDraw[i].shapes[j]);
+        // for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
+        //     for(j = 0, maxj = objectsToDraw[i].shapes.length; j < maxj; j += 1) {
+        //         drawObject(objectsToDraw[i].shapes[j]);
+        //     }
+        // }
+
+        if (boolSHAPE_1) {
+            for(j = 0, maxj = objectsToDraw[0].shapes.length; j < maxj; j += 1) {
+                drawObject(objectsToDraw[0].shapes[j]);
+            }
+        }
+
+        if (boolSHAPE_2) {
+            for(j = 0, maxj = objectsToDraw[1].shapes.length; j < maxj; j += 1) {
+                drawObject(objectsToDraw[1].shapes[j]);
             }
         }
 
@@ -316,11 +336,28 @@
     // Draw the initial scene.
     drawScene();
 
+    // Set a little event handler toggling
+    $("#telescope").click(function () {
+        boolSHAPE_1 = !boolSHAPE_1;
+        drawScene();
+    });
+
+    $("#mobius").click(function () {
+        boolSHAPE_2 = !boolSHAPE_2;
+        drawScene();
+    });
+
+    $("#apply-filter-button-edge").click(function () {
+        height += 0.1;
+        drawScene();
+    });
+
     // Set up the rotation toggle: clicking on the canvas does it.
     $(canvas).click(function () {
         if (currentInterval) {
             clearInterval(currentInterval);
             currentInterval = null;
+            drawScene();
         } else {
             currentInterval = setInterval(function () {
                 currentRotation += 1.0;
