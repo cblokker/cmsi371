@@ -37,8 +37,9 @@
         j,
         maxj,
         k,
-        maxk,
+        maxk;
 
+        boolSHAPE = [];
 
         /*
          * This code does not really belong here: it should live
@@ -125,9 +126,17 @@
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.viewport(0, 0, canvas.width, canvas.height);
 
-    
-    var height = 0.5;
+    // telescope contants
+    var RADIUS = [],
+        WIDTH = 0.05,
+        HEIGHT = 0.2;
 
+    for (i = 0.1; i < 10; i += 0.1) {
+        RADIUS.push(i);
+    }
+
+
+        
     // Build the objects to display.
     objectsToDraw = [
         
@@ -136,75 +145,88 @@
 
                 {
                     colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(-0.2, -0.5, -0.6, 1.5, 0.05, height).vertices,
+                    vertices: Shapes.polygon(RADIUS[0], WIDTH, HEIGHT, 3, 0.9).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
                     colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(-0.2, -0.5, -0.6, 1.4, 0.05, height).vertices,
+                    vertices: Shapes.polygon(RADIUS[1], WIDTH, HEIGHT, 4, 0.8).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
                     colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(-0.2, -0.5, -0.6, 1.3, 0.05, height).vertices,
+                    vertices: Shapes.polygon(RADIUS[2], WIDTH, HEIGHT, 5, 0.7).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
                     colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(-0.2, -0.5, -0.6, 1.2, 0.05, height).vertices,
+                    vertices: Shapes.polygon(RADIUS[3], WIDTH, HEIGHT, 6, 0.6).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
                     colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(-0.2, -0.5, -0.6, 1.1, 0.05, height).vertices,
+                    vertices: Shapes.polygon(RADIUS[4], WIDTH, HEIGHT, 7, 0.5).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
                     colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(-0.2, -0.5, -0.6, 1.0, 0.05, height).vertices,
+                    vertices: Shapes.polygon(RADIUS[5], WIDTH, HEIGHT, 8, 0.4).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
                     colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(-0.2, -0.5, -0.6, 0.9, 0.05, height).vertices,
+                    vertices: Shapes.polygon(RADIUS[6], WIDTH, HEIGHT, 9, 0.3).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
 
                 {
                     colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(-0.2, -0.5, -0.6, 0.8, 0.05, height).vertices,
+                    vertices: Shapes.polygon(RADIUS[7], WIDTH, HEIGHT, 10, 0.2).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
-
+                
                 {
                     colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(-0.2, -0.5, -0.3, 0.8, 0.2).vertices,
+                    vertices: Shapes.polygon(RADIUS[8], WIDTH, HEIGHT, 11, 0.1).vertices,
                     mode: gl.TRIANGLE_STRIP
                 },
-
+                
                 {
                     colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(-0.2, -0.5, 0.0, 0.6, 0.2).vertices,
-                    mode: gl.TRIANGLE_STRIP
-                },
-
-                {
-                    colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(-0.2, -0.5, 0.3, 0.4, 0.2).vertices,
-                    mode: gl.TRIANGLE_STRIP
-                },
-
-                {
-                    colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(-0.2, -0.5, 0.6, 0.2, 0.2).vertices,
+                    vertices: Shapes.polygon(RADIUS[9], WIDTH, HEIGHT, 12, 0.0).vertices,
                     mode: gl.TRIANGLE_STRIP
                 }
+                
+
+                // {
+                //     colors: Shapes.polygon().colors,
+                //     vertices: Shapes.polygon(0.8, 0.2).vertices,
+                //     mode: gl.TRIANGLE_STRIP
+                // },
+
+                // {
+                //     colors: Shapes.polygon().colors,
+                //     vertices: Shapes.polygon(0.6, 0.2).vertices,
+                //     mode: gl.TRIANGLE_STRIP
+                // },
+
+                // {
+                //     colors: Shapes.polygon().colors,
+                //     vertices: Shapes.polygon(0.4, 0.2).vertices,
+                //     mode: gl.TRIANGLE_STRIP
+                // },
+
+                // {
+                //     colors: Shapes.polygon().colors,
+                //     vertices: Shapes.polygon(0.2, 0.2).vertices,
+                //     mode: gl.TRIANGLE_STRIP
+                // }
 
             ]
         },
@@ -227,8 +249,17 @@
                     mode: gl.TRIANGLE_STRIP
                 }
             ]
-        }
+        },
 
+        {
+            shapes: [
+                {
+                    colors: Shapes.klein().colors,
+                    vertices: Shapes.klein().vertices,
+                    mode: gl.TRIANGLE_STRIP
+                }
+            ]
+        },
     ];
 
     // Pass the vertices to WebGL.
@@ -306,10 +337,6 @@
         gl.drawArrays(object.mode, 0, object.vertices.length / 3);
     };
 
-    boolSHAPE_1 = true;
-    boolSHAPE_2 = true;
-    boolSHAPE_3 = true;
-
     /*
      * Displays the scene.
      */
@@ -319,22 +346,12 @@
 
         // Set up the rotation matrix.
         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(getRotationMatrix(currentRotation, 1, 0, 0)));
-
-        if (boolSHAPE_1) {
-            for(j = 0, maxj = objectsToDraw[0].shapes.length; j < maxj; j += 1) {
-                drawObject(objectsToDraw[0].shapes[j]);
-            }
-        }
-
-        if (boolSHAPE_2) {
-            for(j = 0, maxj = objectsToDraw[1].shapes.length; j < maxj; j += 1) {
-                drawObject(objectsToDraw[1].shapes[j]);
-            }
-        }
-
-        if (boolSHAPE_3) {
-            for(j = 0, maxj = objectsToDraw[2].shapes.length; j < maxj; j += 1) {
-                drawObject(objectsToDraw[2].shapes[j]);
+        
+        for (i = 0; i < objectsToDraw.length; i += 1) {
+            if (boolSHAPE[i]) {
+                for(j = 0, maxj = objectsToDraw[i].shapes.length; j < maxj; j += 1) {
+                    drawObject(objectsToDraw[i].shapes[j]);
+                }
             }
         }
 
@@ -347,17 +364,22 @@
 
     // Set a little event handler toggling to display shapes
     $("#telescope").click(function () {
-        boolSHAPE_1 = !boolSHAPE_1;
+        boolSHAPE[0] = !boolSHAPE[0];
         drawScene();
     });
 
     $("#mobius").click(function () {
-        boolSHAPE_2 = !boolSHAPE_2;
+        boolSHAPE[1] = !boolSHAPE[1];
         drawScene();
     });
 
     $("#sphere").click(function () {
-        boolSHAPE_3 = !boolSHAPE_3;
+        boolSHAPE[2] = !boolSHAPE[2];
+        drawScene();
+    });
+
+    $("#klein").click(function () {
+        boolSHAPE[3] = !boolSHAPE[3];
         drawScene();
     });
 
