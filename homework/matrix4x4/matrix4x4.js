@@ -10,8 +10,31 @@ var Matrix4x4 = (function () {
              0, 0, 0, 1];
     };
 
-    matrix4x4.multiply = function (mx) {
+    matrix4x4.prototype.multiply = function (m) {
+        var mRow,
+            thisCollumn,
+            mCollumn,
+            sum,
+            count = 0,
+            result = new Matrix4x4(),
+            mDimention = (m.elements.length) / 4,
+            thisDimention = (this.elements.length) / 4;
 
+        for (mRow = 0; mRow < mDimention; mRow += 1) {
+            for (thisCollumn = 0; thisCollumn < thisDimention; thisCollumn += 1) {
+                sum = 0;
+
+                for (mCollumn = 0; mCollumn < mDimention; mCollumn += 1) {
+                    sum += m.elements[mCollumn + (mRow * mDimention] *
+                        this.elements[(mCollumn * thisDimention + thisCollumn];
+
+                }
+                result.elements[count] = sum;
+                count += 1;
+            }    
+        }
+
+        return result;
     };
 
     matrix4x4.getTranslationMatrix = function (tx, ty, tz) {

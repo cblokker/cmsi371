@@ -54,7 +54,28 @@ $(function () {
                                  0,                      0, 1, 0,
                                  0,                      0, 0, 1],
             "Pure rotation matrix about z axis");
-    }),
+
+        var m5 = new Matrix4x4(
+                2, 1,  2, 1,
+                3, 2, 10, 5,
+                1, 2,  2, 2,
+                3, 4,  5, 1);
+
+            m6 = new Matrix4x4(
+                0,  3, 0, 0,
+                3,  2, 1, 5,
+                2, 60, 4, 9,
+                0,  0, 4, 2);
+
+            m7 = m6.multiply(m5);
+
+        deepEqual(m7.elements,
+            [ 7, 128, 13,  25,
+             26, 613, 62, 110,
+             10, 127, 18,  32,
+             22, 317, 28,  67],
+            "Pure multiplication matrix");
+    });
 
     test("Perspective Matrices", function () {
         var m5 = Matrix4x4.ortho(0, 2, 0, 2, 0, 2); //left, right, bottom, top, zNear, zFar
