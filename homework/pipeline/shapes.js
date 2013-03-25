@@ -53,12 +53,26 @@ var Shapes = {
         };
     },
 
+    // JD: Your shapes look and work great, and you should certainly keep them
+    //     handy.  However, by restricting all of them to TRIANGLE_STRIP, you
+    //     lose a degree of flexibility that a general mesh (i.e., separate,
+    //     arbitrary indices) affords.
+    //
+    //     You should try your hand with at least one generalized mesh in order
+    //     to round out your proficiency here.
+
     /*
      * Returns vertices for a 3D polygon in an order intended for gl.TRIANGLE_STRIP.  
      * Default value makes it a pentagon. Some of the given parameters for this shape 
      * function may be unnessisary if matrix transforms can be applied to the shape. 
      * But it does allow for easy customization, especially when it comes to the subshapes!
      */
+    // JD: Agreed: no harm in enabling some customization at the raw vertex level.
+    //     Transforms will simply make this just that much more flexible.
+    //
+    //     One level of customization you might want to add: color choices.  Perhaps
+    //     a customizable starting color and/or gradient step---anything that expands
+    //     the possibilities without too much effort.
     polygon: function (ringRadius, ringWidth, ringHeight, numOfSides, zPos, xPos, yPos) {
         var vertices = [],
             colors = [],
@@ -80,6 +94,7 @@ var Shapes = {
         // Add error control
 
         // Set up x and y arrays to be used in circle computation
+        // JD: Missed a space.
         for(i = 0; i <= numOfSides; i += 1) {
             x.push(Math.sin((2 * Math.PI * i) / numOfSides));
             y.push(Math.cos((2 * Math.PI * i) / numOfSides));
@@ -152,6 +167,12 @@ var Shapes = {
      * Returns vertices for a mobius strip with a continuous gradient in an order
      * intended for gl.TRIANGLE_STRIP
      */
+    // JD: The parametric bases of mobius and klein suggest to me that you have
+    //     a refactoring opportunity here.  I know they aren't completely identical
+    //     but they have very similar structures.  I'm thinking that a redesign of
+    //     this, such that the parametric equation is separated out into a function
+    //     that can be provided as an argument, will blow open the power of your
+    //     library here.
     mobius: function (xPos, yPos, zPos, size) {
         var vertices = [],
             colors = [],

@@ -363,6 +363,13 @@
     drawScene();
 
     // Set a little event handler toggling to display shapes
+    // JD: The boolSHAPE array is a nice idea; it can get a better name
+    //     though, like isShapeVisible or something that explicitly states
+    //     what the boolean means.
+    //
+    //     Further, it appears that you did not get to the composite object
+    //     functionality.  You'll definitely want this; now that you have a
+    //     matrix library, this may be more motivational.
     $("#telescope").click(function () {
         boolSHAPE[0] = !boolSHAPE[0];
         drawScene();
