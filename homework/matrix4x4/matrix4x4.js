@@ -1,3 +1,6 @@
+/*
+ * A matrix library for Matrix4x4 objects.
+ */
 var Matrix4x4 = (function () {
     // Define the constructor.
     var matrix4x4 = function () {
@@ -10,6 +13,7 @@ var Matrix4x4 = (function () {
              0, 0, 0, 1];
     };
 
+    // Multiply function which multiplies two Matrix4x4 objects and returns the result
     matrix4x4.prototype.multiply = function (m) {
         var mRow,
             thisCollumn,
@@ -17,17 +21,16 @@ var Matrix4x4 = (function () {
             sum,
             count = 0,
             result = new Matrix4x4(),
-            mDimention = (m.elements.length) / 4,
-            thisDimention = (this.elements.length) / 4;
+            mDimention = m.elements.length / 4,
+            thisDimention = this.elements.length / 4;
 
         for (mRow = 0; mRow < mDimention; mRow += 1) {
             for (thisCollumn = 0; thisCollumn < thisDimention; thisCollumn += 1) {
                 sum = 0;
 
                 for (mCollumn = 0; mCollumn < mDimention; mCollumn += 1) {
-                    sum += m.elements[mCollumn + (mRow * mDimention] *
-                        this.elements[(mCollumn * thisDimention + thisCollumn];
-
+                    sum += m.elements[mCollumn + (mRow * mDimention)] *
+                        this.elements[(mCollumn * thisDimention) + thisCollumn];
                 }
                 result.elements[count] = sum;
                 count += 1;
@@ -37,6 +40,8 @@ var Matrix4x4 = (function () {
         return result;
     };
 
+    // A translation function which takes three parameters dx, dy, and dz, returning a
+    // Matrix4x4 object that accurately represents this transformation.
     matrix4x4.getTranslationMatrix = function (tx, ty, tz) {
         return new Matrix4x4(
             1, 0, 0, tx,
@@ -46,6 +51,8 @@ var Matrix4x4 = (function () {
         );
     };
 
+    // A scale function which takes three parameters sx, sy, and sz, returning a
+    // Matrix4x4 object that accurately represents this transformation.
     matrix4x4.scale = function (sx, sy, sz) {
         return new Matrix4x4(
             sx,  0,  0, 0,
@@ -53,9 +60,10 @@ var Matrix4x4 = (function () {
              0,  0, sz, 0,
              0,  0,  0, 1
         );
-
     };
 
+    // The rotate funtion given in the sample code, but refactored to fit the Matrix4x4
+    // object.
     matrix4x4.rotate = function (angle, x, y, z) {
         var axisLength = Math.sqrt((x * x) + (y * y) + (z * z)),
             s = Math.sin(angle * Math.PI / 180.0),
@@ -98,6 +106,8 @@ var Matrix4x4 = (function () {
         );
     };
 
+    // The ortho projection function given in the sample code, but refactored to fit
+    // the Matrix4x4 object.
     matrix4x4.ortho = function (left, right, bottom, top, zNear, zFar) {
         var width = right - left,
             height = top - bottom,
@@ -109,9 +119,11 @@ var Matrix4x4 = (function () {
                     0.0,          0.0, -2.0 / depth,  -(zFar + zNear) / depth,
                     0.0,          0.0,          0.0,                      1.0
         );
-
     };
 
+    // A frustum projection function based on the matrix derived from the course handout.
+    // I found it unclear what N and F represent, and if they should be user defined variables.
+    // Instead, I decided that N = -zNear and F = -zFar.
     matrix4x4.frustum = function (left, right, bottom, top, zNear, zFar) {
         var N = -zNear,
             F = -zFar,
@@ -127,14 +139,26 @@ var Matrix4x4 = (function () {
                          0.0,                0.0,                   alpha, beta,
                          0.0,                0.0,                    -1.0,  0.0
         );
-
     };
 
-    matrix4x4.convertToWebGLMatrix = function () {
+    // Conversion/convenience function to prepare the matrix data afor direct consumption
+    // by WebGL and GLSL.
+    matrix4x4.toWebGLMatrix = function (m) {
+        var result = new Matrix4x4(),
+            i,
+            j,
+            count = 0;
 
+        for (j = 0; j < 4; j += 1) {
+            for (i = 0; i < 4; i += 1) {
+                result.elements[count] = m.elements[i * 4 + j];
+                count += 1;
+            }
+        }
+
+        return result;
     };
-
-
 
     return matrix4x4;
+
 })();
