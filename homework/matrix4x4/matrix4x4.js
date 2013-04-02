@@ -124,6 +124,18 @@ var Matrix4x4 = (function () {
     // A frustum projection function based on the matrix derived from the course handout.
     // I found it unclear what N and F represent, and if they should be user defined variables.
     // Instead, I decided that N = -zNear and F = -zFar.
+
+    // JD: N and F are distances along the z-axis from the "viewer."  Thus,
+    //     especially for frustum, they are typically positive, and |N| < |F|
+    //     because, well, N is supposed to be "near."
+    //
+    //     By negating zNear and zFar, your viewing volume will effectively
+    //     be "behind" the viewer.  This may result in your seeing nothing
+    //     in the 3D canvas, and possibly also some distortion.  But I think
+    //     it will be useful for you to keep this code as it is, and compare
+    //     the effect that the sign change has.
+    //
+    //     (hope that helps)
     matrix4x4.frustum = function (left, right, bottom, top, zNear, zFar) {
         var N = -zNear,
             F = -zFar,
@@ -143,6 +155,9 @@ var Matrix4x4 = (function () {
 
     // Conversion/convenience function to prepare the matrix data afor direct consumption
     // by WebGL and GLSL.
+    // JD: If you define this on the prototype, you will have a more "object-oriented"
+    //     feel, i.e., var webGlMatrix = matrix.toWebGLMatrix() instead of
+    //                 var webGlMatrix = Matrix4x4.toWebGLMatrix(matrix)
     matrix4x4.toWebGLMatrix = function (m) {
         var result = new Matrix4x4(),
             i,
