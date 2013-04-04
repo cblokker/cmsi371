@@ -280,12 +280,6 @@ var Shapes = {
         // to be passed into the vertices array
         for (v = V_START; v <= V_END; v += V_INTERVAL) {
             for (u = U_START; u <= U_END; u += U_INTERVAL) {
-                // x.push((size + Math.cos(u / 2) * Math.sin(v) - Math.sin(u / 2) * Math.sin(2 * v)) * Math.cos(u));
-                // x.push((size + Math.cos(u / 2) * Math.sin(v) - Math.sin(u / 2) * Math.sin(2 * v)) * Math.sin(u));
-                // z.push(Math.sin(u / 2) * Math.sin(v) + Math.cos(u / 2) * Math.sin(2 * v));
-                // x.push(Math.cos(u) * (Math.cos(u / 2) * (Math.sqrt(2) + Math.cos(v)) + Math.sin(u / 2) * Math.sin(v) * Math.cos(v)));
-                // y.push(Math.sin(u) * (Math.cos(u / 2) * (Math.sqrt(2) + Math.cos(v)) + Math.sin(u / 2) * Math.sin(v) * Math.cos(v)));
-                // z.push(-Math.sin(u / 2) * (Math.sqrt(2) + Math.cos(v)) + Math.cos(u / 2) * Math.sin(v) * Math.cos(v));
                 r = size + Math.cos(u / 2) * Math.sin(v) - Math.sin(u / 2) * Math.sin(2 * v);
                 x.push((r * Math.cos(u)) / 4);
                 y.push((r * Math.sin(u)) / 4);
@@ -463,4 +457,4 @@ var Shapes = {
         return vertices;
     },
 
-};
+}

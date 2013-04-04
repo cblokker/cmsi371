@@ -202,32 +202,7 @@
                     vertices: Shapes.polygon(RADIUS[9], WIDTH, HEIGHT, 12, 0.0).vertices,
                     mode: gl.TRIANGLE_STRIP
                 }
-                
-
-                // {
-                //     colors: Shapes.polygon().colors,
-                //     vertices: Shapes.polygon(0.8, 0.2).vertices,
-                //     mode: gl.TRIANGLE_STRIP
-                // },
-
-                // {
-                //     colors: Shapes.polygon().colors,
-                //     vertices: Shapes.polygon(0.6, 0.2).vertices,
-                //     mode: gl.TRIANGLE_STRIP
-                // },
-
-                // {
-                //     colors: Shapes.polygon().colors,
-                //     vertices: Shapes.polygon(0.4, 0.2).vertices,
-                //     mode: gl.TRIANGLE_STRIP
-                // },
-
-                // {
-                //     colors: Shapes.polygon().colors,
-                //     vertices: Shapes.polygon(0.2, 0.2).vertices,
-                //     mode: gl.TRIANGLE_STRIP
-                // }
-
+    
             ]
         },
 
@@ -322,6 +297,7 @@
     vertexColor = gl.getAttribLocation(shaderProgram, "vertexColor");
     gl.enableVertexAttribArray(vertexColor);
     rotationMatrix = gl.getUniformLocation(shaderProgram, "rotationMatrix");
+    frustumMatrix = gl.getUniformLocation(shaderProgram, "frustumMatrix");
 
     /*
      * Displays an individual object.
@@ -345,7 +321,11 @@
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         // Set up the rotation matrix.
-        gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(getRotationMatrix(currentRotation, 1, 0, 0)));
+        gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(Matrix4x4.rotate(currentRotation, 10, 0, 0).elements));
+
+        gl.uniformMatrix4fv(frustumMatrix, gl.FALSE, new Float32Array(
+            Matrix4x4.ortho(-2, 2, -2, 2, -1.5, 5).elements)
+        );
         
         for (i = 0; i < objectsToDraw.length; i += 1) {
             if (boolSHAPE[i]) {
