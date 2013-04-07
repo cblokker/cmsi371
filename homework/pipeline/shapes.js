@@ -94,8 +94,7 @@ var Shapes = {
         // Add error control
 
         // Set up x and y arrays to be used in circle computation
-        // JD: Missed a space.
-        for(i = 0; i <= numOfSides; i += 1) {
+        for (i = 0; i <= numOfSides; i += 1) {
             x.push(Math.sin((2 * Math.PI * i) / numOfSides));
             y.push(Math.cos((2 * Math.PI * i) / numOfSides));
         }
@@ -163,16 +162,7 @@ var Shapes = {
         }
     },
 
-    /* 
-     * Returns vertices for a mobius strip with a continuous gradient in an order
-     * intended for gl.TRIANGLE_STRIP
-     */
-    // JD: The parametric bases of mobius and klein suggest to me that you have
-    //     a refactoring opportunity here.  I know they aren't completely identical
-    //     but they have very similar structures.  I'm thinking that a redesign of
-    //     this, such that the parametric equation is separated out into a function
-    //     that can be provided as an argument, will blow open the power of your
-    //     library here.
+
     mobius: function (xPos, yPos, zPos, size) {
         var vertices = [],
             colors = [],
@@ -344,14 +334,17 @@ var Shapes = {
      */
     sphere: function () {
         var vertices = [],
+            indices = [],
+
             colors = [],
             x = [],
             y = [],
             z = [],
-            latitudeBands = 100,
+            latitudeBands = 10,
             longitudeBands = latitudeBands,
             radius = 0.8,
-            i;
+            i,
+            j;
 
         for (var latNumber = 0; latNumber <= latitudeBands; latNumber += 1) {
             var theta = latNumber * Math.PI / latitudeBands,
@@ -363,24 +356,25 @@ var Shapes = {
                     sinPhi = Math.sin(phi),
                     cosPhi = Math.cos(phi);
 
-                x.push(cosPhi * sinTheta);
-                y.push(cosTheta);
-                z.push(sinPhi * sinTheta);
+                x.push([cosPhi * sinTheta, cosTheta, sinPhi * sinTheta]);
+                // y.push(cosTheta);
+                // z.push(sinPhi * sinTheta);
             }
         }
 
-        // Set up vertices array for order for gl.TRIANGLE_STRIP
-        for (i = 0; i < x.length; i += 1) {
+        //Set up vertices array for order for gl.TRIANGLE_STRIP
+        for (i = 0; i < vertices.length; i += 1) {
             vertices.push(
                 radius * x[i],
-                radius * y[i],
-                radius * z[i],
-                radius * x[i + latitudeBands + 1],
-                radius * y[i + latitudeBands + 1],
-                radius * z[i + latitudeBands + 1]
+                radius * x[i + latitudeBands + 1]
             );
-
         }
+
+        // for (i = 0; i < vertices.length; i += 1) {
+        //     for (j = 0; j < vertices[i].length; i += 1) {
+        //         indices.push(i);
+        //     }
+        // }
 
         // Color gradient: Created for color stops to be at equator and poles.
         for (i = 0; i < (vertices.length / 6); i += 1) {
@@ -401,7 +395,8 @@ var Shapes = {
 
         return {
             vertices: vertices,
-            colors: colors,
+            indices: indices,
+            colors: colors
         }
     },
  
@@ -457,4 +452,31 @@ var Shapes = {
         return vertices;
     },
 
+    /*
+     * Utility function for turning indexed vertices into a "raw" coordinate array
+     * arranged as TRIANGLE_STRIP.
+     */
+    toRawTriangleStripArray: function (indexedVertices) {
+        var vertices = [],
+            i,
+            j,
+            maxi,
+            maxj;
+
+        for (i = 0, maxi = indexedVertices.indices.length; i < maxi; i += 1) {
+            for (j = 0, maxj = indexedVertices.indices[i].length; j < maxj; j += 1) {
+                vertices = vertices.concat(
+                    indexedVertices.vertices[
+                        indexedVertices.indices[i][j]
+                    ],
+
+                    indexedVertices.vertices[
+                        indexedVertices.indices[i][(j + 1) % maxj]
+                    ]
+                );
+            }
+        }
+
+        return vertices;
+    },
 }

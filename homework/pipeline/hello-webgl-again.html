@@ -32,7 +32,6 @@
         <!-- Shapes is a library that generates "canned" shapes. -->
         <script src="shapes.js"></script>
         <script src="matrix4x4.js"></script>
-        <script src="vector.js"></script>
 
         <!-- JD: A little interaction design note: the toggling nature of these
                  buttons makes a row of checkboxes a better fit than one-click
@@ -60,10 +59,11 @@
             varying vec4 finalVertexColor;
             uniform mat4 rotationMatrix;
             uniform mat4 frustumMatrix;
+            uniform mat4 orthoMatrix;
 
 
             void main(void) {
-                gl_Position = frustumMatrix * rotationMatrix * vec4(vertexPosition, 1.0);
+                gl_Position = frustumMatrix * orthoMatrix * rotationMatrix * vec4(vertexPosition, 1.0);
                 finalVertexColor = vec4(vertexColor, 1.0);
             }
         </script>

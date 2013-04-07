@@ -137,8 +137,8 @@ var Matrix4x4 = (function () {
     //
     //     (hope that helps)
     matrix4x4.frustum = function (left, right, bottom, top, zNear, zFar) {
-        var N = -zNear,
-            F = -zFar,
+        var N = zNear,
+            F = zFar,
             width = right - left,
             height = top - bottom,
             depth = zFar - zNear,

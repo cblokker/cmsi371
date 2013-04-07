@@ -41,75 +41,48 @@
 
         boolSHAPE = [];
 
-        /*
-         * This code does not really belong here: it should live
-         * in a separate library of matrix and transformation
-         * functions.  It is here only to show you how matrices
-         * can be used with GLSL.
-         *
-         * Based on the original glRotate reference:
-         *     http://www.opengl.org/sdk/docs/man/xhtml/glRotate.xml
-         */
-        // JD 0407: Remember, this can go bye-bye now.
-        getRotationMatrix = function (angle, x, y, z) {
-            // In production code, this function should be associated
-            // with a matrix object with associated functions.
-            var axisLength = Math.sqrt((x * x) + (y * y) + (z * z)),
-                s = Math.sin(angle * Math.PI / 180.0),
-                c = Math.cos(angle * Math.PI / 180.0),
-                oneMinusC = 1.0 - c,
+    rotate = function (angle, x, y, z) {
+        var axisLength = Math.sqrt((x * x) + (y * y) + (z * z)),
+            s = Math.sin(angle * Math.PI / 180.0),
+            c = Math.cos(angle * Math.PI / 180.0),
+            oneMinusC = 1.0 - c,
 
-                // We can't calculate this until we have normalized
-                // the axis vector of rotation.
-                x2, // "2" for "squared."
-                y2,
-                z2,
-                xy,
-                yz,
-                xz,
-                xs,
-                ys,
-                zs;
+            // We can't calculate this until we have normalized
+            // the axis vector of rotation.
+            x2, // "2" for "squared."
+            y2,
+            z2,
+            xy,
+            yz,
+            xz,
+            xs,
+            ys,
+            zs;
 
-            // Normalize the axis vector of rotation.
-            x /= axisLength;
-            y /= axisLength;
-            z /= axisLength;
+        // Normalize the axis vector of rotation.
+        x /= axisLength;
+        y /= axisLength;
+        z /= axisLength;
 
-            // *Now* we can calculate the other terms.
-            x2 = x * x;
-            y2 = y * y;
-            z2 = z * z;
-            xy = x * y;
-            yz = y * z;
-            xz = x * z;
-            xs = x * s;
-            ys = y * s;
-            zs = z * s;
+        // *Now* we can calculate the other terms.
+        x2 = x * x;
+        y2 = y * y;
+        z2 = z * z;
+        xy = x * y;
+        yz = y * z;
+        xz = x * z;
+        xs = x * s;
+        ys = y * s;
+        zs = z * s;
 
-            // GL expects its matrices in column major order.
-            return [
-                (x2 * oneMinusC) + c,
-                (xy * oneMinusC) + zs,
-                (xz * oneMinusC) - ys,
-                0.0,
+        return new Matrix4x4(
+             (x2 * oneMinusC) + c, (xy * oneMinusC) - zs, (xz * oneMinusC) + ys, 0.0,
+            (xy * oneMinusC) + zs,  (y2 * oneMinusC) + c, (yz * oneMinusC) - xs, 0.0,
+            (xz * oneMinusC) - ys, (yz * oneMinusC) + xs,  (z2 * oneMinusC) + c, 0.0,
+                              0.0,                   0.0,                   0.0, 1.0    
+        );
+    };
 
-                (xy * oneMinusC) - zs,
-                (y2 * oneMinusC) + c,
-                (yz * oneMinusC) + xs,
-                0.0,
-
-                (xz * oneMinusC) + ys,
-                (yz * oneMinusC) - xs,
-                (z2 * oneMinusC) + c,
-                0.0,
-
-                0.0,
-                0.0,
-                0.0,
-                1.0
-            ];
-        };
 
     // Grab the WebGL rendepolygon context.
     gl = GLSLUtilities.getGL(canvas);
@@ -299,6 +272,7 @@
     gl.enableVertexAttribArray(vertexColor);
     rotationMatrix = gl.getUniformLocation(shaderProgram, "rotationMatrix");
     frustumMatrix = gl.getUniformLocation(shaderProgram, "frustumMatrix");
+    orthoMatrix = gl.getUniformLocation(shaderProgram, "orthoMatrix");
 
     /*
      * Displays an individual object.
@@ -322,21 +296,8 @@
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         // Set up the rotation matrix.
-        // JD 0407: This one seems to work without conversion, but that is
-        //     serendipitous---your rotation matrix here happens to have
-        //     the same transpose.
-        gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(Matrix4x4.rotate(currentRotation, 10, 0, 0).elements));
+        gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(Matrix4x4.rotate(currentRotation, 10, 0, 0).toWebGLMatrix().elements));
 
-        // JD 0407: You can safely move this outside of drawScene if you are not
-        //     planning to change this for the duration of the program.
-        //     Putting this statement here just redoes the same computation
-        //     for every frame.
-        //
-        //     You also forgot to convert to column-major before sending it in.
-        gl.uniformMatrix4fv(frustumMatrix, gl.FALSE, new Float32Array(
-            Matrix4x4.ortho(-2, 2, -2, 2, -1.5, 5).toWebGLMatrix().elements)
-        );
-        
         for (i = 0; i < objectsToDraw.length; i += 1) {
             if (boolSHAPE[i]) {
                 for(j = 0, maxj = objectsToDraw[i].shapes.length; j < maxj; j += 1) {
@@ -348,6 +309,14 @@
         // All done.
         gl.flush();
     };
+
+    gl.uniformMatrix4fv(orthoMatrix, gl.FALSE, new Float32Array(
+        Matrix4x4.ortho(-3, 3, -3, 3, -6, 12).toWebGLMatrix().elements)
+    );
+
+    gl.uniformMatrix4fv(frustumMatrix, gl.FALSE, new Float32Array(
+        Matrix4x4.frustum(-0.5, 0.5, -0.5, 0.5, 0.2, 100).toWebGLMatrix().elements)
+    );
 
     // Draw the initial scene.
     drawScene();
