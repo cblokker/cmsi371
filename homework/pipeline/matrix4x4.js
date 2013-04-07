@@ -158,7 +158,10 @@ var Matrix4x4 = (function () {
     // JD: If you define this on the prototype, you will have a more "object-oriented"
     //     feel, i.e., var webGlMatrix = matrix.toWebGLMatrix() instead of
     //                 var webGlMatrix = Matrix4x4.toWebGLMatrix(matrix)
-    matrix4x4.prototype.toWebGLMatrix = function (m) {
+    //
+    // JD 0407: I went ahead and fixed this so that your orthographic projection
+    //     would work the way it should.
+    matrix4x4.prototype.toWebGLMatrix = function () {
         var result = new Matrix4x4(),
             i,
             j,
@@ -166,7 +169,7 @@ var Matrix4x4 = (function () {
 
         for (j = 0; j < 4; j += 1) {
             for (i = 0; i < 4; i += 1) {
-                result.elements[count] = m.elements[i * 4 + j];
+                result.elements[count] = this.elements[i * 4 + j];
                 count += 1;
             }
         }

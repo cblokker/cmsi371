@@ -50,6 +50,7 @@
          * Based on the original glRotate reference:
          *     http://www.opengl.org/sdk/docs/man/xhtml/glRotate.xml
          */
+        // JD 0407: Remember, this can go bye-bye now.
         getRotationMatrix = function (angle, x, y, z) {
             // In production code, this function should be associated
             // with a matrix object with associated functions.
@@ -321,10 +322,19 @@
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         // Set up the rotation matrix.
+        // JD 0407: This one seems to work without conversion, but that is
+        //     serendipitous---your rotation matrix here happens to have
+        //     the same transpose.
         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(Matrix4x4.rotate(currentRotation, 10, 0, 0).elements));
 
+        // JD 0407: You can safely move this outside of drawScene if you are not
+        //     planning to change this for the duration of the program.
+        //     Putting this statement here just redoes the same computation
+        //     for every frame.
+        //
+        //     You also forgot to convert to column-major before sending it in.
         gl.uniformMatrix4fv(frustumMatrix, gl.FALSE, new Float32Array(
-            Matrix4x4.ortho(-2, 2, -2, 2, -1.5, 5).elements)
+            Matrix4x4.ortho(-2, 2, -2, 2, -1.5, 5).toWebGLMatrix().elements)
         );
         
         for (i = 0; i < objectsToDraw.length; i += 1) {
