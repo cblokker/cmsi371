@@ -53,6 +53,7 @@ var Shapes = {
         };
     },
 
+
     // JD: Your shapes look and work great, and you should certainly keep them
     //     handy.  However, by restricting all of them to TRIANGLE_STRIP, you
     //     lose a degree of flexibility that a general mesh (i.e., separate,
@@ -259,7 +260,7 @@ var Shapes = {
 
             // Some constants
             U_INTERVAL = 0.01,
-            V_INTERVAL = 0.01
+            V_INTERVAL = 0.01,
             U_START = 0.0,
             U_END = 2.01 * Math.PI,
             V_START = - Math.PI / 2,
@@ -340,9 +341,8 @@ var Shapes = {
             x = [],
             y = [],
             z = [],
-            latitudeBands = 10,
+            latitudeBands = 20,
             longitudeBands = latitudeBands,
-            radius = 0.8,
             i,
             j;
 
@@ -356,32 +356,24 @@ var Shapes = {
                     sinPhi = Math.sin(phi),
                     cosPhi = Math.cos(phi);
 
-                x.push([cosPhi * sinTheta, cosTheta, sinPhi * sinTheta]);
-                // y.push(cosTheta);
-                // z.push(sinPhi * sinTheta);
+                vertices.push([cosPhi * sinTheta, cosTheta, sinPhi * sinTheta]);
             }
         }
 
-        //Set up vertices array for order for gl.TRIANGLE_STRIP
-        for (i = 0; i < vertices.length; i += 1) {
-            vertices.push(
-                radius * x[i],
-                radius * x[i + latitudeBands + 1]
+        //Set up indices array
+        for (i = 0; i <= vertices.length; i += 1) {
+            indices.push(
+                [i, i + 1, i + latitudeBands + 1],
+                [i + 1, i + latitudeBands + 1, i + latitudeBands + 2]
             );
         }
 
-        // for (i = 0; i < vertices.length; i += 1) {
-        //     for (j = 0; j < vertices[i].length; i += 1) {
-        //         indices.push(i);
-        //     }
-        // }
-
         // Color gradient: Created for color stops to be at equator and poles.
-        for (i = 0; i < (vertices.length / 6); i += 1) {
+        for (i = 0; i < vertices.length / 12; i += 1) {
             colors.push(
-                (1.0 * i) / (vertices.length / 6),
-                ((0.25 * (vertices.length / 6)) / i),
-                ((0.5 * (vertices.length / 6)) / i)
+                (1.0 * i) / (vertices.length / 3),
+                ((0.25 * (vertices.length / 3)) / i),
+                ((0.5 * (vertices.length / 3)) / i)
             );
         }
 
@@ -429,34 +421,6 @@ var Shapes = {
      * arranged as line segments.
      */
     toRawLineArray: function (indexedVertices) {
-        var vertices = [],
-            i,
-            j,
-            maxi,
-            maxj;
-
-        for (i = 0, maxi = indexedVertices.indices.length; i < maxi; i += 1) {
-            for (j = 0, maxj = indexedVertices.indices[i].length; j < maxj; j += 1) {
-                vertices = vertices.concat(
-                    indexedVertices.vertices[
-                        indexedVertices.indices[i][j]
-                    ],
-
-                    indexedVertices.vertices[
-                        indexedVertices.indices[i][(j + 1) % maxj]
-                    ]
-                );
-            }
-        }
-
-        return vertices;
-    },
-
-    /*
-     * Utility function for turning indexed vertices into a "raw" coordinate array
-     * arranged as TRIANGLE_STRIP.
-     */
-    toRawTriangleStripArray: function (indexedVertices) {
         var vertices = [],
             i,
             j,

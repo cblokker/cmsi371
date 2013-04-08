@@ -37,52 +37,10 @@
         j,
         maxj,
         k,
-        maxk;
+        maxk,
 
-        boolSHAPE = [];
-
-    rotate = function (angle, x, y, z) {
-        var axisLength = Math.sqrt((x * x) + (y * y) + (z * z)),
-            s = Math.sin(angle * Math.PI / 180.0),
-            c = Math.cos(angle * Math.PI / 180.0),
-            oneMinusC = 1.0 - c,
-
-            // We can't calculate this until we have normalized
-            // the axis vector of rotation.
-            x2, // "2" for "squared."
-            y2,
-            z2,
-            xy,
-            yz,
-            xz,
-            xs,
-            ys,
-            zs;
-
-        // Normalize the axis vector of rotation.
-        x /= axisLength;
-        y /= axisLength;
-        z /= axisLength;
-
-        // *Now* we can calculate the other terms.
-        x2 = x * x;
-        y2 = y * y;
-        z2 = z * z;
-        xy = x * y;
-        yz = y * z;
-        xz = x * z;
-        xs = x * s;
-        ys = y * s;
-        zs = z * s;
-
-        return new Matrix4x4(
-             (x2 * oneMinusC) + c, (xy * oneMinusC) - zs, (xz * oneMinusC) + ys, 0.0,
-            (xy * oneMinusC) + zs,  (y2 * oneMinusC) + c, (yz * oneMinusC) - xs, 0.0,
-            (xz * oneMinusC) - ys, (yz * oneMinusC) + xs,  (z2 * oneMinusC) + c, 0.0,
-                              0.0,                   0.0,                   0.0, 1.0    
-        );
-    };
-
+        // A boolean array for shape toggling
+        isShapeVisible = [];
 
     // Grab the WebGL rendepolygon context.
     gl = GLSLUtilities.getGL(canvas);
@@ -190,11 +148,12 @@
             ]
         },
 
+
         {
             shapes: [
                 {
-                    colors: Shapes.sphere().colors,
-                    vertices: Shapes.sphere().vertices,
+                    color: {r: 1, g: 0, b: 1},
+                    vertices: Shapes.toRawTriangleArray(Shapes.sphere()),
                     mode: gl.TRIANGLE_STRIP
                 }
             ]
@@ -222,7 +181,7 @@
                 // If we have a single color, we expand that into an array
                 // of the same color over and over.
                 subShape.colors = [];
-                for (j = 0, maxj = objectsToDraw[i][j].vertices.length / 3;
+                for (j = 0, maxj = subShape.vertices.length / 3;
                         j < maxj; j += 1) {
                     subShape.colors = subShape.colors.concat(
                         subShape.color.r,
@@ -299,7 +258,7 @@
         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(Matrix4x4.rotate(currentRotation, 10, 0, 0).toWebGLMatrix().elements));
 
         for (i = 0; i < objectsToDraw.length; i += 1) {
-            if (boolSHAPE[i]) {
+            if (isShapeVisible[i]) {
                 for(j = 0, maxj = objectsToDraw[i].shapes.length; j < maxj; j += 1) {
                     drawObject(objectsToDraw[i].shapes[j]);
                 }
@@ -330,22 +289,22 @@
     //     functionality.  You'll definitely want this; now that you have a
     //     matrix library, this may be more motivational.
     $("#telescope").click(function () {
-        boolSHAPE[0] = !boolSHAPE[0];
+        isShapeVisible[0] = !isShapeVisible[0];
         drawScene();
     });
 
     $("#mobius").click(function () {
-        boolSHAPE[1] = !boolSHAPE[1];
+        isShapeVisible[1] = !isShapeVisible[1];
         drawScene();
     });
 
     $("#sphere").click(function () {
-        boolSHAPE[2] = !boolSHAPE[2];
+        isShapeVisible[2] = !isShapeVisible[2];
         drawScene();
     });
 
     $("#klein").click(function () {
-        boolSHAPE[3] = !boolSHAPE[3];
+        isShapeVisible[3] = !isShapeVisible[3];
         drawScene();
     });
 
