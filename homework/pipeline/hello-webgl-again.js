@@ -141,9 +141,9 @@
         {
             shapes: [
                 {
-                    colors: Shapes.mobius().colors,
-                    vertices: Shapes.mobius(0.0, 0.3, 0.5, 0.4).vertices,
-                    mode: gl.TRIANGLE_STRIP
+                    color: {r: 1, g: 0, b: 1},
+                    vertices: Shapes.toRawTriangleArray(Shapes.mobius(0.0, 0.3, 0.5, 0.8)),
+                    mode: gl.TRIANGLES
                 }
             ]
         },
@@ -154,7 +154,7 @@
                 {
                     color: {r: 1, g: 0, b: 1},
                     vertices: Shapes.toRawTriangleArray(Shapes.sphere()),
-                    mode: gl.TRIANGLE_STRIP
+                    mode: gl.TRIANGLES
                 }
             ]
         },
@@ -162,9 +162,9 @@
         {
             shapes: [
                 {
-                    colors: Shapes.klein().colors,
-                    vertices: Shapes.klein().vertices,
-                    mode: gl.TRIANGLE_STRIP
+                    color: {r: 1, g: 0, b: 1},
+                    vertices: Shapes.toRawTriangleArray(Shapes.klein()),
+                    mode: gl.TRIANGLES
                 }
             ]
         },

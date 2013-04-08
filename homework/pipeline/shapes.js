@@ -167,9 +167,7 @@ var Shapes = {
     mobius: function (xPos, yPos, zPos, size) {
         var vertices = [],
             colors = [],
-            x = [],
-            y = [],
-            z = [],
+            indices = [],
 
             // Default parameters
             xPos = xPos || 0.0,
@@ -188,27 +186,25 @@ var Shapes = {
             U_START = -0.5,
             U_END = 0.5,
             V_END = 2.1 * Math.PI,
-            iNext = ((U_START - U_END) / U_INTERVAL);
+            iNext = ((U_START - U_END) / U_INTERVAL) - 1;
 
         // Set up x, y, and z mobius parametric eqautions in the form of arrays
         // to be passed into the vertices array
         for (v = 0; v <= V_END; v += V_INTERVAL) {
             for (u = U_START; u <= U_END; u += U_INTERVAL) {
-                x.push((size + u * Math.cos(v / 2)) * Math.cos(v));
-                y.push((size + u * Math.cos(v / 2)) * Math.sin(v));
-                z.push(u * Math.sin(v / 2));
+                vertices.push([
+                    (size + u * Math.cos(v / 2)) * Math.cos(v),
+                    (size + u * Math.cos(v / 2)) * Math.sin(v),
+                    u * Math.sin(v / 2)
+                ]);
             }
         }
 
         // Set up vertices array (indended mode for these vertices is gl.TRIANGLE_STRIP)
-        for (i = 0; i < x.length; i += 1) {
-            vertices.push(
-                x[i] + xPos,
-                y[i] + yPos,
-                z[i] + zPos,
-                x[i + iNext] + xPos,
-                y[i + iNext] + yPos,
-                z[i + iNext] + zPos
+        for (i = 0; i < vertices.length; i += 1) {
+            indices.push(
+                [i, i + 1, i - iNext],
+                [i + 1, i - iNext, i - iNext + 1]
             );
         }
  
@@ -231,6 +227,7 @@ var Shapes = {
 
         return {
             vertices: vertices,
+            indices: indices,
             colors: colors
         }
     },
@@ -242,10 +239,8 @@ var Shapes = {
      */
     klein: function (xPos, yPos, zPos, size) {
         var vertices = [],
+            indices = [],
             colors = [],
-            x = [],
-            y = [],
-            z = [],
 
             // Default parameters
             xPos = xPos || 0.0,
@@ -259,8 +254,8 @@ var Shapes = {
             v,
 
             // Some constants
-            U_INTERVAL = 0.01,
-            V_INTERVAL = 0.01,
+            U_INTERVAL = 0.1,
+            V_INTERVAL = 0.1,
             U_START = 0.0,
             U_END = 2.01 * Math.PI,
             V_START = - Math.PI / 2,
@@ -272,21 +267,29 @@ var Shapes = {
         for (v = V_START; v <= V_END; v += V_INTERVAL) {
             for (u = U_START; u <= U_END; u += U_INTERVAL) {
                 r = size + Math.cos(u / 2) * Math.sin(v) - Math.sin(u / 2) * Math.sin(2 * v);
-                x.push((r * Math.cos(u)) / 4);
-                y.push((r * Math.sin(u)) / 4);
-                z.push((Math.sin(u / 2) * Math.sin(v) + Math.cos(u / 2) * Math.sin(2 * v)) / 4);
+                vertices.push([
+                    (r * Math.cos(u)) / 4,
+                    (r * Math.sin(u)) / 4,
+                    (Math.sin(u / 2) * Math.sin(v) + Math.cos(u / 2) * Math.sin(2 * v)) / 4
+                ]);
+                // x.push((r * Math.cos(u)) / 4);
+                // y.push((r * Math.sin(u)) / 4);
+                // z.push((Math.sin(u / 2) * Math.sin(v) + Math.cos(u / 2) * Math.sin(2 * v)) / 4);
             }
         }
 
         // Set up vertices array (indended mode for these vertices is gl.TRIANGLE_STRIP)
-        for (i = 0; i < x.length; i += 1) {
-            vertices.push(
-                x[i] + xPos,
-                y[i] + yPos,
-                z[i] + zPos,
-                x[i + iNext] + xPos,
-                y[i + iNext] + yPos,
-                z[i + iNext] + zPos
+        for (i = 0; i < vertices.length; i += 1) {
+            indices.push(
+                [i, i + 1, i - iNext],
+                [i + 1, i - iNext, i - iNext + 1]
+                
+                // x[i] + xPos,
+                // y[i] + yPos,
+                // z[i] + zPos,
+                // x[i + iNext] + xPos,
+                // y[i + iNext] + yPos,
+                // z[i + iNext] + zPos
             );
         }
  
@@ -325,6 +328,7 @@ var Shapes = {
 
         return {
             vertices: vertices,
+            indices: indices,
             colors: colors
         }
     },
