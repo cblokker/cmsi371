@@ -67,8 +67,6 @@
         RADIUS.push(i);
     }
 
-
-        
     // Build the objects to display.
     objectsToDraw = [
         
@@ -142,29 +140,29 @@
             shapes: [
                 {
                     color: {r: 1, g: 0, b: 1},
-                    vertices: Shapes.toRawTriangleArray(Shapes.mobius(0.0, 0.3, 0.5, 0.8)),
-                    mode: gl.TRIANGLES
+                    vertices: Shapes.toRawLineArray(Shapes.parametricGenerator(Shapes.mobiusEquation)),
+                    mode: gl.LINES
                 }
             ]
         },
 
 
-        {
-            shapes: [
-                {
-                    color: {r: 1, g: 0, b: 1},
-                    vertices: Shapes.toRawTriangleArray(Shapes.sphere()),
-                    mode: gl.TRIANGLES
-                }
-            ]
-        },
+        // {
+        //     shapes: [
+        //         {
+        //             color: {r: 1, g: 0, b: 1},
+        //             vertices: Shapes.toRawTriangleArray(Shapes.sphere()),
+        //             mode: gl.TRIANGLES
+        //         }
+        //     ]
+        // },
 
         {
             shapes: [
                 {
                     color: {r: 1, g: 0, b: 1},
-                    vertices: Shapes.toRawTriangleArray(Shapes.klein()),
-                    mode: gl.TRIANGLES
+                    vertices: Shapes.toRawLineArray(Shapes.parametricGenerator(Shapes.kleinEquation)),
+                    mode: gl.LINES
                 }
             ]
         },

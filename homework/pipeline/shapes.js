@@ -164,117 +164,63 @@ var Shapes = {
     },
 
 
-    mobius: function (xPos, yPos, zPos, size) {
-        var vertices = [],
-            colors = [],
-            indices = [],
-
-            // Default parameters
-            xPos = xPos || 0.0,
-            yPos = yPos || 0.0,
-            zPos = zPos || 0.0,
-            size = size || 0.5,
-
-            // Reusable loop variables
-            i,
-            u,
-            v,
-
-            // Some constants
-            U_INTERVAL = 0.05,
-            V_INTERVAL = 0.1
-            U_START = -0.5,
-            U_END = 0.5,
-            V_END = 2.1 * Math.PI,
-            iNext = ((U_START - U_END) / U_INTERVAL) - 1;
-
-        // Set up x, y, and z mobius parametric eqautions in the form of arrays
-        // to be passed into the vertices array
-        for (v = 0; v <= V_END; v += V_INTERVAL) {
-            for (u = U_START; u <= U_END; u += U_INTERVAL) {
-                vertices.push([
-                    (size + u * Math.cos(v / 2)) * Math.cos(v),
-                    (size + u * Math.cos(v / 2)) * Math.sin(v),
-                    u * Math.sin(v / 2)
-                ]);
-            }
-        }
-
-        // Set up vertices array (indended mode for these vertices is gl.TRIANGLE_STRIP)
-        for (i = 0; i < vertices.length; i += 1) {
-            indices.push(
-                [i, i + 1, i - iNext],
-                [i + 1, i - iNext, i - iNext + 1]
-            );
-        }
- 
-        // Color gradient: Created for smooth transition throughout the strip
-        for (i = 0; i < (vertices.length / 6); i += 1) {
-            colors.push(
-                (1.0 * i) / (vertices.length / 6),
-                ((0.25 * (vertices.length / 6)) / i),
-                0.0
-            );
-        }
-
-        for (i = (vertices.length / 6); i > 0; i -= 1) {
-            colors.push(
-                (1.0 * i) / (vertices.length / 6),
-                ((0.25 * (vertices.length / 6)) / i),
-                0.0
-            );
-        }
+    kleinEquation: function(u, v) {
+        var r = 2 + Math.cos(u / 2) * Math.sin(v) - Math.sin(u / 2) * Math.sin(2 * v);
 
         return {
-            vertices: vertices,
-            indices: indices,
-            colors: colors
-        }
+            equation  : [
+                (r * Math.cos(u)) / 4,
+                (r * Math.sin(u)) / 4,
+                (Math.sin(u / 2) * Math.sin(v) + Math.cos(u / 2) * Math.sin(2 * v)) / 4,
+            ],
+            uStart    : 0.0,
+            uEnd      : 2.01 * Math.PI,
+            uInterval : 0.3,
+            vStart    : - Math.PI / 2,
+            vEnd      : (3.01 / 2) * Math.PI,
+            vInterval : 0.3
+        };
     },
 
-    /* 
-     * Returns vertices for a mobius strip with a continuous gradient in an order
-     * intended for gl.TRIANGLE_STRIP
-     * Reference: http://poncelet.math.nthu.edu.tw/disk5/summer00/029/12_3.htm
-     */
-    klein: function (xPos, yPos, zPos, size) {
+
+    mobiusEquation: function(u, v) {
+
+        return {
+            equation : [
+                (0.5 + u * Math.cos(v / 2)) * Math.cos(v),
+                (0.5 + u * Math.cos(v / 2)) * Math.sin(v),
+                u * Math.sin(v / 2)
+            ],
+            uStart    : -0.5,
+            uEnd      : 0.5,
+            uInterval : 0.1,
+            vStart    : 0.0,
+            vEnd      : 2.1 * Math.PI,
+            vInterval : 0.1
+        };
+    },
+
+    parametricGenerator: function(parametric) {
         var vertices = [],
             indices = [],
             colors = [],
 
-            // Default parameters
-            xPos = xPos || 0.0,
-            yPos = yPos || 0.0,
-            zPos = zPos || 0.0,
-            size = size || 2.0,
+            U_START = parametric().uStart,
+            U_END = parametric().uEnd,
+            U_INTERVAL = parametric().uInterval,
+            V_START = parametric().vStart,
+            V_END = parametric().vEnd,
+            V_INTERVAL = parametric().vInterval,
 
-            // Reusable loop variables
-            i,
-            u,
-            v,
 
-            // Some constants
-            U_INTERVAL = 0.1,
-            V_INTERVAL = 0.1,
-            U_START = 0.0,
-            U_END = 2.01 * Math.PI,
-            V_START = - Math.PI / 2,
-            V_END =  (3.01 / 2) * Math.PI,
-            iNext = Math.floor(((U_START - U_END) / U_INTERVAL));
+            iNext = iNext = Math.floor(((U_START - U_END) / U_INTERVAL)) - 1;
 
-        // Set up x, y, and z mobius parametric eqautions in the form of arrays
-        // to be passed into the vertices array
+
         for (v = V_START; v <= V_END; v += V_INTERVAL) {
             for (u = U_START; u <= U_END; u += U_INTERVAL) {
-                r = size + Math.cos(u / 2) * Math.sin(v) - Math.sin(u / 2) * Math.sin(2 * v);
-                vertices.push([
-                    (r * Math.cos(u)) / 4,
-                    (r * Math.sin(u)) / 4,
-                    (Math.sin(u / 2) * Math.sin(v) + Math.cos(u / 2) * Math.sin(2 * v)) / 4
-                ]);
-                // x.push((r * Math.cos(u)) / 4);
-                // y.push((r * Math.sin(u)) / 4);
-                // z.push((Math.sin(u / 2) * Math.sin(v) + Math.cos(u / 2) * Math.sin(2 * v)) / 4);
+                vertices.push(
+                    parametric(u, v).equation
+                );
             }
         }
 
@@ -283,46 +229,6 @@ var Shapes = {
             indices.push(
                 [i, i + 1, i - iNext],
                 [i + 1, i - iNext, i - iNext + 1]
-                
-                // x[i] + xPos,
-                // y[i] + yPos,
-                // z[i] + zPos,
-                // x[i + iNext] + xPos,
-                // y[i + iNext] + yPos,
-                // z[i + iNext] + zPos
-            );
-        }
- 
-        // Color gradient: Created for smooth transition throughout the strip
-        for (i = 0; i < (vertices.length / 12); i += 1) {
-            colors.push(
-                (1.0 * i) / (vertices.length / 12),
-                ((0.1 * (vertices.length / 12)) / i),
-                ((0.5 * (vertices.length / 12)) / i)
-            );
-        }
-
-        for (i = (vertices.length / 12); i > 0; i -= 1) {
-            colors.push(
-                (1.0 * i) / (vertices.length / 12),
-                ((0.1 * (vertices.length / 12)) / i),
-                ((0.5 * (vertices.length / 12)) / i)
-            );
-        }
-
-        for (i = 0; i < (vertices.length / 12); i += 1) {
-            colors.push(
-                (1.0 * i) / (vertices.length / 12),
-                ((0.1 * (vertices.length / 12)) / i),
-                ((0.5 * (vertices.length / 12)) / i)
-            );
-        }
-
-        for (i = (vertices.length / 12); i > 0; i -= 1) {
-            colors.push(
-                (1.0 * i) / (vertices.length / 12),
-                ((0.1 * (vertices.length / 12)) / i),
-                ((0.5 * (vertices.length / 12)) / i)
             );
         }
 
@@ -330,7 +236,7 @@ var Shapes = {
             vertices: vertices,
             indices: indices,
             colors: colors
-        }
+        };
     },
 
     /* 
@@ -340,11 +246,8 @@ var Shapes = {
     sphere: function () {
         var vertices = [],
             indices = [],
-
             colors = [],
-            x = [],
-            y = [],
-            z = [],
+
             latitudeBands = 20,
             longitudeBands = latitudeBands,
             i,
@@ -373,21 +276,21 @@ var Shapes = {
         }
 
         // Color gradient: Created for color stops to be at equator and poles.
-        for (i = 0; i < vertices.length / 12; i += 1) {
-            colors.push(
-                (1.0 * i) / (vertices.length / 3),
-                ((0.25 * (vertices.length / 3)) / i),
-                ((0.5 * (vertices.length / 3)) / i)
-            );
-        }
+        // for (i = 0; i < vertices.length / 12; i += 1) {
+        //     colors.push(
+        //         (1.0 * i) / (vertices.length / 3),
+        //         ((0.25 * (vertices.length / 3)) / i),
+        //         ((0.5 * (vertices.length / 3)) / i)
+        //     );
+        // }
 
-        for (i = (vertices.length / 6); i > 0; i -= 1) {
-            colors.push(
-                (1.0 * i) / (vertices.length / 6),
-                ((0.25 * (vertices.length / 6)) / i),
-                ((0.5 * (vertices.length / 6)) / i)
-            );
-        }
+        // for (i = (vertices.length / 6); i > 0; i -= 1) {
+        //     colors.push(
+        //         (1.0 * i) / (vertices.length / 6),
+        //         ((0.25 * (vertices.length / 6)) / i),
+        //         ((0.5 * (vertices.length / 6)) / i)
+        //     );
+        // }
 
         return {
             vertices: vertices,
