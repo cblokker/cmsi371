@@ -28,21 +28,11 @@
         vertexPosition,
         vertexColor,
 
-        savedContext = instanceMatrix,
-
         // An individual "draw object" function.
         drawObject,
 
         // The big "draw scene" function.
         drawScene,
-
-        // Reusable loop variables.
-        i,
-        maxi,
-        j,
-        maxj,
-        k,
-        maxk,
 
         // A boolean array for shape toggling
         isShapeVisible = [];
@@ -74,156 +64,227 @@
 
     // Build the objects to display.
     objectsToDraw = [
-        
         {
-            shapes: [
-
+            color: {r: 0.5, g: 0.0, b: 0.5},
+            vertices: Shapes.toRawLineArray(Shapes.parametricGenerator(Shapes.mobiusEquation)),
+            mode: gl.LINES,
+            transform: {
+                tx: -0.0,
+                ty: 0.0,
+                tz: 0.0
+            },
+            children: [
                 {
-                    colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(RADIUS[0], WIDTH, HEIGHT, 3, 0.9).vertices,
-                    mode: gl.TRIANGLE_STRIP
-                },
-
-                {
-                    colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(RADIUS[1], WIDTH, HEIGHT, 4, 0.8).vertices,
-                    mode: gl.TRIANGLE_STRIP
-                },
-
-                {
-                    colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(RADIUS[2], WIDTH, HEIGHT, 5, 0.7).vertices,
-                    mode: gl.TRIANGLE_STRIP
-                },
-
-                {
-                    colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(RADIUS[3], WIDTH, HEIGHT, 6, 0.6).vertices,
-                    mode: gl.TRIANGLE_STRIP
-                },
-
-                {
-                    colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(RADIUS[4], WIDTH, HEIGHT, 7, 0.5).vertices,
-                    mode: gl.TRIANGLE_STRIP
-                },
-
-                {
-                    colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(RADIUS[5], WIDTH, HEIGHT, 8, 0.4).vertices,
-                    mode: gl.TRIANGLE_STRIP
-                },
-
-                {
-                    colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(RADIUS[6], WIDTH, HEIGHT, 9, 0.3).vertices,
-                    mode: gl.TRIANGLE_STRIP
-                },
-
-                {
-                    colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(RADIUS[7], WIDTH, HEIGHT, 10, 0.2).vertices,
-                    mode: gl.TRIANGLE_STRIP
-                },
-                
-                {
-                    colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(RADIUS[8], WIDTH, HEIGHT, 11, 0.1).vertices,
-                    mode: gl.TRIANGLE_STRIP
-                },
-                
-                {
-                    colors: Shapes.polygon().colors,
-                    vertices: Shapes.polygon(RADIUS[9], WIDTH, HEIGHT, 12, 0.0).vertices,
-                    mode: gl.TRIANGLE_STRIP
-                }
-    
-            ]
-        },
-
-        {
-            shapes: [
-                {
-                    color: {r: 1, g: 0, b: 1},
-                    vertices: Shapes.toRawLineArray(Shapes.parametricGenerator(Shapes.mobiusEquation)),
-                    mode: gl.LINES,
+                    color: {r: 0.5, g: 0.0, b: 0.5},
+                    vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.kleinEquation)),
+                    mode: gl.TRIANGLES,
                     transform: {
-                        tx: 0.5,
-                        ty: 0,
-                        tz: 0
+                        tx: 0.8,
+                        ty: 0.0,
+                        tz: 0.0
+                    }
+                },
+
+                {
+                    color: {r: 1.0, g: 0.0, b: 1.0},
+                    vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.kleinEquation)),
+                    mode: gl.TRIANGLES,
+                    transform: {
+                        tx: -0.8,
+                        ty: -0.8,
+                        tz: 0.0
                     }
                 }
             ]
         },
 
-
         {
-            shapes: [
+            color: {r: 0.0, g: 0.5, b: 0.5},
+            vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.mobiusEquation)),
+            mode: gl.TRIANGLES,
+            transform: {
+                tx: -0.8,
+                ty: 0.5,
+                tz: 0.0
+            },
+            children: [
                 {
-                    color: {r: 1, g: 0, b: 1},
-                    vertices: Shapes.toRawTriangleArray(Shapes.sphere()),
-                    mode: gl.TRIANGLES
-                }
-            ]
-        },
-
-        {
-            shapes: [
-                {
-                    color: {r: 1, g: 0, b: 1},
-                    vertices: Shapes.toRawLineArray(Shapes.parametricGenerator(Shapes.kleinEquation)),
-                    mode: gl.LINES,
+                    color: {r: 0.5, g: 0.0, b: 0.5},
+                    vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.kleinEquation)),
+                    mode: gl.TRIANGLES,
                     transform: {
-                        tx: -0.5,
-                        ty: 0,
-                        tz: 0
+                        tx: 0.1,
+                        ty: 0.2,
+                        tz: 0.3
                     }
-                }
+                },
+                {
+                    color: {r: 0.5, g: 0.0, b: 0.5},
+                    vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.kleinEquation)),
+                    mode: gl.TRIANGLES,
+                    transform: {
+                        tx: -0.1,
+                        ty: 0.2,
+                        tz: 0.3
+                    }
+               }
+
             ]
         },
+
+        {
+            color: {r: 0.0, g: 0.0, b: 0.5},
+            vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.mobiusEquation)),
+            mode: gl.TRIANGLES,
+            transform: {
+                tx: 0.3,
+                ty: 0.0,
+                tz: 0.0
+            }
+        }
     ];
-
-    save = function () {
-        savedContext = initialTransform;
-    };
-
-    restore = function () {
         
-        // Reset instance transform matrix
-        gl.uniformMatrix4fv(instanceMatrix, gl.FALSE, new Float32Array(
-            savedContext
-        ));
+        // {
+        //     shapes: [
 
-        // Reset rotation matrix
-        gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(
-            new Matrix4x4().elements
-        ));
-    };
+                // {
+                //     colors: Shapes.polygon().colors,
+                //     vertices: Shapes.polygon(RADIUS[0], WIDTH, HEIGHT, 3, 0.9).vertices,
+                //     mode: gl.TRIANGLE_STRIP
+                // },
+
+                // {
+                //     colors: Shapes.polygon().colors,
+                //     vertices: Shapes.polygon(RADIUS[1], WIDTH, HEIGHT, 4, 0.8).vertices,
+                //     mode: gl.TRIANGLE_STRIP
+                // },
+
+                // {
+                //     colors: Shapes.polygon().colors,
+                //     vertices: Shapes.polygon(RADIUS[2], WIDTH, HEIGHT, 5, 0.7).vertices,
+                //     mode: gl.TRIANGLE_STRIP
+                // },
+
+                // {
+                //     colors: Shapes.polygon().colors,
+                //     vertices: Shapes.polygon(RADIUS[3], WIDTH, HEIGHT, 6, 0.6).vertices,
+                //     mode: gl.TRIANGLE_STRIP
+                // },
+
+                // {
+                //     colors: Shapes.polygon().colors,
+                //     vertices: Shapes.polygon(RADIUS[4], WIDTH, HEIGHT, 7, 0.5).vertices,
+                //     mode: gl.TRIANGLE_STRIP
+                // },
+
+                // {
+                //     colors: Shapes.polygon().colors,
+                //     vertices: Shapes.polygon(RADIUS[5], WIDTH, HEIGHT, 8, 0.4).vertices,
+                //     mode: gl.TRIANGLE_STRIP
+                // },
+
+                // {
+                //     colors: Shapes.polygon().colors,
+                //     vertices: Shapes.polygon(RADIUS[6], WIDTH, HEIGHT, 9, 0.3).vertices,
+                //     mode: gl.TRIANGLE_STRIP
+                // },
+
+                // {
+                //     colors: Shapes.polygon().colors,
+                //     vertices: Shapes.polygon(RADIUS[7], WIDTH, HEIGHT, 10, 0.2).vertices,
+                //     mode: gl.TRIANGLE_STRIP
+                // },
+                
+                // {
+                //     colors: Shapes.polygon().colors,
+                //     vertices: Shapes.polygon(RADIUS[8], WIDTH, HEIGHT, 11, 0.1).vertices,
+                //     mode: gl.TRIANGLE_STRIP
+                // },
+                
+                // {
+                //     colors: Shapes.polygon().colors,
+                //     vertices: Shapes.polygon(RADIUS[9], WIDTH, HEIGHT, 12, 0.0).vertices,
+                //     mode: gl.TRIANGLE_STRIP
+                // }
+    
+        //     ]
+        // },
+
+    //     {
+    //         shapes: [
+    //             {
+    //                 color: {r: 1, g: 0, b: 1},
+    //                 vertices: Shapes.toRawLineArray(Shapes.parametricGenerator(Shapes.mobiusEquation)),
+    //                 mode: gl.LINES,
+    //                 transform: {
+    //                     tx: 0.5,
+    //                     ty: 0,
+    //                     tz: 0
+    //                 }
+    //             }
+    //         ]
+    //     },
+
+
+    //     {
+    //         shapes: [
+    //             {
+    //                 color: {r: 1, g: 0, b: 1},
+    //                 vertices: Shapes.toRawTriangleArray(Shapes.sphere()),
+    //                 mode: gl.TRIANGLES
+    //             }
+    //         ]
+    //     },
+
+    //     {
+    //         shapes: [
+    //             {
+    //                 color: {r: 1, g: 0, b: 1},
+    //                 vertices: Shapes.toRawLineArray(Shapes.parametricGenerator(Shapes.kleinEquation)),
+    //                 mode: gl.LINES,
+    //                 transform: {
+    //                     tx: -0.5,
+    //                     ty: 0,
+    //                     tz: 0
+    //                 }
+    //             }
+    //         ]
+    //     },
+
 
     // Pass the vertices to WebGL.
-    for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-        for(k = 0, maxk = objectsToDraw[i].shapes.length; k < maxk; k += 1) {
-            subShape = objectsToDraw[i].shapes[k];
-            subShape.buffer = GLSLUtilities.initVertexBuffer(gl,
-                    subShape.vertices);
+    passVertices = function (shape) {
+        var i,
+            maxi,
+            j,
+            maxj;
 
-            if (!subShape.colors) {
+        for (i = 0, maxi =  shape.length; i < maxi; i += 1) {
+            shape[i].buffer = GLSLUtilities.initVertexBuffer(gl,
+                     shape[i].vertices);
+
+            if (!shape[i].colors) {
                 // If we have a single color, we expand that into an array
                 // of the same color over and over.
-                subShape.colors = [];
-                for (j = 0, maxj = subShape.vertices.length / 3;
+                shape[i].colors = [];
+                for (j = 0, maxj = shape[i].vertices.length / 3;
                         j < maxj; j += 1) {
-                    subShape.colors = subShape.colors.concat(
-                        subShape.color.r,
-                        subShape.color.g,
-                        subShape.color.b
+                    shape[i].colors = shape[i].colors.concat(
+                        shape[i].color.r,
+                        shape[i].color.g,
+                        shape[i].color.b
                     );
                 }
             }
-            subShape.colorBuffer = GLSLUtilities.initVertexBuffer(gl,
-                    subShape.colors);
+
+            shape[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
+                    shape[i].colors);
+
+            if (shape[i].children && shape[i].children.length !== 0) {
+                passVertices(shape[i].children);
+            }
         }
-    }
+    };
 
     // Initialize the shaders.
     shaderProgram = GLSLUtilities.initSimpleShaderProgram(
@@ -270,8 +331,6 @@
     drawObject = function (object) {
         var i;
 
-        restore();
-
         if (object.transform) {
             gl.uniformMatrix4fv(instanceMatrix, gl.FALSE, new Float32Array(
                 Matrix4x4.instanceTransform(object.transform).toWebGLMatrix().elements
@@ -286,21 +345,20 @@
         gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer);
         gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
         gl.drawArrays(object.mode, 0, object.vertices.length / 3);
+
+        if (object.children) {
+            for (i = 0; i < object.children.length; i += 1) {
+                drawObject(object.children[i]);
+            }
+        }
     };
 
     /*
      * Displays the scene.
      */
     drawScene = function () {
-
-        // initialTransform = Matrix4x4.instanceTransform({
-        //     tx    : 0,
-        //     ty    : 0,
-        //     tz    : 0,
-        //     sx    : 1,
-        //     sy    : 1,
-        //     sz    : 1
-        // }).toWebGLMatrix().elements;
+        var i,
+            maxi;
 
         // Clear the display.
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -308,13 +366,8 @@
         // Set up the rotation matrix.
         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(Matrix4x4.rotate(currentRotation, 10, 0, 0).toWebGLMatrix().elements));
 
-        for (i = 0; i < objectsToDraw.length; i += 1) {
-            // if (isShapeVisible[i]) {
-                for(j = 0, maxj = objectsToDraw[i].shapes.length; j < maxj; j += 1) {
-                    drawObject(objectsToDraw[i].shapes[j]);
-
-                }
-            // }
+        for(i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
+            drawObject(objectsToDraw[i]);
         }
 
         // All done.
@@ -331,6 +384,7 @@
     );
 
     // Draw the initial scene.
+    passVertices(objectsToDraw);
     drawScene();
 
     // Set a little event handler toggling to display shapes
