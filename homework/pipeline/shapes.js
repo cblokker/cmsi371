@@ -53,24 +53,12 @@ var Shapes = {
         };
     },
 
-
-    // JD: Your shapes look and work great, and you should certainly keep them
-    //     handy.  However, by restricting all of them to TRIANGLE_STRIP, you
-    //     lose a degree of flexibility that a general mesh (i.e., separate,
-    //     arbitrary indices) affords.
-    //
-    //     You should try your hand with at least one generalized mesh in order
-    //     to round out your proficiency here.
-
     /*
      * Returns vertices for a 3D polygon in an order intended for gl.TRIANGLE_STRIP.  
      * Default value makes it a pentagon. Some of the given parameters for this shape 
      * function may be unnessisary if matrix transforms can be applied to the shape. 
      * But it does allow for easy customization, especially when it comes to the subshapes!
      */
-    // JD: Agreed: no harm in enabling some customization at the raw vertex level.
-    //     Transforms will simply make this just that much more flexible.
-    //
     //     One level of customization you might want to add: color choices.  Perhaps
     //     a customizable starting color and/or gradient step---anything that expands
     //     the possibilities without too much effort.
@@ -163,7 +151,10 @@ var Shapes = {
         }
     },
 
-
+    /*
+     * A function that returns an object for a klein shape to be passed in
+     * the parametric generator function.
+     */
     kleinEquation: function(u, v) {
         var r = 2 + Math.cos(u / 2) * Math.sin(v) - Math.sin(u / 2) * Math.sin(2 * v);
 
@@ -182,9 +173,11 @@ var Shapes = {
         };
     },
 
-
+    /*
+     * A function that returns an object for a mobius shape to be passed in
+     * the parametric generator function.
+     */
     mobiusEquation: function(u, v) {
-
         return {
             equation : [
                 (0.5 + u * Math.cos(v / 2)) * Math.cos(v),
@@ -200,6 +193,12 @@ var Shapes = {
         };
     },
 
+
+    /*
+     * The all powerful parametricGenerator function. Now, I can make a function
+     * that returns an object for any set of 3D parametric functions I may find.
+     * This function uses indices, so a general mesh can be applied to the shapes.
+     */
     parametricGenerator: function(parametric) {
         var vertices = [],
             indices = [],
