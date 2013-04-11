@@ -107,7 +107,7 @@ $(function () {
                  8,  9, 10, 11,
                 12, 13, 14, 15
             );
-            m6 = Matrix4x4.toWebGLMatrix(m5);
+            m6 = m5.toWebGLMatrix();
         deepEqual(m6.elements,
             [0, 4,  8, 12,
              1, 5,  9, 13,
@@ -121,7 +121,7 @@ $(function () {
                 2, 6, 10, 14,
                 3, 7, 11, 15
             );
-            m8 = Matrix4x4.toWebGLMatrix(m7);
+            m8 = m7.toWebGLMatrix();
         deepEqual(m8.elements,
             [0,  1,  2,  3,
              4,  5,  6,  7,

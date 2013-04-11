@@ -137,8 +137,8 @@ var Matrix4x4 = (function () {
     //
     //     (hope that helps)
     matrix4x4.frustum = function (left, right, bottom, top, zNear, zFar) {
-        var N = -zNear,
-            F = -zFar,
+        var N = zNear,
+            F = zFar,
             width = right - left,
             height = top - bottom,
             depth = zFar - zNear,
@@ -158,7 +158,7 @@ var Matrix4x4 = (function () {
     // JD: If you define this on the prototype, you will have a more "object-oriented"
     //     feel, i.e., var webGlMatrix = matrix.toWebGLMatrix() instead of
     //                 var webGlMatrix = Matrix4x4.toWebGLMatrix(matrix)
-    matrix4x4.toWebGLMatrix = function (m) {
+    matrix4x4.prototype.toWebGLMatrix = function () {
         var result = new Matrix4x4(),
             i,
             j,
@@ -166,7 +166,7 @@ var Matrix4x4 = (function () {
 
         for (j = 0; j < 4; j += 1) {
             for (i = 0; i < 4; i += 1) {
-                result.elements[count] = m.elements[i * 4 + j];
+                result.elements[count] = this.elements[i * 4 + j];
                 count += 1;
             }
         }
