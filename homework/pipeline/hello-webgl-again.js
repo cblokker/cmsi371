@@ -22,8 +22,13 @@
         currentRotation = 0.0,
         currentInterval,
         rotationMatrix,
+        instanceMatrix,
+        orthoMatrix,
+        frustumMatrix,
         vertexPosition,
         vertexColor,
+
+        savedContext = instanceMatrix,
 
         // An individual "draw object" function.
         drawObject,
@@ -141,32 +146,59 @@
                 {
                     color: {r: 1, g: 0, b: 1},
                     vertices: Shapes.toRawLineArray(Shapes.parametricGenerator(Shapes.mobiusEquation)),
-                    mode: gl.LINES
+                    mode: gl.LINES,
+                    transform: {
+                        tx: 0.5,
+                        ty: 0,
+                        tz: 0
+                    }
                 }
             ]
         },
 
 
-        // {
-        //     shapes: [
-        //         {
-        //             color: {r: 1, g: 0, b: 1},
-        //             vertices: Shapes.toRawTriangleArray(Shapes.sphere()),
-        //             mode: gl.TRIANGLES
-        //         }
-        //     ]
-        // },
+        {
+            shapes: [
+                {
+                    color: {r: 1, g: 0, b: 1},
+                    vertices: Shapes.toRawTriangleArray(Shapes.sphere()),
+                    mode: gl.TRIANGLES
+                }
+            ]
+        },
 
         {
             shapes: [
                 {
                     color: {r: 1, g: 0, b: 1},
                     vertices: Shapes.toRawLineArray(Shapes.parametricGenerator(Shapes.kleinEquation)),
-                    mode: gl.LINES
+                    mode: gl.LINES,
+                    transform: {
+                        tx: -0.5,
+                        ty: 0,
+                        tz: 0
+                    }
                 }
             ]
         },
     ];
+
+    save = function () {
+        savedContext = initialTransform;
+    };
+
+    restore = function () {
+        
+        // Reset instance transform matrix
+        gl.uniformMatrix4fv(instanceMatrix, gl.FALSE, new Float32Array(
+            savedContext
+        ));
+
+        // Reset rotation matrix
+        gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(
+            new Matrix4x4().elements
+        ));
+    };
 
     // Pass the vertices to WebGL.
     for (i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
@@ -230,11 +262,22 @@
     rotationMatrix = gl.getUniformLocation(shaderProgram, "rotationMatrix");
     frustumMatrix = gl.getUniformLocation(shaderProgram, "frustumMatrix");
     orthoMatrix = gl.getUniformLocation(shaderProgram, "orthoMatrix");
+    instanceMatrix = gl.getUniformLocation(shaderProgram, "instanceMatrix");
 
     /*
      * Displays an individual object.
      */
     drawObject = function (object) {
+        var i;
+
+        restore();
+
+        if (object.transform) {
+            gl.uniformMatrix4fv(instanceMatrix, gl.FALSE, new Float32Array(
+                Matrix4x4.instanceTransform(object.transform).toWebGLMatrix().elements
+            ));
+        }
+
         // Set the varying colors.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
         gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
@@ -249,6 +292,16 @@
      * Displays the scene.
      */
     drawScene = function () {
+
+        // initialTransform = Matrix4x4.instanceTransform({
+        //     tx    : 0,
+        //     ty    : 0,
+        //     tz    : 0,
+        //     sx    : 1,
+        //     sy    : 1,
+        //     sz    : 1
+        // }).toWebGLMatrix().elements;
+
         // Clear the display.
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -256,16 +309,18 @@
         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(Matrix4x4.rotate(currentRotation, 10, 0, 0).toWebGLMatrix().elements));
 
         for (i = 0; i < objectsToDraw.length; i += 1) {
-            if (isShapeVisible[i]) {
+            // if (isShapeVisible[i]) {
                 for(j = 0, maxj = objectsToDraw[i].shapes.length; j < maxj; j += 1) {
                     drawObject(objectsToDraw[i].shapes[j]);
+
                 }
-            }
+            // }
         }
 
         // All done.
         gl.flush();
     };
+
 
     gl.uniformMatrix4fv(orthoMatrix, gl.FALSE, new Float32Array(
         Matrix4x4.ortho(-3, 3, -3, 3, -6, 12).toWebGLMatrix().elements)
@@ -279,32 +334,25 @@
     drawScene();
 
     // Set a little event handler toggling to display shapes
-    // JD: The boolSHAPE array is a nice idea; it can get a better name
-    //     though, like isShapeVisible or something that explicitly states
-    //     what the boolean means.
-    //
-    //     Further, it appears that you did not get to the composite object
-    //     functionality.  You'll definitely want this; now that you have a
-    //     matrix library, this may be more motivational.
-    $("#telescope").click(function () {
-        isShapeVisible[0] = !isShapeVisible[0];
-        drawScene();
-    });
+    // $("#telescope").click(function () {
+    //     isShapeVisible[0] = !isShapeVisible[0];
+    //     drawScene();
+    // });
 
-    $("#mobius").click(function () {
-        isShapeVisible[1] = !isShapeVisible[1];
-        drawScene();
-    });
+    // $("#mobius").click(function () {
+    //     isShapeVisible[1] = !isShapeVisible[1];
+    //     drawScene();
+    // });
 
-    $("#sphere").click(function () {
-        isShapeVisible[2] = !isShapeVisible[2];
-        drawScene();
-    });
+    // $("#sphere").click(function () {
+    //     isShapeVisible[2] = !isShapeVisible[2];
+    //     drawScene();
+    // });
 
-    $("#klein").click(function () {
-        isShapeVisible[3] = !isShapeVisible[3];
-        drawScene();
-    });
+    // $("#klein").click(function () {
+    //     isShapeVisible[3] = !isShapeVisible[3];
+    //     drawScene();
+    // });
 
     // Set up the rotation toggle: clicking on the canvas does it.
     $(canvas).click(function () {

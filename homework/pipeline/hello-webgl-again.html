@@ -60,10 +60,10 @@
             uniform mat4 rotationMatrix;
             uniform mat4 frustumMatrix;
             uniform mat4 orthoMatrix;
-
+            uniform mat4 instanceMatrix;
 
             void main(void) {
-                gl_Position = frustumMatrix * orthoMatrix * rotationMatrix * vec4(vertexPosition, 1.0);
+                gl_Position = instanceMatrix * frustumMatrix * orthoMatrix * rotationMatrix * vec4(vertexPosition, 1.0);
                 finalVertexColor = vec4(vertexColor, 1.0);
             }
         </script>

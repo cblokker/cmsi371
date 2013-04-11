@@ -42,7 +42,7 @@ var Matrix4x4 = (function () {
 
     // A translation function which takes three parameters dx, dy, and dz, returning a
     // Matrix4x4 object that accurately represents this transformation.
-    matrix4x4.getTranslationMatrix = function (tx, ty, tz) {
+    matrix4x4.translate = function (tx, ty, tz) {
         return new Matrix4x4(
             1, 0, 0, tx,
             0, 1, 0, ty,
@@ -176,6 +176,36 @@ var Matrix4x4 = (function () {
 
         return result;
     };
+
+
+    matrix4x4.instanceTransform = function (transform) {
+        var translate = new Matrix4x4(),
+            scale = new Matrix4x4(),
+            rotate = new Matrix4x4();
+
+        translate = Matrix4x4.translate(
+            transform.tx || 0,
+            transform.ty || 0,
+            transform.tz || 0
+        );
+
+        scale = Matrix4x4.scale(
+            transform.sx || 1,
+            transform.sy || 1,
+            transform.sz || 1
+        );
+
+        // rotate = Matrix4x4.getRotationMatrix4x4(
+        //     transform.angle || 0,
+        //     transform.rx,
+        //     transform.ry,
+        //     transform.rz
+        // );
+
+        return translate.multiply(scale);
+
+
+    }
 
     return matrix4x4;
 

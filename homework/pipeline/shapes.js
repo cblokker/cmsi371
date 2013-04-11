@@ -215,7 +215,7 @@ var Shapes = {
 
             iNext = iNext = Math.floor(((U_START - U_END) / U_INTERVAL)) - 1;
 
-
+        // Set up vertices array
         for (v = V_START; v <= V_END; v += V_INTERVAL) {
             for (u = U_START; u <= U_END; u += U_INTERVAL) {
                 vertices.push(
@@ -224,7 +224,7 @@ var Shapes = {
             }
         }
 
-        // Set up vertices array (indended mode for these vertices is gl.TRIANGLE_STRIP)
+        // Set up indices array
         for (i = 0; i < vertices.length; i += 1) {
             indices.push(
                 [i, i + 1, i - iNext],
