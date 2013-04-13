@@ -177,9 +177,9 @@ var Matrix4x4 = (function () {
 
         rotate = Matrix4x4.rotate(
             transform.angle || 0,
-            transform.rx || 1,
-            transform.ry || 1,
-            transform.rz || 1
+            transform.rx || 0,
+            transform.ry || 0,
+            transform.rz || 0
         );
 
         return translate.multiply(scale.multiply(rotate));

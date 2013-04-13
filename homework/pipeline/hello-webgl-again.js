@@ -16,6 +16,9 @@
         shaderProgram,
 
         passVertices,
+        cameraRotate,
+        save,
+        restore,
 
         // Utility variable indicating whether some fatal has occurred.
         abort = false,
@@ -77,9 +80,9 @@
                 tx: 0.0,
                 ty: 0.0,
                 tz: 0.0,
-                angle: 0,
-                rx: 1,
-                ry: 0,
+                angle: 45,
+                rx: 0,
+                ry: 1,
                 rz: 0
             }
         },
@@ -258,19 +261,19 @@
         // },
     ];
 
-    save = function () {
-        savedContext = defaultTransform;
-    };
+    // save = function () {
+    //     savedContext = defaultTransform;
+    // };
 
-    restore = function () {
-        gl.uniformMatrix4fv(instanceMatrix, gl.FALSE, new Float32Array(
-            savedContext
-        ));
+    // restore = function () {
+    //     gl.uniformMatrix4fv(instanceMatrix, gl.FALSE, new Float32Array(
+    //         savedContext
+    //     ));
 
-        gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(
-            new Matrix4x4().elements
-        ));
-    };
+    //     gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(
+    //         new Matrix4x4().elements
+    //     ));
+    // };
         
 
     /* 
@@ -384,18 +387,21 @@
         var i,
             maxi;
 
-        defaultTransform = Matrix4x4.instanceTransform({
-            tx:0,
-            ty:0,
-            tz:0,
-            sx:1,
-            sy:1,
-            sz:1,
-            angle:0,
-            rx:0,
-            ry:0,
-            rz:1
-        }).toWebGLMatrix().elements;
+        // defaultTransform = Matrix4x4.instanceTransform({
+        //     tx:0,
+        //     ty:0,
+        //     tz:0,
+        //     sx:1,
+        //     sy:1,
+        //     sz:1,
+        //     angle:0,
+        //     rx:0,
+        //     ry:0,
+        //     rz:1
+        // }).toWebGLMatrix().elements;
+
+        // Matrix4x4.rotate(3, 1.0, 0.0, 0.0);
+        // Matrix4x4.rotate(45, 0.0, 1.0, 0.0);
 
         // Clear the display.
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -404,9 +410,9 @@
         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(Matrix4x4.rotate(currentRotation, 10, 0, 0).toWebGLMatrix().elements));
 
         for(i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-            save();
+            // save();
             drawObject(objectsToDraw[i]);
-            restore();
+            // restore();
         }
 
         // All done.
@@ -421,25 +427,50 @@
         Matrix4x4.frustum(-0.5, 0.5, -0.5, 0.5, 0.2, 100).toWebGLMatrix().elements)
     );
 
+    var rotationAroundX,
+        rotationAroundY,
+        xRotationStart,
+        yRotationStart,
+        xDragStart,
+        yDragStart
+
+    cameraRotate = function (event) {
+        rotationAroundX = xRotationStart + yDragStart - event.clientY;
+        rotationAroundY = yRotationStart + xDragStart - event.clientX;
+        drawScene();
+    };
+
+    canvas.onmousedown = function (event) {
+        xDragStart = event.clientX;
+        yDragStart = event.clientY;
+        xRotationStart = rotationAroundX;
+        yRotationStart = rotationAroundY;
+        canvas.onmousemove = cameraRotate;
+    };
+
+    canvas.onmouseup = function () {
+        canvas.onmousemove = null;
+    };
+
     // Draw the initial scene.
     passVertices(objectsToDraw);
     drawScene();
 
-    var isMoving = false;
+    // var isMoving = false;
 
-    $(canvas).mousedown(function () {
-        console.log("mousedown");
-        isMoving = false;
-    });
+    // $(canvas).mousedown(function () {
+    //     console.log("mousedown");
+    //     isMoving = false;
+    // });
 
-    $(canvas).mousemove(function () {
-        console.log("mousemove");
-        isMoving = true;
-    });
+    // $(canvas).mousemove(function () {
+    //     console.log("mousemove");
+    //     isMoving = true;
+    // });
 
-    $(canvas).mouseup(function () {
-        console.log("mouseup");
-    });
+    // $(canvas).mouseup(function () {
+    //     console.log("mouseup");
+    // });
 
 
     // Set a little event handler toggling to display shapes
@@ -464,30 +495,30 @@
     // });
 
     // Set up the rotation toggle: clicking on the canvas does it.
-    $(canvas).click(function () {
-        if (currentInterval) {
-            clearInterval(currentInterval);
-            currentInterval = null;
-            drawScene();
-        } else {
-            currentInterval = setInterval(function () {
-                var updateRotation = function (objects) {
-                    for (var i = 0; i < objects.length; i += 1) {
-                        if (objects[i].transform) {
-                            objects[i].transform.angle += 1.0;
-                            if (objects[i].transform.angle >= 360.0) {
-                                currentRotation -= 360.0;
-                            }
-                        }
-                        if (objects[i].children) {
-                            updateRotation(objects[i].children);
-                        }
-                    }
-                };
-                updateRotation(objectsToDraw);
-                drawScene();
-            }, 30);
-        }
-    });
+    // $(canvas).click(function () {
+    //     if (currentInterval) {
+    //         clearInterval(currentInterval);
+    //         currentInterval = null;
+    //         drawScene();
+    //     } else {
+    //         currentInterval = setInterval(function () {
+    //             var updateRotation = function (objects) {
+    //                 for (var i = 0; i < objects.length; i += 1) {
+    //                     if (objects[i].transform) {
+    //                         objects[i].transform.angle += 1.0;
+    //                         if (objects[i].transform.angle >= 360.0) {
+    //                             currentRotation -= 360.0;
+    //                         }
+    //                     }
+    //                     if (objects[i].children) {
+    //                         updateRotation(objects[i].children);
+    //                     }
+    //                 }
+    //             };
+    //             updateRotation(objectsToDraw);
+    //             drawScene();
+    //         }, 30);
+    //     }
+    // });
 
 }(document.getElementById("hello-webgl")));
