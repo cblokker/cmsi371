@@ -70,7 +70,6 @@
     objectsToDraw = [
 
         {
-            // colors: Shapes.parametricGenerator(Shapes.mobiusEquation).colors,
             colors: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.mobiusEquation)).colors,
             vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.mobiusEquation)).vertices,
             mode: gl.TRIANGLES,
@@ -83,6 +82,22 @@
                 ry: 0,
                 rz: 0
             }
+        },
+
+        {
+            colors: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.kleinEquation)).colors,
+            vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.kleinEquation)).vertices,
+            mode: gl.TRIANGLES,
+            transform: {
+                tx: 0.0,
+                ty: 0.8,
+                tz: 0.3,
+                angle: 0,
+                rx: 1,
+                ry: 0,
+                rz: 0
+            }
+        }
 
             // children: [
             //     {
@@ -111,7 +126,7 @@
             //         }
             //     }
             // ]
-        }
+        // }
 
         // {
         //     color: {r: 0.0, g: 0.5, b: 0.5},

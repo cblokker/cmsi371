@@ -59,9 +59,6 @@ var Shapes = {
      * function may be unnessisary if matrix transforms can be applied to the shape. 
      * But it does allow for easy customization, especially when it comes to the subshapes!
      */
-    //     One level of customization you might want to add: color choices.  Perhaps
-    //     a customizable starting color and/or gradient step---anything that expands
-    //     the possibilities without too much effort.
     polygon: function (ringRadius, ringWidth, ringHeight, numOfSides, zPos, xPos, yPos) {
         var vertices = [],
             indices = [],
@@ -170,8 +167,11 @@ var Shapes = {
             uEnd      : 2.01 * Math.PI,
             uInterval : 0.3,
             vStart    : - Math.PI / 2,
-            vEnd      : (3.01 / 2) * Math.PI,
-            vInterval : 0.3
+            vEnd      : (3.1 / 2) * Math.PI,
+            vInterval : 0.3,
+            colorStart: [1.0, 0.0, 0.0],
+            colorEnd: [0.0, 1.0, 0.0],
+            colorDivs: 4
         };
     },
 
@@ -192,8 +192,9 @@ var Shapes = {
             vStart    : 0.0,
             vEnd      : 2.1 * Math.PI,
             vInterval : 0.1,
-            colorStopStart: [1.0, 0.0, 0.0],
-            colorStopEnd: [0.0, 1.0, 0.0]
+            colorStart: [1.0, 0.0, 1.0],
+            colorEnd: [0.0, 1.0, 0.75],
+            colorDivs: 2
         };
     },
 
@@ -213,11 +214,8 @@ var Shapes = {
             V_START = parametric().vStart,
             V_END = parametric().vEnd,
             V_INTERVAL = parametric().vInterval,
-            colorStart = parametric().colorStopStart,
-            colorEnd = parametric().colorStopEnd,
-
-            colors = colors.concat(colorStart, colorEnd),
-
+            colors = colors.concat(parametric().colorStart, parametric().colorEnd),
+            colorDivs = parametric().colorDivs,
 
             iNext = iNext = Math.floor(((U_START - U_END) / U_INTERVAL)) - 1;
 
@@ -241,22 +239,9 @@ var Shapes = {
         return {
             vertices: vertices,
             indices: indices,
-            colors: colors
+            colors: colors,
+            colorDivs: colorDivs
         };
-    },
-
-    colors: function () {
-        var colors = [];
-
-        for (i = 0; i < 4332; i += 1) {
-            colors.push(
-                0.5,
-                0.5,
-                0.5
-            );
-        }
-
-        return colors;
     },
 
     /* 
@@ -306,6 +291,8 @@ var Shapes = {
      * Utility function for turning indexed vertices into a "raw" coordinate array
      * arranged as triangles.
      */
+     // Might want to factor out generating color arrays into separate functions
+     // if they're the same for both toRawTriangleArray and toRawLineArray
     toRawTriangleArray: function (indexedVertices) {
         var vertices = [],
             colors = [],
@@ -314,13 +301,15 @@ var Shapes = {
             maxi,
             maxj,
             
-            r1 = indexedVertices.colors[0],
-            g1 = indexedVertices.colors[1],
-            b1 = indexedVertices.colors[2];
+            rStart = indexedVertices.colors[0],
+            gStart = indexedVertices.colors[1],
+            bStart = indexedVertices.colors[2],
 
-            r2 = indexedVertices.colors[3],
-            g2 = indexedVertices.colors[4],
-            b2 = indexedVertices.colors[5];
+            rEnd = indexedVertices.colors[3],
+            gEnd = indexedVertices.colors[4],
+            bEnd = indexedVertices.colors[5],
+
+            colorDivs = indexedVertices.colorDivs;
 
         for (i = 0, maxi = indexedVertices.indices.length; i < maxi; i += 1) {
             for (j = 0, maxj = indexedVertices.indices[i].length; j < maxj; j += 1) {
@@ -332,20 +321,24 @@ var Shapes = {
             }
         }
 
-        for (i = 0; i < vertices.length / 6; i += 1) {
-            colors.push(
-                r1 - (r1 - r2) * (i / (vertices.length / 6)),
-                g1 - (g1 - g2) * (i / (vertices.length / 6)),
-                b1 - (b1 - b2) * (i / (vertices.length / 6))
-            );
-        }
-
-        for (i = vertices.length / 6; i > 0; i -= 1) {
-            colors.push(
-                r1 - (r1 - r2) * (i / (vertices.length / 6)),
-                g1 - (g1 - g2) * (i / (vertices.length / 6)),
-                b1 - (b1 - b2) * (i / (vertices.length / 6))
-            );
+        for (i = 0; i < colorDivs; i += 1) {
+            if (i % 2 == 0) {
+                for (j = 0; j < vertices.length / (3 * colorDivs); j += 1) {
+                    colors.push(
+                        rStart - (rStart - rEnd) * (j / (vertices.length / (3 * colorDivs))),
+                        gStart - (gStart - gEnd) * (j / (vertices.length / (3 * colorDivs))),
+                        bStart - (bStart - bEnd) * (j / (vertices.length / (3 * colorDivs)))
+                    );
+                }
+            } else {
+                for (j = vertices.length / (3 * colorDivs); j > 0; j -= 1) {
+                    colors.push(
+                        rStart - (rStart - rEnd) * (j / (vertices.length / (3 * colorDivs))),
+                        gStart - (gStart - gEnd) * (j / (vertices.length / (3 * colorDivs))),
+                        bStart - (bStart - bEnd) * (j / (vertices.length / (3 * colorDivs)))
+                    );
+                }
+            }
         }
 
         return {
@@ -360,10 +353,21 @@ var Shapes = {
      */
     toRawLineArray: function (indexedVertices) {
         var vertices = [],
+            colors = [],
             i,
             j,
             maxi,
-            maxj;
+            maxj,
+
+            rStart = indexedVertices.colors[0],
+            gStart = indexedVertices.colors[1],
+            bStart = indexedVertices.colors[2],
+
+            rEnd = indexedVertices.colors[3],
+            gEnd = indexedVertices.colors[4],
+            bEnd = indexedVertices.colors[5],
+
+            colorDivs = indexedVertices.colorDivs;
 
         for (i = 0, maxi = indexedVertices.indices.length; i < maxi; i += 1) {
             for (j = 0, maxj = indexedVertices.indices[i].length; j < maxj; j += 1) {
@@ -379,17 +383,29 @@ var Shapes = {
             }
         }
 
-        for (i = 0; i < vertices.length / 3; i += 1) {
-            colors.push(
-                1.0,
-                0.0,
-                1.0
-            );
+        for (i = 0; i < colorDivs; i += 1) {
+            if (i % 2 == 0) {
+                for (j = 0; j < vertices.length / (3 * colorDivs); j += 1) {
+                    colors.push(
+                        rStart - (rStart - rEnd) * (j / (vertices.length / (3 * colorDivs))),
+                        gStart - (gStart - gEnd) * (j / (vertices.length / (3 * colorDivs))),
+                        bStart - (bStart - bEnd) * (j / (vertices.length / (3 * colorDivs)))
+                    );
+                }
+            } else {
+                for (j = vertices.length / (3 * colorDivs); j > 0; j -= 1) {
+                    colors.push(
+                        rStart - (rStart - rEnd) * (j / (vertices.length / (3 * colorDivs))),
+                        gStart - (gStart - gEnd) * (j / (vertices.length / (3 * colorDivs))),
+                        bStart - (bStart - bEnd) * (j / (vertices.length / (3 * colorDivs)))
+                    );
+                }
+            }
         }
 
         return {
             vertices: vertices,
-            colors: color
+            colors: colors
         };
     },
 }
