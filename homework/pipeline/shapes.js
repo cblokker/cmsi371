@@ -64,6 +64,7 @@ var Shapes = {
     //     the possibilities without too much effort.
     polygon: function (ringRadius, ringWidth, ringHeight, numOfSides, zPos, xPos, yPos) {
         var vertices = [],
+            indices = [],
             colors = [],
             x = [],
             y = [],
@@ -147,6 +148,7 @@ var Shapes = {
 
         return {
             vertices: vertices,
+            indices: indices,
             colors: colors
         }
     },
@@ -189,10 +191,11 @@ var Shapes = {
             uInterval : 0.1,
             vStart    : 0.0,
             vEnd      : 2.1 * Math.PI,
-            vInterval : 0.1
+            vInterval : 0.1,
+            colorStopStart: [1.0, 0.0, 0.0],
+            colorStopEnd: [0.0, 1.0, 0.0]
         };
     },
-
 
     /*
      * The all powerful parametricGenerator function. Now, I can make a function
@@ -210,6 +213,10 @@ var Shapes = {
             V_START = parametric().vStart,
             V_END = parametric().vEnd,
             V_INTERVAL = parametric().vInterval,
+            colorStart = parametric().colorStopStart,
+            colorEnd = parametric().colorStopEnd,
+
+            colors = colors.concat(colorStart, colorEnd),
 
 
             iNext = iNext = Math.floor(((U_START - U_END) / U_INTERVAL)) - 1;
@@ -236,6 +243,20 @@ var Shapes = {
             indices: indices,
             colors: colors
         };
+    },
+
+    colors: function () {
+        var colors = [];
+
+        for (i = 0; i < 4332; i += 1) {
+            colors.push(
+                0.5,
+                0.5,
+                0.5
+            );
+        }
+
+        return colors;
     },
 
     /* 
@@ -274,23 +295,6 @@ var Shapes = {
             );
         }
 
-        // Color gradient: Created for color stops to be at equator and poles.
-        // for (i = 0; i < vertices.length / 12; i += 1) {
-        //     colors.push(
-        //         (1.0 * i) / (vertices.length / 3),
-        //         ((0.25 * (vertices.length / 3)) / i),
-        //         ((0.5 * (vertices.length / 3)) / i)
-        //     );
-        // }
-
-        // for (i = (vertices.length / 6); i > 0; i -= 1) {
-        //     colors.push(
-        //         (1.0 * i) / (vertices.length / 6),
-        //         ((0.25 * (vertices.length / 6)) / i),
-        //         ((0.5 * (vertices.length / 6)) / i)
-        //     );
-        // }
-
         return {
             vertices: vertices,
             indices: indices,
@@ -304,10 +308,19 @@ var Shapes = {
      */
     toRawTriangleArray: function (indexedVertices) {
         var vertices = [],
+            colors = [],
             i,
             j,
             maxi,
-            maxj;
+            maxj,
+            
+            r1 = indexedVertices.colors[0],
+            g1 = indexedVertices.colors[1],
+            b1 = indexedVertices.colors[2];
+
+            r2 = indexedVertices.colors[3],
+            g2 = indexedVertices.colors[4],
+            b2 = indexedVertices.colors[5];
 
         for (i = 0, maxi = indexedVertices.indices.length; i < maxi; i += 1) {
             for (j = 0, maxj = indexedVertices.indices[i].length; j < maxj; j += 1) {
@@ -319,7 +332,26 @@ var Shapes = {
             }
         }
 
-        return vertices;
+        for (i = 0; i < vertices.length / 6; i += 1) {
+            colors.push(
+                r1 - (r1 - r2) * (i / (vertices.length / 6)),
+                g1 - (g1 - g2) * (i / (vertices.length / 6)),
+                b1 - (b1 - b2) * (i / (vertices.length / 6))
+            );
+        }
+
+        for (i = vertices.length / 6; i > 0; i -= 1) {
+            colors.push(
+                r1 - (r1 - r2) * (i / (vertices.length / 6)),
+                g1 - (g1 - g2) * (i / (vertices.length / 6)),
+                b1 - (b1 - b2) * (i / (vertices.length / 6))
+            );
+        }
+
+        return {
+            vertices: vertices,
+            colors: colors
+        };
     },
 
     /*
@@ -347,6 +379,17 @@ var Shapes = {
             }
         }
 
-        return vertices;
+        for (i = 0; i < vertices.length / 3; i += 1) {
+            colors.push(
+                1.0,
+                0.0,
+                1.0
+            );
+        }
+
+        return {
+            vertices: vertices,
+            colors: color
+        };
     },
 }
