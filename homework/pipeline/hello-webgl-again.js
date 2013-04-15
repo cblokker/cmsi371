@@ -2,6 +2,14 @@
  * For maximum modularity, we place everything within a single function that
  * takes the canvas that it will need.
  */
+
+ // To do List:
+ // * Create relative positioning for children
+ // * Add camera movement
+ // * Add keyframes/tweening functions to the shapes object
+ // * Add JavaScript event handlers for user interaction
+ // * Add physics
+ // * Think of the entire scene, something like this - http://wxs.ca/iso/
 (function (canvas) {
 
     // Because many of these variables are best initialized then immediately
@@ -16,9 +24,6 @@
         shaderProgram,
 
         passVertices,
-        cameraRotate,
-        save,
-        restore,
 
         // Utility variable indicating whether some fatal has occurred.
         abort = false,
@@ -62,12 +67,47 @@
 
     // telescope contants
     var RADIUS = [],
+        xPosition = []
         WIDTH = 0.05,
-        HEIGHT = 0.2;
+        HEIGHT = 0.1;
 
-    for (i = 0.1; i < 10; i += 0.1) {
+    for (i = 0.2; i < 20; i += 0.1) {
         RADIUS.push(i);
     }
+
+    for (i = -2.1; i < 10; i += 0.8) {
+        xPosition.push(i);
+    }
+
+    honeyCombGenerator = function () {
+        var tx,
+            ty,
+            tz,
+            txMax,
+            tyMax,
+            children = [];
+
+        for (tx = -12, txMax = 12; tx <= txMax; tx += 0.6) {
+            for (ty = -12, tyMax = 12; ty < tyMax; ty += 0.55) {
+                children.push({
+                    color: {r: 1, g: 1, b: 0.0},
+                    vertices: Shapes.polygon(0.4, 0.1, 1.0, 6).vertices,
+                    mode: gl.TRIANGLE_STRIP,
+                    transform: {
+                        tx: tx + ty * 0.5,
+                        ty: ty,
+                        tz: Math.sin(ty) + Math.cos(tx),
+                        angle: 0,
+                        rx: 1,
+                        ry: 0,
+                        rz: 0
+                    }
+                });
+            }
+        }
+
+        return children;
+    },
 
     // Build the objects to display.
     objectsToDraw = [
@@ -77,7 +117,7 @@
             vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.mobiusEquation)).vertices,
             mode: gl.TRIANGLES,
             transform: {
-                tx: 0.0,
+                tx: 2.0,
                 ty: 0.0,
                 tz: 0.0,
                 angle: 45,
@@ -93,187 +133,198 @@
             mode: gl.TRIANGLES,
             transform: {
                 tx: 0.0,
-                ty: 0.8,
-                tz: 0.3,
+                ty: 2.0,
+                tz: 0.0,
                 angle: 0,
                 rx: 1,
                 ry: 0,
-                rz: 0
+                rz: 1
             }
+        },
+
+        {
+            color: {r: 1, g: 1, b: 0.0},
+            vertices: Shapes.polygon(0.4, 0.1, 2.0, 6).vertices,
+            mode: gl.TRIANGLE_STRIP,
+            transform: {
+                tx: 0.0,
+                ty: 0.0,
+                tz: 0.0,
+                angle: 0,
+                rx: 0,
+                ry: 0,
+                rz: 0
+            },
+            children: honeyCombGenerator()
+        },
+
+        {
+            colors: Shapes.polygon().colors,
+            vertices: Shapes.polygon(RADIUS[0], WIDTH, HEIGHT, 3).vertices,
+            mode: gl.TRIANGLE_STRIP,
+            transform: {
+                tx: 0.0,
+                ty: 0.0,
+                tz: 0.0,
+                angle: 45,
+                rx: 1,
+                ry: 0,
+                rz: 0
+            },
+
+            children: [
+                {
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(RADIUS[1], WIDTH, HEIGHT, 4).vertices,
+                    mode: gl.TRIANGLE_STRIP,
+                    transform: {
+                        tx: 0.0,
+                        ty: 0.0,
+                        tz: 0.0,
+                        angle: 45,
+                        rx: 0,
+                        ry: 0,
+                        rz: 1
+                    }
+                },
+
+                {
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(RADIUS[2], WIDTH, HEIGHT, 5).vertices,
+                    mode: gl.TRIANGLE_STRIP,
+                    transform: {
+                        tx: 0.0,
+                        ty: 0.0,
+                        tz: 0.0,
+                        angle: 45,
+                        rx: 0,
+                        ry: 1,
+                        rz: 0
+                    }
+                },
+
+                {
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(RADIUS[3], WIDTH, HEIGHT, 6).vertices,
+                    mode: gl.TRIANGLE_STRIP,
+                    transform: {
+                        tx: 0.0,
+                        ty: 0.0,
+                        tz: 0.0,
+                        angle: 45,
+                        rx: 1,
+                        ry: 0,
+                        rz: 0
+                    }
+                },
+
+                {
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(RADIUS[4], WIDTH, HEIGHT, 7).vertices,
+                    mode: gl.TRIANGLE_STRIP,
+                    transform: {
+                        tx: 0.0,
+                        ty: 0.0,
+                        tz: 0.0,
+                        angle: 45,
+                        rx: 0,
+                        ry: 0,
+                        rz: 1
+                    }
+                },
+
+                {
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(RADIUS[5], WIDTH, HEIGHT, 8).vertices,
+                    mode: gl.TRIANGLE_STRIP,
+                    transform: {
+                        tx: 0.0,
+                        ty: 0.0,
+                        tz: 0.0,
+                        angle: 45,
+                        rx: 0,
+                        ry: 1,
+                        rz: 0
+                    }
+                },
+
+                {
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(RADIUS[6], WIDTH, HEIGHT, 9).vertices,
+                    mode: gl.TRIANGLE_STRIP,
+                    transform: {
+                        tx: 0.0,
+                        ty: 0.0,
+                        tz: 0.0,
+                        angle: 45,
+                        rx: 1,
+                        ry: 0,
+                        rz: 0
+                    }
+                },
+
+                {
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(RADIUS[7], WIDTH, HEIGHT, 10).vertices,
+                    mode: gl.TRIANGLE_STRIP,
+                    transform: {
+                        tx: 0.0,
+                        ty: 0.0,
+                        tz: 0.0,
+                        angle: 45,
+                        rx: 0,
+                        ry: 0,
+                        rz: 1
+                    }
+                },
+                
+                {
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(RADIUS[8], WIDTH, HEIGHT, 11).vertices,
+                    mode: gl.TRIANGLE_STRIP,
+                        transform: {
+                        tx: 0.0,
+                        ty: 0.0,
+                        tz: 0.0,
+                        angle: 45,
+                        rx: 0,
+                        ry: 1,
+                        rz: 0
+                    }
+                },
+                
+                {
+                    colors: Shapes.polygon().colors,
+                    vertices: Shapes.polygon(RADIUS[9], WIDTH, HEIGHT, 12).vertices,
+                    mode: gl.TRIANGLE_STRIP,
+                        transform: {
+                        tx: 0.0,
+                        ty: 0.0,
+                        tz: 0.0,
+                        angle: 45,
+                        rx: 1,
+                        ry: 0,
+                        rz: 0
+                    }
+                }
+            ]
         }
-
-            // children: [
-            //     {
-            //         color: {r: 0.5, g: 0.0, b: 0.5},
-            //         vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.kleinEquation)),
-            //         mode: gl.TRIANGLES,
-            //         transform: {
-            //             tx: -0.7,
-            //             ty: 0.0,
-            //             tz: 0.0,
-            //             angle: 0,
-            //             rx: 1,
-            //             ry: 10,
-            //             rz: 1
-            //         }
-            //     },
-
-            //     {
-            //         color: {r: 1.0, g: 0.0, b: 1.0},
-            //         vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.kleinEquation)),
-            //         mode: gl.TRIANGLES,
-            //         transform: {
-            //             tx: 0.9,
-            //             ty: 0.0,
-            //             tz: 0.0
-            //         }
-            //     }
-            // ]
-        // }
-
-        // {
-        //     color: {r: 0.0, g: 0.5, b: 0.5},
-        //     vertices: Shapes.toRawTriangleArray(Shapes.sphere()),
-        //     mode: gl.TRIANGLES,
-        //     transform: {
-        //         tx: 0.0,
-        //         ty: 0.0,
-        //         tz: 0.0,
-        //         angle: 180,
-        //         rx: 1,
-        //         ry: 0,
-        //         rz: 0
-        //     }
-        // },
-
-        // {
-        //     colors: Shapes.polygon().colors,
-        //     vertices: Shapes.polygon(RADIUS[0], WIDTH, HEIGHT, 3).vertices,
-        //     mode: gl.TRIANGLE_STRIP,
-        //     transform: {
-        //         tx: 0.0,
-        //         ty: 0.0,
-        //         tz: 0.0
-        //     },
-
-        //     children: [
-        //         {
-        //             colors: Shapes.polygon().colors,
-        //             vertices: Shapes.polygon(RADIUS[1], WIDTH, HEIGHT, 4).vertices,
-        //             mode: gl.TRIANGLE_STRIP,
-        //             transform: {
-        //                 tx: 0.0,
-        //                 ty: 0.0,
-        //                 tz: 0.0
-        //             }
-        //         },
-
-        //         {
-        //             colors: Shapes.polygon().colors,
-        //             vertices: Shapes.polygon(RADIUS[2], WIDTH, HEIGHT, 5).vertices,
-        //             mode: gl.TRIANGLE_STRIP,
-        //             transform: {
-        //                 tx: 0.0,
-        //                 ty: 0.0,
-        //                 tz: 0.0
-        //             }
-        //         },
-
-        //         {
-        //             colors: Shapes.polygon().colors,
-        //             vertices: Shapes.polygon(RADIUS[3], WIDTH, HEIGHT, 6).vertices,
-        //             mode: gl.TRIANGLE_STRIP,
-        //             transform: {
-        //                 tx: 0.0,
-        //                 ty: 0.0,
-        //                 tz: 0.0
-        //             }
-        //         },
-
-        //         {
-        //             colors: Shapes.polygon().colors,
-        //             vertices: Shapes.polygon(RADIUS[4], WIDTH, HEIGHT, 7).vertices,
-        //             mode: gl.TRIANGLE_STRIP,
-        //             transform: {
-        //                 tx: 0.0,
-        //                 ty: 0.0,
-        //                 tz: 0.0
-        //             }
-        //         },
-
-        //         {
-        //             colors: Shapes.polygon().colors,
-        //             vertices: Shapes.polygon(RADIUS[5], WIDTH, HEIGHT, 8).vertices,
-        //             mode: gl.TRIANGLE_STRIP,
-        //             transform: {
-        //                 tx: 0.0,
-        //                 ty: 0.0,
-        //                 tz: 0.0
-        //             }
-        //         },
-
-        //         {
-        //             colors: Shapes.polygon().colors,
-        //             vertices: Shapes.polygon(RADIUS[6], WIDTH, HEIGHT, 9).vertices,
-        //             mode: gl.TRIANGLE_STRIP,
-        //             transform: {
-        //                 tx: 0.0,
-        //                 ty: 0.0,
-        //                 tz: 0.0
-        //             }
-        //         },
-
-        //         {
-        //             colors: Shapes.polygon().colors,
-        //             vertices: Shapes.polygon(RADIUS[7], WIDTH, HEIGHT, 10).vertices,
-        //             mode: gl.TRIANGLE_STRIP,
-        //             transform: {
-        //                 tx: 0.0,
-        //                 ty: 0.0,
-        //                 tz: 0.0
-        //             }
-        //         },
-                
-        //         {
-        //             colors: Shapes.polygon().colors,
-        //             vertices: Shapes.polygon(RADIUS[8], WIDTH, HEIGHT, 11).vertices,
-        //             mode: gl.TRIANGLE_STRIP,
-        //                 transform: {
-        //                 tx: 0.0,
-        //                 ty: 0.0,
-        //                 tz: 0.0,
-        //                 angle: 0
-        //             }
-        //         },
-                
-        //         {
-        //             colors: Shapes.polygon().colors,
-        //             vertices: Shapes.polygon(RADIUS[9], WIDTH, HEIGHT, 12).vertices,
-        //             mode: gl.TRIANGLE_STRIP,
-        //                 transform: {
-        //                 tx: 0.0,
-        //                 ty: 0.0,
-        //                 tz: 0.0,
-        //                 angle: 0
-        //             }
-        //         }
-        //     ]
-        // },
     ];
 
-    // save = function () {
-    //     savedContext = defaultTransform;
-    // };
 
-    // restore = function () {
-    //     gl.uniformMatrix4fv(instanceMatrix, gl.FALSE, new Float32Array(
-    //         savedContext
-    //     ));
+    save = function () {
+        savedContext = defaultTransform;
+    };
 
-    //     gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(
-    //         new Matrix4x4().elements
-    //     ));
-    // };
+    restore = function () {
+        gl.uniformMatrix4fv(instanceMatrix, gl.FALSE, new Float32Array(
+            savedContext
+        ));
+
+        gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(
+            new Matrix4x4().elements
+        ));
+    };
         
 
     /* 
@@ -289,20 +340,19 @@
             shape[i].buffer = GLSLUtilities.initVertexBuffer(gl,
                      shape[i].vertices);
 
-            // if (!shape[i].colors) {
-            //     console.log("hi");
-            //     // If we have a single color, we expand that into an array
-            //     // of the same color over and over.
-            //     shape[i].colors = [];
-            //     for (j = 0, maxj = shape[i].vertices.length / 3;
-            //             j < maxj; j += 1) {
-            //         shape[i].colors = shape[i].colors.concat(
-            //             shape[i].color.r,
-            //             shape[i].color.g,
-            //             shape[i].color.b
-            //         );
-            //     }
-            // }
+            if (!shape[i].colors) {
+                // If we have a single color, we expand that into an array
+                // of the same color over and over.
+                shape[i].colors = [];
+                for (j = 0, maxj = shape[i].vertices.length / 3;
+                        j < maxj; j += 1) {
+                    shape[i].colors = shape[i].colors.concat(
+                        shape[i].color.r,
+                        shape[i].color.g,
+                        shape[i].color.b
+                    );
+                }
+            }
 
             shape[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
                     shape[i].colors);
@@ -387,21 +437,18 @@
         var i,
             maxi;
 
-        // defaultTransform = Matrix4x4.instanceTransform({
-        //     tx:0,
-        //     ty:0,
-        //     tz:0,
-        //     sx:1,
-        //     sy:1,
-        //     sz:1,
-        //     angle:0,
-        //     rx:0,
-        //     ry:0,
-        //     rz:1
-        // }).toWebGLMatrix().elements;
-
-        // Matrix4x4.rotate(3, 1.0, 0.0, 0.0);
-        // Matrix4x4.rotate(45, 0.0, 1.0, 0.0);
+        defaultTransform = Matrix4x4.instanceTransform({
+            tx:0,
+            ty:0,
+            tz:0,
+            sx:1,
+            sy:1,
+            sz:1,
+            angle:0,
+            rx:0,
+            ry:0,
+            rz:1
+        }).toWebGLMatrix().elements;
 
         // Clear the display.
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -410,9 +457,9 @@
         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(Matrix4x4.rotate(currentRotation, 10, 0, 0).toWebGLMatrix().elements));
 
         for(i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
-            // save();
+            save();
             drawObject(objectsToDraw[i]);
-            // restore();
+            restore();
         }
 
         // All done.
@@ -420,7 +467,7 @@
     };
 
     gl.uniformMatrix4fv(orthoMatrix, gl.FALSE, new Float32Array(
-        Matrix4x4.ortho(-3, 3, -3, 3, -6, 12).toWebGLMatrix().elements)
+        Matrix4x4.ortho(-3, 3, -3, 3, -12, 24).toWebGLMatrix().elements)
     );
 
     gl.uniformMatrix4fv(frustumMatrix, gl.FALSE, new Float32Array(
@@ -434,23 +481,23 @@
         xDragStart,
         yDragStart
 
-    cameraRotate = function (event) {
-        rotationAroundX = xRotationStart + yDragStart - event.clientY;
-        rotationAroundY = yRotationStart + xDragStart - event.clientX;
-        drawScene();
-    };
+    // cameraRotate = function (event) {
+    //     rotationAroundX = xRotationStart + yDragStart - event.clientY;
+    //     rotationAroundY = yRotationStart + xDragStart - event.clientX;
+    //     drawScene();
+    // };
 
-    canvas.onmousedown = function (event) {
-        xDragStart = event.clientX;
-        yDragStart = event.clientY;
-        xRotationStart = rotationAroundX;
-        yRotationStart = rotationAroundY;
-        canvas.onmousemove = cameraRotate;
-    };
+    // canvas.onmousedown = function (event) {
+    //     xDragStart = event.clientX;
+    //     yDragStart = event.clientY;
+    //     xRotationStart = rotationAroundX;
+    //     yRotationStart = rotationAroundY;
+    //     canvas.onmousemove = cameraRotate;
+    // };
 
-    canvas.onmouseup = function () {
-        canvas.onmousemove = null;
-    };
+    // canvas.onmouseup = function () {
+    //     canvas.onmousemove = null;
+    // };
 
     // Draw the initial scene.
     passVertices(objectsToDraw);
@@ -494,31 +541,31 @@
     //     drawScene();
     // });
 
-    // Set up the rotation toggle: clicking on the canvas does it.
-    // $(canvas).click(function () {
-    //     if (currentInterval) {
-    //         clearInterval(currentInterval);
-    //         currentInterval = null;
-    //         drawScene();
-    //     } else {
-    //         currentInterval = setInterval(function () {
-    //             var updateRotation = function (objects) {
-    //                 for (var i = 0; i < objects.length; i += 1) {
-    //                     if (objects[i].transform) {
-    //                         objects[i].transform.angle += 1.0;
-    //                         if (objects[i].transform.angle >= 360.0) {
-    //                             currentRotation -= 360.0;
-    //                         }
-    //                     }
-    //                     if (objects[i].children) {
-    //                         updateRotation(objects[i].children);
-    //                     }
-    //                 }
-    //             };
-    //             updateRotation(objectsToDraw);
-    //             drawScene();
-    //         }, 30);
-    //     }
-    // });
+    //Set up the rotation toggle: clicking on the canvas does it.
+    $(canvas).click(function () {
+        if (currentInterval) {
+            clearInterval(currentInterval);
+            currentInterval = null;
+            drawScene();
+        } else {
+            currentInterval = setInterval(function () {
+                var updateRotation = function (objects) {
+                    for (var i = 0; i < objects.length; i += 1) {
+                        if (objects[i].transform) {
+                            objects[i].transform.angle += 1.0;
+                            if (objects[i].transform.angle >= 360.0) {
+                                currentRotation -= 360.0;
+                            }
+                        }
+                        if (objects[i].children) {
+                            updateRotation(objects[i].children);
+                        }
+                    }
+                };
+                updateRotation(objectsToDraw);
+                drawScene();
+            }, 30);
+        }
+    });
 
 }(document.getElementById("hello-webgl")));

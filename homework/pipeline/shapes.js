@@ -321,6 +321,7 @@ var Shapes = {
             }
         }
 
+        // Color gradient
         for (i = 0; i < colorDivs; i += 1) {
             if (i % 2 == 0) {
                 for (j = 0; j < vertices.length / (3 * colorDivs); j += 1) {
