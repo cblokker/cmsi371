@@ -101,13 +101,13 @@
             yFrequency = yFrequency || 0,
             currentSinRipple = currentSinRipple || 1;
 
-        for (tx = -5, txMax = 5; tx <= txMax; tx += 0.7) {
-            for (ty = -5, tyMax = 5; ty < tyMax; ty += 0.7) {
+        for (tx = -7, txMax = 7; tx <= txMax; tx += 0.7) {
+            for (ty = -7, tyMax = 7; ty < tyMax; ty += 0.7) {
                 children.push({
                     color: {
-                        r: Math.abs(Math.sin(xFrequency * tx / 10) + Math.cos(yFrequency * ty / 10)),
-                        g: 0.5,
-                        b: 0.0
+                        r: 3.5 * Math.sin(currentSinRipple * Math.sqrt( Math.pow(tx, 2) + Math.pow(ty, 2) )) * (1 / ( Math.sqrt( Math.pow(tx, 2) + Math.pow(ty, 2) ))),
+                        g: 0.5 * Math.sin(currentSinRipple * Math.sqrt( Math.pow(tx, 2) + Math.pow(ty, 2) )) * (1 / ( Math.sqrt( Math.pow(tx, 2) + Math.pow(ty, 2) ))),
+                        b: 0.5
                     },
                     vertices: Shapes.polygon(0.4, 0.1, 1.0, 6).vertices,
                     mode: gl.TRIANGLE_STRIP,
@@ -546,13 +546,29 @@
 
     // $('#defaultSlider').change();
 
-    // frequency buttons
-    // $("#add").click(function () {
-    //     honeyCombFrequency += 20;
-    //     passVertices(objectsToDraw);
-    //     drawScene();
-    // });
+    // Animate Button
+    $("#animate").click(function () {
+        if (currentInterval) {
+            clearInterval(currentInterval);
+            currentInterval = null;
+        } else {
+            currentInterval = setInterval(function () {
+                currentSinRipple -= 0.1;
+                if (currentSinRipple < -3.0) {
+                    currentSinRipple = 2.0;
+                    
+                }
+                
+                objectsToDraw[0].children = honeyCombGenerator(currentSinRipple);
+                
+                passVertices(objectsToDraw);
+                drawScene();
+            }, 0.001);
+        }
+    });
 
+
+    // Rotation event handling
     $(canvas).mousedown(function (event) {
         mouseDown = true;
         lastMouseX = event.clientX;
@@ -574,56 +590,13 @@
             gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(
                 rotateXandY.toWebGLMatrix().elements)
             );
-            // passVertices(objectsToDraw);
+
             drawScene();
         }
     });
 
-    // $(canvas).mouseup(function (event) {
-    //     mouseDown = false;
-    // });
-
-    $(canvas).click(function () {
-        if (currentInterval) {
-            clearInterval(currentInterval);
-            currentInterval = null;
-        } else {
-            currentInterval = setInterval(function () {
-                currentSinRipple -= 0.05;
-                objectsToDraw[0].children = honeyCombGenerator(currentSinRipple);
-                
-                passVertices(objectsToDraw);
-                drawScene();
-            }, 1);
-        }
+    $(canvas).mouseup(function (event) {
+        mouseDown = false;
     });
-
-
-    // $(canvas).click(function () {
-    //     if (currentInterval) {
-    //         clearInterval(currentInterval);
-    //         currentInterval = null;
-    //         drawScene();
-    //     } else {
-    //         currentInterval = setInterval(function () {
-    //             var updateRotation = function (objects) {
-    //                 for (var i = 0; i < objects.length; i += 1) {
-    //                     if (objects[i].transform) {
-    //                         objects[i].transform.angle += 1.0;
-    //                         if (objects[i].transform.angle >= 360.0) {
-    //                             currentRotation -= 360.0;
-    //                         }
-    //                     }
-    //                     if (objects[i].children) {
-    //                         updateRotation(objects[i].children);
-    //                     }
-    //                 }
-    //             };
-
-    //             updateRotation(objectsToDraw);
-    //             drawScene();
-    //         }, 30);
-    //     }
-    // });
 
 }(document.getElementById("hello-webgl")));
