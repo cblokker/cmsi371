@@ -40,13 +40,15 @@
         vertexPosition,
         vertexColor,
 
-        tweenedValue = 0.0,
+        currentSinRipple = 2.0,
 
         currentFrame = 0,
 
         savedContext = instanceMatrix,
 
         tweenScene,
+
+        honeyCombGenerator,
 
         // Event handling for user rotation
         mouseDown = false,
@@ -62,8 +64,6 @@
 
         // An individual "draw object" function.
         drawObject,
-
-        // updateSlider,
 
         // The big "draw scene" function.
         drawScene,
@@ -87,7 +87,47 @@
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.viewport(0, 0, canvas.width, canvas.height);
 
-    // telescope contants
+    // A function that returns a very specific honeycomb shape - maybe I should
+    // generalize (pull out the data) for more customizations!
+    honeyCombGenerator = function (currentSinRipple, xFrequency, yFrequency) {
+        var tx,
+            ty,
+            tz,
+            txMax,
+            tyMax,
+            children = [],
+
+            xFrequency = xFrequency || 0,
+            yFrequency = yFrequency || 0,
+            currentSinRipple = currentSinRipple || 1;
+
+        for (tx = -5, txMax = 5; tx <= txMax; tx += 0.7) {
+            for (ty = -5, tyMax = 5; ty < tyMax; ty += 0.7) {
+                children.push({
+                    color: {
+                        r: Math.abs(Math.sin(xFrequency * tx / 10) + Math.cos(yFrequency * ty / 10)),
+                        g: 0.5,
+                        b: 0.0
+                    },
+                    vertices: Shapes.polygon(0.4, 0.1, 1.0, 6).vertices,
+                    mode: gl.TRIANGLE_STRIP,
+                    transform: {
+                        tx: tx,
+                        ty: ty,
+                        tz: 2 * Math.sin(currentSinRipple * Math.sqrt( Math.pow(tx, 2) + Math.pow(ty, 2) )) * (1 / ( Math.sqrt( Math.pow(tx, 2) + Math.pow(ty, 2) ))), //2 * Math.sin(xFrequency * tx / 10) + 2 * Math.cos(yFrequency * ty / 10),
+                        angle: 0,
+                        rx: 1,
+                        ry: 0,
+                        rz: 0
+                    }
+                });
+            }
+        }
+
+        return children;
+    },
+
+    // telescope constants - make a helper function
     // var RADIUS = [],
     //     WIDTH = 0.05,
     //     HEIGHT = 0.1;
@@ -98,6 +138,22 @@
 
     // Build the objects to display.
     objectsToDraw = [
+
+        {
+            color: {r: 1, g: 1, b: 0.0},
+            vertices: Shapes.polygon(0.4, 0.1, 2.0, 6).vertices,
+            mode: gl.TRIANGLE_STRIP,
+            transform: {
+                tx: 0.0,
+                ty: 0.0,
+                tz: 0.0,
+                angle: 0,
+                rx: 0,
+                ry: 0,
+                rz: 0
+            },
+            children: honeyCombGenerator(currentSinRipple)
+        }
 
         // {
         //     colors: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.mobiusEquation)).colors,
@@ -128,38 +184,6 @@
         //         rz: 1
         //     }
         // },
-
-        {
-            color: {r: 1, g: 1, b: 0.0},
-            vertices: Shapes.polygon(0.4, 0.1, 2.0, 6).vertices,
-            mode: gl.TRIANGLE_STRIP,
-            transform: {
-                tx: 0.0,
-                ty: 0.0,
-                tz: 0.0,
-                angle: 0,
-                rx: 0,
-                ry: 0,
-                rz: 0
-            },
-            // keyframes: [
-            //     {
-            //         frame: 0,
-            //         ease: keyframeTweener.quadEaseOut,
-            //         tx: 0.0,
-            //         ty: 0.0,
-            //         tz: 0.0
-            //     },
-            //     {
-            //         frame: 50,
-            //         ease: keyframeTweener.quadEaseIn,
-            //         tx: 0.0
-            //         ty: 0.5
-            //         tz: 0.5
-            //     }
-            // ]
-            children: Shapes.honeyCombGenerator(gl.TRIANGLE_STRIP, tweenedValue, 5, 7)
-        },
 
         // {
         //     colors: Shapes.polygon().colors,
@@ -323,6 +347,8 @@
             j,
             maxj;
 
+            console.log(currentSinRipple);
+
         for (i = 0, maxi =  shape.length; i < maxi; i += 1) {
             shape[i].buffer = GLSLUtilities.initVertexBuffer(gl,
                      shape[i].vertices);
@@ -440,60 +466,60 @@
         gl.flush();
     };
 
-    createTween = function (start, startDistance, end) {
+    // createTween = function (start, startDistance, end) {
 
-    };
+    // };
 
-    tweenScene = function () {
-        // Some reusable loop variables.
-        var i,
-            j,
-            maxI,
-            maxJ,
-            ease,
-            startKeyframe,
-            endKeyframe,
-            txStart,
-            txDistance,
-            tyStart,
-            tyDistance,
-            sxStart,
-            sxDistance,
-            syStart,
-            syDistance,
-            rotateStart,
-            rotateDistance,
-            currentTweenFrame,
-            numOfRingsStart,
-            numOfRingsEnd,
-            opacityStart,
-            opacityEnd,
-            opacityDistance,
-            duration;
+    // tweenScene = function () {
+    //     // Some reusable loop variables.
+    //     var i,
+    //         j,
+    //         maxI,
+    //         maxJ,
+    //         ease,
+    //         startKeyframe,
+    //         endKeyframe,
+    //         txStart,
+    //         txDistance,
+    //         tyStart,
+    //         tyDistance,
+    //         sxStart,
+    //         sxDistance,
+    //         syStart,
+    //         syDistance,
+    //         rotateStart,
+    //         rotateDistance,
+    //         currentTweenFrame,
+    //         numOfRingsStart,
+    //         numOfRingsEnd,
+    //         opacityStart,
+    //         opacityEnd,
+    //         opacityDistance,
+    //         duration;
 
-        // For every objectsToDraw go to the current pair of keyframes.
-        // Then, draw the objectsToDrawbased on the current frame.
-        for (i = 0, maxI = objectsToDraw.length; i < maxI; i += 1) {                
-            for (j = 0, maxJ = objectsToDraw[i].keyframes.length - 1; j < maxJ; j += 1) { 
-                // We look for keyframe pairs such that the current
-                // frame is between their frame numbers.
-                if ((objectsToDraw[i].keyframes[j].frame <= currentFrame) &&
-                        (currentFrame <= objectsToDraw[i].keyframes[j + 1].frame)) {
-                    // Point to the start and end keyframes.
-                    startKeyframe = objectsToDraw[i].keyframes[j];
-                    endKeyframe = objectsToDraw[i].keyframes[j + 1];
+    //     // For every objectsToDraw go to the current pair of keyframes.
+    //     // Then, draw the objectsToDrawbased on the current frame.
+    //     for (i = 0, maxI = objectsToDraw.length; i < maxI; i += 1) {                
+    //         for (j = 0, maxJ = objectsToDraw[i].keyframes.length - 1; j < maxJ; j += 1) { 
+    //             // We look for keyframe pairs such that the current
+    //             // frame is between their frame numbers.
+    //             if ((objectsToDraw[i].keyframes[j].frame <= currentFrame) &&
+    //                     (currentFrame <= objectsToDraw[i].keyframes[j + 1].frame)) {
+    //                 // Point to the start and end keyframes.
+    //                 startKeyframe = objectsToDraw[i].keyframes[j];
+    //                 endKeyframe = objectsToDraw[i].keyframes[j + 1];
 
-                    // Save the rendering context state.
-                    renderingContext.save();
+    //                 // Save the rendering context state.
+    //                 renderingContext.save();
 
-                    // Set up our start and distance values, using defaults
-                    // if necessary.
-                    ease = startKeyframe.ease || KeyframeTweener.linear;
+    //                 // Set up our start and distance values, using defaults
+    //                 // if necessary.
+    //                 ease = startKeyframe.ease || KeyframeTweener.linear;
 
-                }
-            }
-        }
-    };
+    //             }
+    //         }
+    //     }
+    // };
 
     // The ortho and frustum matrices
     gl.uniformMatrix4fv(orthoMatrix, gl.FALSE, new Float32Array(
@@ -521,42 +547,41 @@
     // $('#defaultSlider').change();
 
     // frequency buttons
-    $("#add").click(function () {
-        honeyCombFrequency += 20;
-        passVertices(objectsToDraw);
-        drawScene();
-    });
-
-    // $(canvas).mousedown(function (event) {
-    //     mouseDown = true;
-    //     lastMouseX = event.clientX;
-    //     lastMouseY = event.clientY;
+    // $("#add").click(function () {
+    //     honeyCombFrequency += 20;
+    //     passVertices(objectsToDraw);
     //     drawScene();
     // });
 
-    // $(canvas).mousemove(function (event) {
-    //     if (mouseDown) {
-    //         newX = event.clientX,
-    //         newY = event.clientY,
-    //         deltaX = newX - lastMouseX,
-    //         deltaY = newY - lastMouseY,
+    $(canvas).mousedown(function (event) {
+        mouseDown = true;
+        lastMouseX = event.clientX;
+        lastMouseY = event.clientY;
+        drawScene();
+    });
 
-    //         rotateX = Matrix4x4.rotate(deltaY, -1, 0, 0);
-    //         rotateY = Matrix4x4.rotate(deltaX, 0, -1, 0);
-    //         rotateXandY = rotateX.multiply(rotateY);
+    $(canvas).mousemove(function (event) {
+        if (mouseDown) {
+            newX = event.clientX,
+            newY = event.clientY,
+            deltaX = newX - lastMouseX,
+            deltaY = newY - lastMouseY,
 
-    //         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(
-    //             rotateXandY.toWebGLMatrix().elements)
-    //         );
-    //         // passVertices(objectsToDraw);
-    //         drawScene();
-    //     }
-    // });
+            rotateX = Matrix4x4.rotate(deltaY, -1, 0, 0);
+            rotateY = Matrix4x4.rotate(deltaX, 0, -1, 0);
+            rotateXandY = rotateX.multiply(rotateY);
+
+            gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(
+                rotateXandY.toWebGLMatrix().elements)
+            );
+            // passVertices(objectsToDraw);
+            drawScene();
+        }
+    });
 
     // $(canvas).mouseup(function (event) {
     //     mouseDown = false;
     // });
-console.log(tweenedValue);
 
     $(canvas).click(function () {
         if (currentInterval) {
@@ -564,11 +589,41 @@ console.log(tweenedValue);
             currentInterval = null;
         } else {
             currentInterval = setInterval(function () {
-                tweenedValue += 0.1;
+                currentSinRipple -= 0.05;
+                objectsToDraw[0].children = honeyCombGenerator(currentSinRipple);
+                
                 passVertices(objectsToDraw);
                 drawScene();
-            }, 100);
+            }, 1);
         }
     });
+
+
+    // $(canvas).click(function () {
+    //     if (currentInterval) {
+    //         clearInterval(currentInterval);
+    //         currentInterval = null;
+    //         drawScene();
+    //     } else {
+    //         currentInterval = setInterval(function () {
+    //             var updateRotation = function (objects) {
+    //                 for (var i = 0; i < objects.length; i += 1) {
+    //                     if (objects[i].transform) {
+    //                         objects[i].transform.angle += 1.0;
+    //                         if (objects[i].transform.angle >= 360.0) {
+    //                             currentRotation -= 360.0;
+    //                         }
+    //                     }
+    //                     if (objects[i].children) {
+    //                         updateRotation(objects[i].children);
+    //                     }
+    //                 }
+    //             };
+
+    //             updateRotation(objectsToDraw);
+    //             drawScene();
+    //         }, 30);
+    //     }
+    // });
 
 }(document.getElementById("hello-webgl")));
