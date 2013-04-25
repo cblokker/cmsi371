@@ -150,6 +150,48 @@ var Shapes = {
         }
     },
 
+    // A function that returns a very specific honeycomb shape - maybe I should
+    // generalize (pull out the data) for more customizations!
+    honeyCombGenerator: function (mode, tweenedValue, xFrequency, yFrequency) {
+        var tx,
+            ty,
+            tz,
+            txMax,
+            tyMax,
+            children = [],
+
+            xFrequency = xFrequency || 0,
+            yFrequency = yFrequency || 0,
+            tweenedValue = tweenedValue || 1;
+
+        Math.sin()
+
+        for (tx = -20, txMax = 20; tx <= txMax; tx += 0.7) {
+            for (ty = -20, tyMax = 20; ty < tyMax; ty += 0.7) {
+                children.push({
+                    color: {
+                        r: Math.abs(Math.sin(xFrequency * tx / 10) + Math.cos(yFrequency * ty / 10)),
+                        g: 0.5,
+                        b: 0.0
+                    },
+                    vertices: this.polygon(0.4, 0.1, 1.0, 6).vertices,
+                    mode: mode,
+                    transform: {
+                        tx: tx,
+                        ty: ty,
+                        tz: 6 * Math.sin(tweenedValue * Math.sqrt( Math.pow(tx, 2) + Math.pow(ty, 2) )) * (1 / ( Math.sqrt( Math.pow(tx, 2) + Math.pow(ty, 2) ))), //2 * Math.sin(xFrequency * tx / 10) + 2 * Math.cos(yFrequency * ty / 10),
+                        angle: 0,
+                        rx: 1,
+                        ry: 0,
+                        rz: 0
+                    }
+                });
+            }
+        }
+
+        return children;
+    },
+
     /*
      * A function that returns an object for a klein shape to be passed in
      * the parametric generator function.
@@ -272,7 +314,7 @@ var Shapes = {
             }
         }
 
-        //Set up indices array
+        // Set up indices array
         for (i = 0; i <= vertices.length; i += 1) {
             indices.push(
                 [i, i + 1, i + latitudeBands + 1],
@@ -384,6 +426,7 @@ var Shapes = {
             }
         }
 
+        // Color gradient
         for (i = 0; i < colorDivs; i += 1) {
             if (i % 2 == 0) {
                 for (j = 0; j < vertices.length / (3 * colorDivs); j += 1) {

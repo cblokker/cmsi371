@@ -3,21 +3,12 @@
     <head>
         <meta charset="UTF-8"/>
         <title>Sphere</title>
-        <link rel="stylesheet" href="hello-webgl-again.css" />
+        <link rel="stylesheet" href="scene.css" />
     </head>
     <body>
-        <h1>Hello WebGL (again)!</h1>
+        <h1>Honeycomb</h1>
 
-        <p>You’ll need a WebGL-capable web browser to see anything here;
-            instructions can be found in this
-            <a href="http://www.khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">official
-            WebGL wiki page</a>.</p>
-
-        <p>This page adds a few more fundamental features, showing how
-            further functionality can be added to the software stack.
-            Click the canvas to see what else is new.</p>
-
-        <canvas id="hello-webgl" width="512" height="512">
+        <canvas id="hello-webgl" width="600" height="600">
             Sorry, your web browser does not appear to support
             the <code>canvas</code> element, either.
         </canvas>
@@ -37,12 +28,10 @@
 <!--         <input id="defaultSlider" type="range" min="0" max="500" />
         <p class="note">Current value: <span id="currentValue">0</span></p> -->
 
-        <div id="slider">
-            <input id="slide" type="range" min="5" max="200" step="5" value="100"
-                       onchange="updateSlider(this.value)"/>
-        </div><br/>
+        <input id="defaultSlider" type="range" min="0" max="500" />
+        <p class="note">HoneyComb Frequency: <span id="currentValue">0</span></p>
 
-
+        <button id="add">Frequency</button>
 
         <!-- Set up shaders: we've placed the source in script elements for
             simplicity.  Shaders are ideally kept in separate files for easier

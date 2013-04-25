@@ -79,14 +79,13 @@ var KeyframeTweener = {
     // - renderingContext: the 2D canvas rendering context to use
     // - width: the width of the canvas element
     // - height: the height of the canvas element
-    // - sprites: the array of sprites to animate
+    // - objectsToDraw: the array of objectsToDraw to animate
     // - frameRate: number of frames per second (default 24)
     //
-    // In turn, each sprite is a JavaScript object with the following
+    // In turn, each objectsToDrawis a JavaScript object with the following
     // properties:
     //
-    // - draw: the function that draws the sprite
-    // - keyframes: the array of keyframes that the sprite should follow
+    // - draw: the function that draws the objectsToDraw    // - keyframes: the array of keyframes that the objectsToDrawshould follow
     //
     // Finally, each keyframe is a JavaScript object with the following
     // properties.  Unlike the other objects, defaults are provided in
@@ -95,9 +94,9 @@ var KeyframeTweener = {
     // - frame: the global animation frame number in which this keyframe
     //          it to appear
     // - ease: the easing function to use (default is KeyframeTweener.linear)
-    // - tx, ty: the location of the sprite (default is 0, 0)
-    // - sx, sy: the scale factor of the sprite (default is 1, 1)
-    // - rotate: the rotation angle of the sprite (default is 0)
+    // - tx, ty: the location of the objectsToDraw(default is 0, 0)
+    // - sx, sy: the scale factor of the objectsToDraw(default is 1, 1)
+    // - rotate: the rotation angle of the objectsToDraw(default is 0)
     //
     // Initialization primarily calls setInterval on a custom-built
     // frame-drawing (and updating) function.
@@ -106,11 +105,11 @@ var KeyframeTweener = {
         var currentFrame = 0,
 
             // Avoid having to go through settings to get to the
-            // rendering context and sprites.
+            // rendering context and objectsToDraw.
             renderingContext = settings.renderingContext,
             width = settings.width,
             height = settings.height,
-            sprites = settings.sprites;
+            objectsToDraw = settings.objectsToDraw;
 
         setInterval(function () {
             // Some reusable loop variables.
@@ -139,45 +138,18 @@ var KeyframeTweener = {
                 opacityDistance,
                 duration;
 
-            // Draw the canvas.
-
-            // JD: This wasn't separated right.  Note that this background is specific
-            //     to your scene.  This code should actually be in the demo file, then
-            //     *passed* into KeyframeTweener as a parameter.  This way, you keep
-            //     the animation library reusable and other scenes can be built from
-            //     it with different backgrounds.
-
-            linearSkyGradient = renderingContext.createLinearGradient(0, 0, 0, 300);
-            linearGrassGradient = renderingContext.createLinearGradient(0, 300, 0, 425);
-
-            linearSkyGradient.addColorStop(1, 'grey');
-            linearSkyGradient.addColorStop(0, 'blue');
-
-            linearGrassGradient.addColorStop(0, '#003300');
-            linearGrassGradient.addColorStop(1, 'green');
-
-            renderingContext.fillStyle = linearSkyGradient;
-            renderingContext.fillRect(0, 0, width, height * ( 2 / 3));
-
-            renderingContext.fillStyle = linearGrassGradient;
-            renderingContext.fillRect(0, height * ( 2 / 3), width, height);
-
-            renderingContext.strokeStyle = 'black';
-            renderingContext.strokeRect(29, 34, (width / 2) - 66, 12);
-            renderingContext.strokeRect(29 + (width / 2), 34, (width / 2) - 66, 12);
-
-            // For every sprite, go to the current pair of keyframes.
-            // Then, draw the sprite based on the current frame.
-            for (i = 0, maxI = sprites.length; i < maxI; i += 1) {                
-                for (j = 0, maxJ = sprites[i].keyframes.length - 1; j < maxJ; j += 1) {
+            // For every objectsToDraw go to the current pair of keyframes.
+            // Then, draw the objectsToDrawbased on the current frame.
+            for (i = 0, maxI = objectsToDraw.length; i < maxI; i += 1) {                
+                for (j = 0, maxJ = objectsToDraw[i].keyframes.length - 1; j < maxJ; j += 1) {
                     // for (var k = 0; k < 2; k++) {
                     // We look for keyframe pairs such that the current
                     // frame is between their frame numbers.
-                    if ((sprites[i].keyframes[j].frame <= currentFrame) &&
-                            (currentFrame <= sprites[i].keyframes[j + 1].frame)) {
+                    if ((objectsToDraw[i].keyframes[j].frame <= currentFrame) &&
+                            (currentFrame <= objectsToDraw[i].keyframes[j + 1].frame)) {
                         // Point to the start and end keyframes.
-                        startKeyframe = sprites[i].keyframes[j];
-                        endKeyframe = sprites[i].keyframes[j + 1];
+                        startKeyframe = objectsToDraw[i].keyframes[j];
+                        endKeyframe = objectsToDraw[i].keyframes[j + 1];
 
                         // Save the rendering context state.
                         renderingContext.save();
@@ -215,19 +187,8 @@ var KeyframeTweener = {
                         );
                         renderingContext.globalAlpha = ease(currentTweenFrame, opacityStart, opacityDistance, duration);
                         
-                        // Draw the sprite.
-
-                        // JD: OK, there is a misunderstanding here in terms of how the draw array
-                        //     was to be used.  This also explains why your demo code forced one
-                        //     draw function per keyframe.  They should actually be independent,
-                        //     the inner animation "looping" on its own while the tweening was
-                        //     happening (for reference, see the Pacman cut scene---note how Pacman
-                        //     opens/closes his mouth repeatedly even while moving along.
-                        //
-                        //     It is clear, though, that your code worked as you intended; the
-                        //     gap was in understanding the requested functionality.
-
-                        sprites[i].draw[j](renderingContext);
+                        // Draw the objectsToDraw
+                        objectsToDraw[i].draw(renderingContext);
 
                         // Clean up.
                         renderingContext.restore();
