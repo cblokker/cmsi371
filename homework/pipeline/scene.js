@@ -33,6 +33,7 @@
         // Important state variables.
         currentRotation = 0.0,
         currentInterval,
+        modelViewMatrix,
         rotationMatrix,
         instanceMatrix,
         orthoMatrix,
@@ -40,7 +41,12 @@
         vertexPosition,
         vertexColor,
 
-        currentSinRipple = 2.0,
+        // For emphasis, we separate the variables that involve lighting.
+        normalVector,
+        lightPosition,
+        lightDiffuse,
+
+        currentSinRipple = 0.1,
 
         currentFrame = 0,
 
@@ -101,24 +107,24 @@
             yFrequency = yFrequency || 0,
             currentSinRipple = currentSinRipple || 1;
 
-        for (tx = -7, txMax = 7; tx <= txMax; tx += 0.7) {
-            for (ty = -7, tyMax = 7; ty < tyMax; ty += 0.7) {
+        for (tx = -7, txMax = 7; tx <= txMax; tx += 0.6) {
+            for (ty = -7, tyMax = 7; ty < tyMax; ty += 0.6) {
                 children.push({
                     color: {
-                        r: 3.5 * Math.sin(currentSinRipple * Math.sqrt( Math.pow(tx, 2) + Math.pow(ty, 2) )) * (1 / ( Math.sqrt( Math.pow(tx, 2) + Math.pow(ty, 2) ))),
-                        g: 0.5 * Math.sin(currentSinRipple * Math.sqrt( Math.pow(tx, 2) + Math.pow(ty, 2) )) * (1 / ( Math.sqrt( Math.pow(tx, 2) + Math.pow(ty, 2) ))),
-                        b: 0.5
+                        r: 2 * Math.abs(Math.sin(currentSinRipple * Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2) )) * (1 / (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2))))),
+                        g: 1.0,
+                        b: 0.1 * Math.abs(Math.sin(currentSinRipple * Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2) )) * (1 / (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2)))))
                     },
-                    vertices: Shapes.polygon(0.4, 0.1, 1.0, 6).vertices,
+                    vertices: Shapes.polygon(0.3, 0.1, 3.0, 6).vertices,
                     mode: gl.TRIANGLE_STRIP,
                     transform: {
                         tx: tx,
                         ty: ty,
-                        tz: 2 * Math.sin(currentSinRipple * Math.sqrt( Math.pow(tx, 2) + Math.pow(ty, 2) )) * (1 / ( Math.sqrt( Math.pow(tx, 2) + Math.pow(ty, 2) ))), //2 * Math.sin(xFrequency * tx / 10) + 2 * Math.cos(yFrequency * ty / 10),
-                        angle: 0,
+                        tz: 3 * Math.sin(currentSinRipple * Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2))) * (1 / (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2)))), //2 * Math.sin(xFrequency * tx / 10) + 2 * Math.cos(yFrequency * ty / 10),
+                        angle: 20 * Math.abs(Math.sin(currentSinRipple) + Math.sin(currentSinRipple)),
                         rx: 1,
                         ry: 0,
-                        rz: 0
+                        rz: 1
                     }
                 });
             }
@@ -138,29 +144,90 @@
 
     // Build the objects to display.
     objectsToDraw = [
+           {
+            vertices: Shapes.toRawTriangleArray(Shapes.cube()).vertices,
+            // 12 triangles in all.
+            color: {r: 0.0, g: 0.5, b: 0.25},
+            // Like colors, one normal per vertex.  This can be simplified
+            // with helper functions, of course.
+            normals: [].concat(
+                [ 0.0, 1.0, 0.0 ],
+                [ 0.0, 1.0, 0.0 ],
+                [ 0.0, 1.0, 0.0 ],
+                [ 0.0, 1.0, 0.0 ],
+                [ 0.0, 1.0, 0.0 ],
+                [ 0.0, 1.0, 0.0 ],
 
-        {
-            color: {r: 1, g: 1, b: 0.0},
-            vertices: Shapes.polygon(0.4, 0.1, 2.0, 6).vertices,
-            mode: gl.TRIANGLE_STRIP,
+                [ 0.0, 0.0, 1.0 ],
+                [ 0.0, 0.0, 1.0 ],
+                [ 0.0, 0.0, 1.0 ],
+                [ 0.0, 0.0, 1.0 ],
+                [ 0.0, 0.0, 1.0 ],
+                [ 0.0, 0.0, 1.0 ],
+
+                [ 1.0, 0.0, 0.0 ],
+                [ 1.0, 0.0, 0.0 ],
+                [ 1.0, 0.0, 0.0 ],
+                [ 1.0, 0.0, 0.0 ],
+                [ 1.0, 0.0, 0.0 ],
+                [ 1.0, 0.0, 0.0 ],
+
+                [ 0.0, 0.0, -1.0 ],
+                [ 0.0, 0.0, -1.0 ],
+                [ 0.0, 0.0, -1.0 ],
+                [ 0.0, 0.0, -1.0 ],
+                [ 0.0, 0.0, -1.0 ],
+                [ 0.0, 0.0, -1.0 ],
+
+                [ -1.0, 0.0, 0.0 ],
+                [ -1.0, 0.0, 0.0 ],
+                [ -1.0, 0.0, 0.0 ],
+                [ -1.0, 0.0, 0.0 ],
+                [ -1.0, 0.0, 0.0 ],
+                [ -1.0, 0.0, 0.0 ],
+
+                [ 0.0, -1.0, 0.0 ],
+                [ 0.0, -1.0, 0.0 ],
+                [ 0.0, -1.0, 0.0 ],
+                [ 0.0, -1.0, 0.0 ],
+                [ 0.0, -1.0, 0.0 ],
+                [ 0.0, -1.0, 0.0 ]
+            ),
+
+            mode: gl.TRIANGLES,
             transform: {
-                tx: 0.0,
+                tx: 5.2,
                 ty: 0.0,
                 tz: 0.0,
                 angle: 0,
-                rx: 0,
+                rx: 1,
                 ry: 0,
                 rz: 0
-            },
-            children: honeyCombGenerator(currentSinRipple)
+            }
         }
+
+        // {
+        //     color: {r: 1, g: 1, b: 0.0},
+        //     vertices: Shapes.polygon(0.0, 0.0, 0.0, 0).vertices,
+        //     mode: gl.TRIANGLE_STRIP,
+        //     transform: {
+        //         tx: 0.0,
+        //         ty: 0.0,
+        //         tz: 0.0,
+        //         angle: 0,
+        //         rx: 0,
+        //         ry: 0,
+        //         rz: 0
+        //     },
+        //     children: honeyCombGenerator(currentSinRipple)
+        // },
 
         // {
         //     colors: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.mobiusEquation)).colors,
         //     vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.mobiusEquation)).vertices,
         //     mode: gl.TRIANGLES,
         //     transform: {
-        //         tx: 2.0,
+        //         tx: 5.0,
         //         ty: 0.0,
         //         tz: 0.0,
         //         angle: 45,
@@ -175,15 +242,15 @@
         //     vertices: Shapes.toRawLineArray(Shapes.parametricGenerator(Shapes.kleinEquation)).vertices,
         //     mode: gl.LINES,
         //     transform: {
-        //         tx: 0.0,
-        //         ty: 2.0,
-        //         tz: 0.0,
+        //         tx: 6.0,
+        //         ty: 0.0,
+        //         tz: 5.0,
         //         angle: 0,
         //         rx: 1,
         //         ry: 0,
         //         rz: 1
         //     }
-        // },
+        // }
 
         // {
         //     colors: Shapes.polygon().colors,
@@ -347,8 +414,6 @@
             j,
             maxj;
 
-            console.log(currentSinRipple);
-
         for (i = 0, maxi =  shape.length; i < maxi; i += 1) {
             shape[i].buffer = GLSLUtilities.initVertexBuffer(gl,
                      shape[i].vertices);
@@ -369,6 +434,10 @@
 
             shape[i].colorBuffer = GLSLUtilities.initVertexBuffer(gl,
                     shape[i].colors);
+
+            // One more buffer: normals.
+            shape[i].normalBuffer = GLSLUtilities.initVertexBuffer(gl,
+                    shape[i].normals);
 
             if (shape[i].children && shape[i].children.length !== 0) {
                 passVertices(shape[i].children);
@@ -410,10 +479,20 @@
     gl.enableVertexAttribArray(vertexPosition);
     vertexColor = gl.getAttribLocation(shaderProgram, "vertexColor");
     gl.enableVertexAttribArray(vertexColor);
+    normalVector = gl.getAttribLocation(shaderProgram, "normalVector");
+    gl.enableVertexAttribArray(normalVector);
+
+    // Finally, we come to the typical setup for transformation matrices:
+    // model-view and projection, managed separately.
+    // modelViewMatrix = gl.getUniformLocation(shaderProgram, "modelViewMatrix");
     rotationMatrix = gl.getUniformLocation(shaderProgram, "rotationMatrix");
     frustumMatrix = gl.getUniformLocation(shaderProgram, "frustumMatrix");
     orthoMatrix = gl.getUniformLocation(shaderProgram, "orthoMatrix");
     instanceMatrix = gl.getUniformLocation(shaderProgram, "instanceMatrix");
+
+    // Note the additional variables.
+    lightPosition = gl.getUniformLocation(shaderProgram, "lightPosition");
+    lightDiffuse = gl.getUniformLocation(shaderProgram, "lightDiffuse");
 
     /*
      * Displays an individual object.
@@ -431,6 +510,21 @@
             rotateXandY.toWebGLMatrix().elements)
         );
 
+        // Set the varying normal vectors.
+        gl.bindBuffer(gl.ARRAY_BUFFER, object.normalBuffer);
+        gl.vertexAttribPointer(normalVector, 3, gl.FLOAT, false, 0, 0);
+
+        // Set up the model-view matrix, if an axis is included.  If not, we
+        // specify the identity matrix.
+        // gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(object.transform ?
+        //         Matrix4x4.rotate(object.transform.angle,
+        //                 object.transform.rx, object.transform.ry, object.transform.rz) :
+        //         [1, 0, 0, 0, // N.B. In a full-fledged matrix library, the identity
+        //          0, 1, 0, 0, //      matrix should be available as a function.
+        //          0, 0, 1, 0,
+        //          0, 0, 0, 1]
+        //     ));
+
         // Set the varying colors.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
         gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
@@ -439,7 +533,6 @@
         gl.bindBuffer(gl.ARRAY_BUFFER, object.buffer);
         gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
         gl.drawArrays(object.mode, 0, object.vertices.length / 3);
-
 
         if (object.children) {
             for (i = 0; i < object.children.length; i += 1) {
@@ -466,69 +559,18 @@
         gl.flush();
     };
 
-    // createTween = function (start, startDistance, end) {
-
-    // };
-
-    // tweenScene = function () {
-    //     // Some reusable loop variables.
-    //     var i,
-    //         j,
-    //         maxI,
-    //         maxJ,
-    //         ease,
-    //         startKeyframe,
-    //         endKeyframe,
-    //         txStart,
-    //         txDistance,
-    //         tyStart,
-    //         tyDistance,
-    //         sxStart,
-    //         sxDistance,
-    //         syStart,
-    //         syDistance,
-    //         rotateStart,
-    //         rotateDistance,
-    //         currentTweenFrame,
-    //         numOfRingsStart,
-    //         numOfRingsEnd,
-    //         opacityStart,
-    //         opacityEnd,
-    //         opacityDistance,
-    //         duration;
-
-    //     // For every objectsToDraw go to the current pair of keyframes.
-    //     // Then, draw the objectsToDrawbased on the current frame.
-    //     for (i = 0, maxI = objectsToDraw.length; i < maxI; i += 1) {                
-    //         for (j = 0, maxJ = objectsToDraw[i].keyframes.length - 1; j < maxJ; j += 1) { 
-    //             // We look for keyframe pairs such that the current
-    //             // frame is between their frame numbers.
-    //             if ((objectsToDraw[i].keyframes[j].frame <= currentFrame) &&
-    //                     (currentFrame <= objectsToDraw[i].keyframes[j + 1].frame)) {
-    //                 // Point to the start and end keyframes.
-    //                 startKeyframe = objectsToDraw[i].keyframes[j];
-    //                 endKeyframe = objectsToDraw[i].keyframes[j + 1];
-
-    //                 // Save the rendering context state.
-    //                 renderingContext.save();
-
-    //                 // Set up our start and distance values, using defaults
-    //                 // if necessary.
-    //                 ease = startKeyframe.ease || KeyframeTweener.linear;
-
-    //             }
-    //         }
-    //     }
-    // };
-
     // The ortho and frustum matrices
     gl.uniformMatrix4fv(orthoMatrix, gl.FALSE, new Float32Array(
-        Matrix4x4.ortho(-10, 10, -10, 10, -12, 24).toWebGLMatrix().elements)
+        Matrix4x4.ortho(-15, 15, -15, 15, -12, 37).toWebGLMatrix().elements)
     );
 
     gl.uniformMatrix4fv(frustumMatrix, gl.FALSE, new Float32Array(
-        Matrix4x4.frustum(-0.5, 0.5, -0.5, 0.5, 0.2, 100).toWebGLMatrix().elements)
+        Matrix4x4.frustum(-0.25, 0.25, -0.25, 0.25, 0.2, 100).toWebGLMatrix().elements)
     );
+
+    // Set up our one light source and color.  Note the uniform3fv function.
+    gl.uniform3fv(lightPosition, [1.0, 0.0, 0.0]);
+    gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
 
     // Draw the initial scene.
     passVertices(objectsToDraw);
@@ -546,6 +588,8 @@
 
     // $('#defaultSlider').change();
 
+    var updateRipple = 0.1;
+
     // Animate Button
     $("#animate").click(function () {
         if (currentInterval) {
@@ -553,20 +597,21 @@
             currentInterval = null;
         } else {
             currentInterval = setInterval(function () {
-                currentSinRipple -= 0.1;
-                if (currentSinRipple < -3.0) {
-                    currentSinRipple = 2.0;
-                    
+                currentSinRipple = currentSinRipple + updateRipple;
+                if (currentSinRipple >= 3.0) {
+                    updateRipple = -updateRipple;
+                } else if (currentSinRipple <= -3.5) {
+                    updateRipple = -updateRipple;
                 }
                 
+                // create better stucture
                 objectsToDraw[0].children = honeyCombGenerator(currentSinRipple);
                 
                 passVertices(objectsToDraw);
                 drawScene();
-            }, 0.001);
-        }
+            }, 1);
+        } 
     });
-
 
     // Rotation event handling
     $(canvas).mousedown(function (event) {

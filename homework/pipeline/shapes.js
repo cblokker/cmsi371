@@ -54,6 +54,39 @@ var Shapes = {
     },
 
     /*
+     * Returns the vertices for a small cube.  Note the breakdown into triangles.
+     */
+    cube: function () {
+        return {
+            vertices: [
+                [ 0.5, 0.5, 0.5 ],
+                [ 0.5, 0.5, -0.5 ],
+                [ -0.5, 0.5, -0.5 ],
+                [ -0.5, 0.5, 0.5 ],
+                [ 0.5, -0.5, 0.5 ],
+                [ 0.5, -0.5, -0.5 ],
+                [ -0.5, -0.5, -0.5 ],
+                [ -0.5, -0.5, 0.5 ]
+            ],
+
+            indices: [
+                [ 0, 1, 3 ],
+                [ 2, 3, 1 ],
+                [ 0, 3, 4 ],
+                [ 7, 4, 3 ],
+                [ 0, 4, 1 ],
+                [ 5, 1, 4 ],
+                [ 1, 5, 6 ],
+                [ 2, 1, 6 ],
+                [ 2, 7, 3 ],
+                [ 6, 7, 2 ],
+                [ 4, 7, 6 ],
+                [ 5, 4, 6 ]
+            ]
+        };
+    },
+
+    /*
      * Returns vertices for a 3D polygon in an order intended for gl.TRIANGLE_STRIP.  
      * Default value makes it a pentagon. Some of the given parameters for this shape 
      * function may be unnessisary if matrix transforms can be applied to the shape. 
@@ -137,8 +170,6 @@ var Shapes = {
                 (ringHeight / 2) + zPos
             );
         }
-
-        console.log(vertices.length);
  
         // Color gradient
         for (i = 0; i < (vertices.length / 3); i += 1) {
@@ -172,8 +203,8 @@ var Shapes = {
             vEnd      : (3.1 / 2) * Math.PI,
             vInterval : 0.3,
             colorStart: [1.0, 0.0, 0.0],
-            colorEnd: [0.0, 1.0, 0.0],
-            colorDivs: 4
+            colorEnd  : [0.0, 1.0, 0.0],
+            colorDivs : 4
         };
     },
 
@@ -195,8 +226,8 @@ var Shapes = {
             vEnd      : 2.1 * Math.PI,
             vInterval : 0.1,
             colorStart: [1.0, 0.0, 1.0],
-            colorEnd: [0.0, 1.0, 0.75],
-            colorDivs: 2
+            colorEnd  : [0.0, 1.0, 0.75],
+            colorDivs : 2
         };
     },
 
@@ -301,17 +332,17 @@ var Shapes = {
             i,
             j,
             maxi,
-            maxj,
+            maxj;
             
-            rStart = indexedVertices.colors[0],
-            gStart = indexedVertices.colors[1],
-            bStart = indexedVertices.colors[2],
+            // rStart = indexedVertices.colors[0],
+            // gStart = indexedVertices.colors[1],
+            // bStart = indexedVertices.colors[2],
 
-            rEnd = indexedVertices.colors[3],
-            gEnd = indexedVertices.colors[4],
-            bEnd = indexedVertices.colors[5],
+            // rEnd = indexedVertices.colors[3],
+            // gEnd = indexedVertices.colors[4],
+            // bEnd = indexedVertices.colors[5],
 
-            colorDivs = indexedVertices.colorDivs;
+            // colorDivs = indexedVertices.colorDivs;
 
         for (i = 0, maxi = indexedVertices.indices.length; i < maxi; i += 1) {
             for (j = 0, maxj = indexedVertices.indices[i].length; j < maxj; j += 1) {
@@ -324,25 +355,25 @@ var Shapes = {
         }
 
         // Color gradient
-        for (i = 0; i < colorDivs; i += 1) {
-            if (i % 2 == 0) {
-                for (j = 0; j < vertices.length / (3 * colorDivs); j += 1) {
-                    colors.push(
-                        rStart - (rStart - rEnd) * (j / (vertices.length / (3 * colorDivs))),
-                        gStart - (gStart - gEnd) * (j / (vertices.length / (3 * colorDivs))),
-                        bStart - (bStart - bEnd) * (j / (vertices.length / (3 * colorDivs)))
-                    );
-                }
-            } else {
-                for (j = vertices.length / (3 * colorDivs); j > 0; j -= 1) {
-                    colors.push(
-                        rStart - (rStart - rEnd) * (j / (vertices.length / (3 * colorDivs))),
-                        gStart - (gStart - gEnd) * (j / (vertices.length / (3 * colorDivs))),
-                        bStart - (bStart - bEnd) * (j / (vertices.length / (3 * colorDivs)))
-                    );
-                }
-            }
-        }
+        // for (i = 0; i < colorDivs; i += 1) {
+        //     if (i % 2 == 0) {
+        //         for (j = 0; j < vertices.length / (3 * colorDivs); j += 1) {
+        //             colors.push(
+        //                 rStart - (rStart - rEnd) * (j / (vertices.length / (3 * colorDivs))),
+        //                 gStart - (gStart - gEnd) * (j / (vertices.length / (3 * colorDivs))),
+        //                 bStart - (bStart - bEnd) * (j / (vertices.length / (3 * colorDivs)))
+        //             );
+        //         }
+        //     } else {
+        //         for (j = vertices.length / (3 * colorDivs); j > 0; j -= 1) {
+        //             colors.push(
+        //                 rStart - (rStart - rEnd) * (j / (vertices.length / (3 * colorDivs))),
+        //                 gStart - (gStart - gEnd) * (j / (vertices.length / (3 * colorDivs))),
+        //                 bStart - (bStart - bEnd) * (j / (vertices.length / (3 * colorDivs)))
+        //             );
+        //         }
+        //     }
+        // }
 
         return {
             vertices: vertices,
