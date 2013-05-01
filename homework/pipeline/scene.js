@@ -107,15 +107,16 @@
             yFrequency = yFrequency || 0,
             currentSinRipple = currentSinRipple || 1;
 
-        for (tx = -7, txMax = 7; tx <= txMax; tx += 0.6) {
-            for (ty = -7, tyMax = 7; ty < tyMax; ty += 0.6) {
+        for (tx = -2, txMax = 2; tx <= txMax; tx += 0.6) {
+            for (ty = -2, tyMax = 2; ty < tyMax; ty += 0.6) {
                 children.push({
                     color: {
                         r: 2 * Math.abs(Math.sin(currentSinRipple * Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2) )) * (1 / (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2))))),
                         g: 1.0,
                         b: 0.1 * Math.abs(Math.sin(currentSinRipple * Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2) )) * (1 / (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2)))))
                     },
-                    vertices: Shapes.polygon(0.3, 0.1, 3.0, 6).vertices,
+                    vertices: Shapes.toRawTriangleArray(Shapes.polygon(0.3, 0.1, 3.0, 6)).vertices,
+                    normals: Shapes.polygon(0.3, 0.1, 3.0, 6).normals,
                     mode: gl.TRIANGLE_STRIP,
                     transform: {
                         tx: tx,
@@ -144,56 +145,10 @@
 
     // Build the objects to display.
     objectsToDraw = [
-           {
-            vertices: Shapes.toRawTriangleArray(Shapes.cube()).vertices,
-            // 12 triangles in all.
+        {
             color: {r: 0.0, g: 0.5, b: 0.25},
-            // Like colors, one normal per vertex.  This can be simplified
-            // with helper functions, of course.
-            normals: [].concat(
-                [ 0.0, 1.0, 0.0 ],
-                [ 0.0, 1.0, 0.0 ],
-                [ 0.0, 1.0, 0.0 ],
-                [ 0.0, 1.0, 0.0 ],
-                [ 0.0, 1.0, 0.0 ],
-                [ 0.0, 1.0, 0.0 ],
-
-                [ 0.0, 0.0, 1.0 ],
-                [ 0.0, 0.0, 1.0 ],
-                [ 0.0, 0.0, 1.0 ],
-                [ 0.0, 0.0, 1.0 ],
-                [ 0.0, 0.0, 1.0 ],
-                [ 0.0, 0.0, 1.0 ],
-
-                [ 1.0, 0.0, 0.0 ],
-                [ 1.0, 0.0, 0.0 ],
-                [ 1.0, 0.0, 0.0 ],
-                [ 1.0, 0.0, 0.0 ],
-                [ 1.0, 0.0, 0.0 ],
-                [ 1.0, 0.0, 0.0 ],
-
-                [ 0.0, 0.0, -1.0 ],
-                [ 0.0, 0.0, -1.0 ],
-                [ 0.0, 0.0, -1.0 ],
-                [ 0.0, 0.0, -1.0 ],
-                [ 0.0, 0.0, -1.0 ],
-                [ 0.0, 0.0, -1.0 ],
-
-                [ -1.0, 0.0, 0.0 ],
-                [ -1.0, 0.0, 0.0 ],
-                [ -1.0, 0.0, 0.0 ],
-                [ -1.0, 0.0, 0.0 ],
-                [ -1.0, 0.0, 0.0 ],
-                [ -1.0, 0.0, 0.0 ],
-
-                [ 0.0, -1.0, 0.0 ],
-                [ 0.0, -1.0, 0.0 ],
-                [ 0.0, -1.0, 0.0 ],
-                [ 0.0, -1.0, 0.0 ],
-                [ 0.0, -1.0, 0.0 ],
-                [ 0.0, -1.0, 0.0 ]
-            ),
-
+            vertices: Shapes.toRawTriangleArray(Shapes.cube()).vertices,
+            normals: Shapes.cube().normals,
             mode: gl.TRIANGLES,
             transform: {
                 tx: 5.2,
@@ -204,23 +159,24 @@
                 ry: 0,
                 rz: 0
             }
-        }
+        },
 
-        // {
-        //     color: {r: 1, g: 1, b: 0.0},
-        //     vertices: Shapes.polygon(0.0, 0.0, 0.0, 0).vertices,
-        //     mode: gl.TRIANGLE_STRIP,
-        //     transform: {
-        //         tx: 0.0,
-        //         ty: 0.0,
-        //         tz: 0.0,
-        //         angle: 0,
-        //         rx: 0,
-        //         ry: 0,
-        //         rz: 0
-        //     },
-        //     children: honeyCombGenerator(currentSinRipple)
-        // },
+        {
+            color: {r: 1, g: 1, b: 0.0},
+            vertices: Shapes.toRawTriangleArray(Shapes.polygon(1.0, 0.5, 3.0, 6)).vertices,
+            normals: Shapes.polygon(1.0, 0.5, 3.0, 6).normals,
+            mode: gl.TRIANGLES,
+            transform: {
+                tx: 0.0,
+                ty: 0.0,
+                tz: 0.0,
+                angle: 0,
+                rx: 1,
+                ry: 0,
+                rz: 0
+            },
+            children: honeyCombGenerator(currentSinRipple)
+        }
 
         // {
         //     colors: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.mobiusEquation)).colors,
@@ -514,17 +470,6 @@
         gl.bindBuffer(gl.ARRAY_BUFFER, object.normalBuffer);
         gl.vertexAttribPointer(normalVector, 3, gl.FLOAT, false, 0, 0);
 
-        // Set up the model-view matrix, if an axis is included.  If not, we
-        // specify the identity matrix.
-        // gl.uniformMatrix4fv(modelViewMatrix, gl.FALSE, new Float32Array(object.transform ?
-        //         Matrix4x4.rotate(object.transform.angle,
-        //                 object.transform.rx, object.transform.ry, object.transform.rz) :
-        //         [1, 0, 0, 0, // N.B. In a full-fledged matrix library, the identity
-        //          0, 1, 0, 0, //      matrix should be available as a function.
-        //          0, 0, 1, 0,
-        //          0, 0, 0, 1]
-        //     ));
-
         // Set the varying colors.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.colorBuffer);
         gl.vertexAttribPointer(vertexColor, 3, gl.FLOAT, false, 0, 0);
@@ -605,13 +550,32 @@
                 }
                 
                 // create better stucture
-                objectsToDraw[0].children = honeyCombGenerator(currentSinRipple);
+                if (objectsToDraw[1].children) {
+                    objectsToDraw[1].children = honeyCombGenerator(currentSinRipple);
+                }
                 
                 passVertices(objectsToDraw);
                 drawScene();
             }, 1);
         } 
     });
+
+    // rotateScene = function (event) {
+    //     rotationAroundX = xRotationStart - yDragStart + event.clientY;
+    //     rotationAroundY = yRotationStart - xDragStart + event.clientX;
+    //     drawScene();
+    // };
+
+    // // Instead of animation, we do interaction: let the mouse control rotation.
+    // $(canvas).mousedown(function (event) {
+    //     xDragStart = event.clientX;
+    //     yDragStart = event.clientY;
+    //     xRotationStart = rotationAroundX;
+    //     yRotationStart = rotationAroundY;
+    //     $(canvas).mousemove(rotateScene);
+    // }).mouseup(function (event) {
+    //     $(canvas).unbind("mousemove");
+    // });
 
     // Rotation event handling
     $(canvas).mousedown(function (event) {
@@ -640,8 +604,8 @@
         }
     });
 
-    $(canvas).mouseup(function (event) {
-        mouseDown = false;
-    });
+    // $(canvas).mouseup(function (event) {
+    //     mouseDown = false;
+    // });
 
 }(document.getElementById("hello-webgl")));

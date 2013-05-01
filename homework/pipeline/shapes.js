@@ -3,6 +3,8 @@
  * The "shapes" are returned as indexed vertices, with utility functions for
  * converting these into "raw" coordinate arrays.
  */
+
+ // TODO:  Add normals arrays to shapes
 var Shapes = {
     /*
      * Returns the vertices for a small icosahedron.
@@ -82,7 +84,51 @@ var Shapes = {
                 [ 6, 7, 2 ],
                 [ 4, 7, 6 ],
                 [ 5, 4, 6 ]
-            ]
+            ],
+
+            normals: [].concat(
+                [ 0.0, 1.0, 0.0 ],
+                [ 0.0, 1.0, 0.0 ],
+                [ 0.0, 1.0, 0.0 ],
+                [ 0.0, 1.0, 0.0 ],
+                [ 0.0, 1.0, 0.0 ],
+                [ 0.0, 1.0, 0.0 ],
+
+                [ 0.0, 0.0, 1.0 ],
+                [ 0.0, 0.0, 1.0 ],
+                [ 0.0, 0.0, 1.0 ],
+                [ 0.0, 0.0, 1.0 ],
+                [ 0.0, 0.0, 1.0 ],
+                [ 0.0, 0.0, 1.0 ],
+
+                [ 1.0, 0.0, 0.0 ],
+                [ 1.0, 0.0, 0.0 ],
+                [ 1.0, 0.0, 0.0 ],
+                [ 1.0, 0.0, 0.0 ],
+                [ 1.0, 0.0, 0.0 ],
+                [ 1.0, 0.0, 0.0 ],
+
+                [ 0.0, 0.0, -1.0 ],
+                [ 0.0, 0.0, -1.0 ],
+                [ 0.0, 0.0, -1.0 ],
+                [ 0.0, 0.0, -1.0 ],
+                [ 0.0, 0.0, -1.0 ],
+                [ 0.0, 0.0, -1.0 ],
+
+                [ -1.0, 0.0, 0.0 ],
+                [ -1.0, 0.0, 0.0 ],
+                [ -1.0, 0.0, 0.0 ],
+                [ -1.0, 0.0, 0.0 ],
+                [ -1.0, 0.0, 0.0 ],
+                [ -1.0, 0.0, 0.0 ],
+
+                [ 0.0, -1.0, 0.0 ],
+                [ 0.0, -1.0, 0.0 ],
+                [ 0.0, -1.0, 0.0 ],
+                [ 0.0, -1.0, 0.0 ],
+                [ 0.0, -1.0, 0.0 ],
+                [ 0.0, -1.0, 0.0 ]
+            )
         };
     },
 
@@ -96,6 +142,7 @@ var Shapes = {
         var vertices = [],
             indices = [],
             colors = [],
+            normals = [],
             x = [],
             y = [],
 
@@ -122,63 +169,198 @@ var Shapes = {
         // Inner ring
         for (i = 0; i <= numOfSides; i += 1) {
             vertices.push(
-                x[i] * (ringRadius - ringWidth) + xPos,
-                y[i] * (ringRadius - ringWidth) + yPos,
-                -(ringHeight / 2) + zPos,
+                [
+                    x[i] * (ringRadius - ringWidth) + xPos,
+                    y[i] * (ringRadius - ringWidth) + yPos,
+                    -(ringHeight / 2) + zPos
+                ],
 
-                x[i] * (ringRadius - ringWidth) + xPos,
-                y[i] * (ringRadius - ringWidth) + yPos,
-                (ringHeight / 2) + zPos
+                [
+                    x[i] * (ringRadius - ringWidth) + xPos,
+                    y[i] * (ringRadius - ringWidth) + yPos,
+                    (ringHeight / 2) + zPos
+                ]
             );
         }
-        
+
+        console.log(vertices.length);
+
+        // // indices Array
+        for (i = 0; i < vertices.length; i += 1) {
+            indices.push(
+                [i, i + 1, i + 2],
+                [i + 1, i + 2, i + 3]
+            );
+        }        
         // Outer ring
-        for (i = 0; i <= numOfSides; i += 1) {
-            vertices.push(
-                x[i] * ringRadius + xPos,
-                y[i] * ringRadius + yPos,
-                -(ringHeight / 2) + zPos,
+        // for (i = 0; i <= numOfSides; i += 1) {
+        //     vertices.push(
+        //         x[i] * ringRadius + xPos,
+        //         y[i] * ringRadius + yPos,
+        //         -(ringHeight / 2) + zPos,
 
-                x[i] * ringRadius + xPos,
-                y[i] * ringRadius + yPos,
-                (ringHeight / 2) + zPos
-            );
-        }
+        //         x[i] * ringRadius + xPos,
+        //         y[i] * ringRadius + yPos,
+        //         (ringHeight / 2) + zPos
+        //     );
+        // }
 
-        // Bottom of ring
-        for (i = 0; i <= numOfSides; i += 1) {
-            vertices.push(
-                x[i] * ringRadius + xPos,
-                y[i] * ringRadius + yPos,
-                -(ringHeight / 2) + zPos,
+        // // Bottom of ring
+        // for (i = 0; i <= numOfSides; i += 1) {
+        //     vertices.push(
+        //         x[i] * ringRadius + xPos,
+        //         y[i] * ringRadius + yPos,
+        //         -(ringHeight / 2) + zPos,
 
-                x[i] * (ringRadius - ringWidth) + xPos,
-                y[i] * (ringRadius - ringWidth) + yPos,
-                -(ringHeight / 2) + zPos
-            );
-        }
+        //         x[i] * (ringRadius - ringWidth) + xPos,
+        //         y[i] * (ringRadius - ringWidth) + yPos,
+        //         -(ringHeight / 2) + zPos
+        //     );
+        // }
 
-        // Top of ring
-        for (i = 0; i <= numOfSides; i += 1) {
-            vertices.push(
-                x[i] * ringRadius + xPos,
-                y[i] * ringRadius + yPos,
-                (ringHeight / 2) + zPos,
+        // // Top of ring
+        // for (i = 0; i <= numOfSides; i += 1) {
+        //     vertices.push(
+        //         x[i] * ringRadius + xPos,
+        //         y[i] * ringRadius + yPos,
+        //         (ringHeight / 2) + zPos,
 
-                x[i] * (ringRadius - ringWidth) + xPos,
-                y[i] * (ringRadius - ringWidth) + yPos,
-                (ringHeight / 2) + zPos
-            );
-        }
+        //         x[i] * (ringRadius - ringWidth) + xPos,
+        //         y[i] * (ringRadius - ringWidth) + yPos,
+        //         (ringHeight / 2) + zPos
+        //     );
+        // }
  
         // Color gradient
         for (i = 0; i < (vertices.length / 3); i += 1) {
             colors.push((0.9 * i) / (vertices.length / 3), 0.5, 0.0)
         }
 
+        // Set up indices Array
+        // for (i = 0; i < vertices.length; i += 1) {
+        //     [],
+        //     []
+        // }
+
+        // Set up normal array for inner ring
+        // for (i = 0; i < vertices.length / 4; i += 1) {
+        //     normals.push(
+        //         [i, i + 1, i - iNext],
+        //         [i + 1, i - iNext, i - iNext + 1]
+        //     );
+        // }
+
+        // Set up normal array for outer ring
+        // for (i = 0; i <= 1; i += 1) {
+            normals.push(
+                1.0, 1.0, 0.0,
+                1.0, 1.0, 0.0,
+                1.0, 1.0, 0.0,
+                1.0, 1.0, 0.0,
+                1.0, 1.0, 0.0,
+                1.0, 1.0, 0.0,
+                1.0, 1.0, 0.0,
+                1.0, 1.0, 0.0,
+
+                1.0, 0.0, 0.0,
+                1.0, 0.0, 0.0,
+                1.0, 0.0, 0.0,
+                1.0, 0.0, 0.0,
+                1.0, 0.0, 0.0,
+                1.0, 0.0, 0.0,
+                1.0, 0.0, 0.0,
+                1.0, 0.0, 0.0,
+                1.0, 0.0, 0.0,
+                1.0, 0.0, 0.0,
+                1.0, 0.0, 0.0,
+                1.0, 0.0, 0.0,
+
+                1.0, -1.0, 0.0,
+                1.0, -1.0, 0.0,
+                1.0, -1.0, 0.0,
+                1.0, -1.0, 0.0,
+                1.0, -1.0, 0.0,
+                1.0, -1.0, 0.0,
+                1.0, -1.0, 0.0,
+                1.0, -1.0, 0.0,
+                1.0, -1.0, 0.0,
+                1.0, -1.0, 0.0,
+                1.0, -1.0, 0.0,
+                1.0, -1.0, 0.0,
+
+                -1.0, -1.0, 0.0,
+                -1.0, -1.0, 0.0,
+                -1.0, -1.0, 0.0,
+                -1.0, -1.0, 0.0,
+                -1.0, -1.0, 0.0,
+                -1.0, -1.0, 0.0,
+                -1.0, -1.0, 0.0,
+                -1.0, -1.0, 0.0,
+                -1.0, -1.0, 0.0,
+                -1.0, -1.0, 0.0,
+                -1.0, -1.0, 0.0,
+                -1.0, -1.0, 0.0,
+
+                -1.0, 0.0, 0.0,
+                -1.0, 0.0, 0.0,
+                -1.0, 0.0, 0.0,
+                -1.0, 0.0, 0.0,
+                -1.0, 0.0, 0.0,
+                -1.0, 0.0, 0.0,
+                -1.0, 0.0, 0.0,
+                -1.0, 0.0, 0.0,
+                -1.0, 0.0, 0.0,
+                -1.0, 0.0, 0.0,
+                -1.0, 0.0, 0.0,
+                -1.0, 0.0, 0.0,
+
+                -1.0, 1.0, 0.0,
+                -1.0, 1.0, 0.0,
+                -1.0, 1.0, 0.0,
+                -1.0, 1.0, 0.0,
+                -1.0, 1.0, 0.0,
+                -1.0, 1.0, 0.0,
+                -1.0, 1.0, 0.0,
+                -1.0, 1.0, 0.0,
+                -1.0, 1.0, 0.0,
+                -1.0, 1.0, 0.0,
+                -1.0, 1.0, 0.0,
+                -1.0, 1.0, 0.0,
+
+                0.0, 1.0, 0.0,
+                0.0, 1.0, 0.0,
+                0.0, 1.0, 0.0,
+                0.0, 1.0, 0.0,
+                0.0, 1.0, 0.0,
+                0.0, 1.0, 0.0,
+                0.0, 1.0, 0.0,
+                0.0, 1.0, 0.0,
+                0.0, 1.0, 0.0,
+                0.0, 1.0, 0.0,
+                0.0, 1.0, 0.0,
+                0.0, 1.0, 0.0
+            );
+        // }
+
+        // // Set up normal array for bottom
+        // for (i = 0; i < vertices.length / 4; i += 1) {
+        //     normals.push(
+
+        //     );
+        // }
+
+        // // Set up normal array for top
+        // for (i = 0; i < vertices.length / 4; i += 1) {
+        //     normals.push(
+
+        //     );
+        // }
+
+
         return {
             vertices: vertices,
             indices: indices,
+            normals: normals,
             colors: colors
         }
     },
