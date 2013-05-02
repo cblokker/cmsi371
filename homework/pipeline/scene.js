@@ -57,6 +57,8 @@
         lightDiffuse,
 
         currentSinRipple = 0.1,
+        // JD: This will point to currentSinRipple in the shader.
+        currentSinRippleGL,
 
         currentFrame = 0,
 
@@ -466,6 +468,9 @@
     lightPosition = gl.getUniformLocation(shaderProgram, "lightPosition");
     lightDiffuse = gl.getUniformLocation(shaderProgram, "lightDiffuse");
 
+    // JD: Shader demonstration.
+    currentSinRippleGL = gl.getUniformLocation(shaderProgram, "currentSinRipple");
+
     /*
      * Displays an individual object.
      */
@@ -568,7 +573,9 @@
                 } else if (currentSinRipple <= -3.5) {
                     updateRipple = -updateRipple;
                 }
-                
+
+                /* JD: Not needed when the shader is doing the work!
+
                 // create better stucture
                 if (objectsToDraw[1].children) {
                     // JD: Yikes!!!  No wonder you're seeing performance problems---
@@ -579,6 +586,10 @@
                 }
                 
                 passVertices(objectsToDraw);
+                */
+
+                // JD: Note the sole change that we make!
+                gl.uniform1f(currentSinRippleGL, currentSinRipple);
                 drawScene();
             }, 1);
         } 
