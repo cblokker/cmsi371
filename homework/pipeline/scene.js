@@ -57,8 +57,9 @@
         lightDiffuse,
 
         currentSinRipple = 0.1,
-        // JD: This will point to currentSinRipple in the shader.
+        // JDsl: This will point to currentSinRipple in the shader.
         currentSinRippleGL,
+        displacement,
 
         currentFrame = 0,
 
@@ -468,8 +469,9 @@
     lightPosition = gl.getUniformLocation(shaderProgram, "lightPosition");
     lightDiffuse = gl.getUniformLocation(shaderProgram, "lightDiffuse");
 
-    // JD: Shader demonstration.
+    // JDsl: Shader demonstration.
     currentSinRippleGL = gl.getUniformLocation(shaderProgram, "currentSinRipple");
+    displacement = gl.getUniformLocation(shaderProgram, "displacement");
 
     /*
      * Displays an individual object.
@@ -477,10 +479,18 @@
     drawObject = function (object) {
         var i;
 
+        // JDsl: Default values in case there is no translation.
+        gl.uniform2fv(displacement, [ 0.0, 0.0 ]);
         if (object.transform) {
             gl.uniformMatrix4fv(instanceMatrix, gl.FALSE, new Float32Array(
                 Matrix4x4.instanceTransform(object.transform).toWebGLMatrix().elements
             ));
+
+            // JDsl: Displacement happens per object, so we set the uniform
+            //     variables here.
+            if (object.transform.tx !== undefined && object.transform.ty !== undefined) {
+                gl.uniform2fv(displacement, [ object.transform.tx, object.transform.ty ]);
+            }
         }
 
         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(
@@ -574,7 +584,7 @@
                     updateRipple = -updateRipple;
                 }
 
-                /* JD: Not needed when the shader is doing the work!
+                /* JDsl: Not needed when the shader is doing the work!
 
                 // create better stucture
                 if (objectsToDraw[1].children) {
@@ -588,7 +598,7 @@
                 passVertices(objectsToDraw);
                 */
 
-                // JD: Note the sole change that we make!
+                // JDsl: Note the sole change that we make!
                 gl.uniform1f(currentSinRippleGL, currentSinRipple);
                 drawScene();
             }, 1);
