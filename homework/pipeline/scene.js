@@ -491,6 +491,17 @@
             if (object.transform.tx !== undefined && object.transform.ty !== undefined) {
                 gl.uniform2fv(displacement, [ object.transform.tx, object.transform.ty ]);
             }
+
+            // JDsl: What we can't do as easily in the shader (without a lot
+            //     of additional code) is the rotation angle, so we just
+            //     change that here.  This can be viewed as an alternative
+            //     approach for speeding things up *if the change you want
+            //     to compute can be reflected in the instance transform*.
+            if (object.transform.angle !== undefined) {
+                // JD: Just copied from honeyCombGenerator.
+                object.transform.angle = 20 * Math.abs(Math.sin(currentSinRipple) +
+                        Math.sin(currentSinRipple));
+            }
         }
 
         gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(
