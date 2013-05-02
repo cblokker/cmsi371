@@ -11,6 +11,16 @@
  // * Add physics
  // * Think of the entire scene, something like this - http://wxs.ca/iso/
 
+/*
+ * JD: The to-do list is a good move and appreciated.  Note that you can also
+ *     use the GitHub issue tracker for this.
+ *
+ *     In addition, I appreciate that you are working on a bunch of things and
+ *     so a lot of code is in flux, thus the many commented-out blocks and
+ *     exploratory code fragments.  Just remember to clean up in the end!!!
+ */
+
+// JD: Why is this variable outside the function?
  var honeyCombFrequency = 0;
 (function (canvas) {
 
@@ -95,6 +105,12 @@
 
     // A function that returns a very specific honeycomb shape - maybe I should
     // generalize (pull out the data) for more customizations!
+    // JD: ^^^Good idea...and while we're at it, we should find a way to
+    //     transfer as many of these computations as possible to the vertex
+    //     shader.  Note how the configuration of your objects is almost
+    //     entirely dependent on currentSinRipple.  Thus, you can change
+    //     currentSinRipple into a uniform variable in your vertex shader,
+    //     and transfer the computations that depend on this over there.
     honeyCombGenerator = function (currentSinRipple, xFrequency, yFrequency) {
         var tx,
             ty,
@@ -505,6 +521,9 @@
     };
 
     // The ortho and frustum matrices
+    // JD: Interesting that you have chosen to use two projections.
+    //     This is unconventional, but as long as you know what you
+    //     are doing that's OK.
     gl.uniformMatrix4fv(orthoMatrix, gl.FALSE, new Float32Array(
         Matrix4x4.ortho(-15, 15, -15, 15, -12, 37).toWebGLMatrix().elements)
     );
@@ -536,6 +555,7 @@
     var updateRipple = 0.1;
 
     // Animate Button
+    // JD: This is called "Frequency" on the web page---intentional?
     $("#animate").click(function () {
         if (currentInterval) {
             clearInterval(currentInterval);
@@ -551,6 +571,10 @@
                 
                 // create better stucture
                 if (objectsToDraw[1].children) {
+                    // JD: Yikes!!!  No wonder you're seeing performance problems---
+                    //     not only is JavaScript doing most of the heavy lifting,
+                    //     but it's doing a lot of duplicate work!  This definitely
+                    //     calls for more vertex shader action.
                     objectsToDraw[1].children = honeyCombGenerator(currentSinRipple);
                 }
                 
@@ -603,6 +627,10 @@
             drawScene();
         }
     });
+
+    // JD: In the absence of mouseup behavior, once the user holds the mouse
+    //     down to rotate the scene, the mouse then forever rotates it.
+    //     Is that really your intent?
 
     // $(canvas).mouseup(function (event) {
     //     mouseDown = false;
