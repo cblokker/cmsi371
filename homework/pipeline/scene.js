@@ -578,7 +578,10 @@
 
     // $('#defaultSlider').change();
 
-    var updateRipple = 0.1;
+    // JDsl: Surprise!  With the increased speed, we actually have
+    //     to decrease the increment significantly so that things
+    //     don't move quite so fast!
+    var updateRipple = 0.01;
 
     // Animate Button
     // JD: This is called "Frequency" on the web page---intentional?
