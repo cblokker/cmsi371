@@ -609,8 +609,9 @@
                 passVertices(objectsToDraw);
                 */
 
-                // JDsl: Note the sole change that we make!
-                gl.uniform1f(currentSinRippleGL, currentSinRipple);
+                // JDsl: Note the sole change that we make!  The "|| 1" comes from
+                //     the same "|| 1" logic in honeyCombGenerator.
+                gl.uniform1f(currentSinRippleGL, currentSinRipple || 1);
                 drawScene();
             }, 1);
         } 
