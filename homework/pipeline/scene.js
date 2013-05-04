@@ -20,8 +20,6 @@
  *     exploratory code fragments.  Just remember to clean up in the end!!!
  */
 
-// JD: Why is this variable outside the function?
- var honeyCombFrequency = 0;
 (function (canvas) {
 
     // Because many of these variables are best initialized then immediately
@@ -41,45 +39,27 @@
         abort = false,
 
         // Important state variables.
-        currentRotation = 0.0,
         currentInterval,
-        modelViewMatrix,
-        rotationMatrix,
         instanceMatrix,
         orthoMatrix,
         frustumMatrix,
         vertexPosition,
         vertexColor,
+        xRotationMatrix,
+        yRotationMatrix,
+        rotationAroundX = 0.0,
+        rotationAroundY = 0.0,
 
         // For emphasis, we separate the variables that involve lighting.
         normalVector,
         lightPosition,
         lightDiffuse,
 
-        currentSinRipple = 0.1,
         // JDsl: This will point to currentSinRipple in the shader.
         currentSinRippleGL,
         displacement,
 
-        currentFrame = 0,
-
-        savedContext = instanceMatrix,
-
-        tweenScene,
-
         honeyCombGenerator,
-
-        // Event handling for user rotation
-        mouseDown = false,
-        lastMouseX,
-        lastMouseY,
-        newX,
-        newY,
-        deltaX,
-        deltaY,
-        rotateX = new Matrix4x4(),
-        rotateY = new Matrix4x4(),
-        rotateXandY = new Matrix4x4(),
 
         // An individual "draw object" function.
         drawObject,
@@ -87,8 +67,14 @@
         // The big "draw scene" function.
         drawScene,
 
+        // Transient state variables for event handling.
+        xDragStart,
+        yDragStart,
+        xRotationStart,
+        yRotationStart,
+
         // A boolean array for shape toggling
-        isShapeVisible = [];
+        //isShapeVisible = [];
 
     // Grab the WebGL rendepolygon context.
     gl = GLSLUtilities.getGL(canvas);
@@ -107,7 +93,7 @@
     gl.viewport(0, 0, canvas.width, canvas.height);
 
     // A function that returns a very specific honeycomb shape - maybe I should
-    // generalize (pull out the data) for more customizations!
+    // generalize (pull out the data) for more customization!
     // JD: ^^^Good idea...and while we're at it, we should find a way to
     //     transfer as many of these computations as possible to the vertex
     //     shader.  Note how the configuration of your objects is almost
@@ -126,25 +112,28 @@
             yFrequency = yFrequency || 0,
             currentSinRipple = currentSinRipple || 1;
 
-        for (tx = -2, txMax = 2; tx <= txMax; tx += 0.6) {
-            for (ty = -2, tyMax = 2; ty < tyMax; ty += 0.6) {
+        for (tx = -10, txMax = 10; tx <= txMax; tx += 0.3) {
+            for (ty = -10, tyMax = 10; ty < tyMax; ty += 0.3) {
+
+                var rippleEquation = Math.sin(currentSinRipple * Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2))) * (1 / (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2))));
+
                 children.push({
                     color: {
-                        r: 2 * Math.abs(Math.sin(currentSinRipple * Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2) )) * (1 / (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2))))),
+                        r: 2 * Math.abs(rippleEquation),
                         g: 1.0,
-                        b: 0.1 * Math.abs(Math.sin(currentSinRipple * Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2) )) * (1 / (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2)))))
+                        b: 0.1 * Math.abs(rippleEquation)
                     },
-                    vertices: Shapes.toRawTriangleArray(Shapes.polygon(0.3, 0.1, 3.0, 6)).vertices,
-                    normals: Shapes.polygon(0.3, 0.1, 3.0, 6).normals,
+                    vertices: Shapes.toRawTriangleArray(Shapes.polygon(0.1, 0.05, 3.0, 6)).vertices,
+                    normals: Shapes.polygon().normals,
                     mode: gl.TRIANGLE_STRIP,
                     transform: {
                         tx: tx,
                         ty: ty,
-                        tz: 3 * Math.sin(currentSinRipple * Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2))) * (1 / (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2)))), //2 * Math.sin(xFrequency * tx / 10) + 2 * Math.cos(yFrequency * ty / 10),
-                        angle: 20 * Math.abs(Math.sin(currentSinRipple) + Math.sin(currentSinRipple)),
+                        tz: 3,
+                        angle: 0,
                         rx: 1,
                         ry: 0,
-                        rz: 1
+                        rz: 0
                     }
                 });
             }
@@ -183,14 +172,14 @@
         {
             color: {r: 1, g: 1, b: 0.0},
             vertices: Shapes.toRawTriangleArray(Shapes.polygon(1.0, 0.5, 3.0, 6)).vertices,
-            normals: Shapes.polygon(1.0, 0.5, 3.0, 6).normals,
+            normals: Shapes.polygon().normals,
             mode: gl.TRIANGLES,
             transform: {
                 tx: 0.0,
                 ty: 0.0,
                 tz: 0.0,
                 angle: 0,
-                rx: 1,
+                rx: 0,
                 ry: 0,
                 rz: 0
             },
@@ -459,11 +448,12 @@
 
     // Finally, we come to the typical setup for transformation matrices:
     // model-view and projection, managed separately.
-    // modelViewMatrix = gl.getUniformLocation(shaderProgram, "modelViewMatrix");
-    rotationMatrix = gl.getUniformLocation(shaderProgram, "rotationMatrix");
+    //rotationMatrix = gl.getUniformLocation(shaderProgram, "rotationMatrix");
     frustumMatrix = gl.getUniformLocation(shaderProgram, "frustumMatrix");
     orthoMatrix = gl.getUniformLocation(shaderProgram, "orthoMatrix");
     instanceMatrix = gl.getUniformLocation(shaderProgram, "instanceMatrix");
+    xRotationMatrix = gl.getUniformLocation(shaderProgram, "xRotationMatrix");
+    yRotationMatrix = gl.getUniformLocation(shaderProgram, "yRotationMatrix");
 
     // Note the additional variables.
     lightPosition = gl.getUniformLocation(shaderProgram, "lightPosition");
@@ -499,14 +489,13 @@
             //     to compute can be reflected in the instance transform*.
             if (object.transform.angle !== undefined) {
                 // JD: Just copied from honeyCombGenerator.
-                object.transform.angle = 20 * Math.abs(Math.sin(currentSinRipple) +
-                        Math.sin(currentSinRipple));
+                object.transform.angle = 0;
             }
         }
 
-        gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(
-            rotateXandY.toWebGLMatrix().elements)
-        );
+        // gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(
+        //     rotateXandY.toWebGLMatrix().elements)
+        // );
 
         // Set the varying normal vectors.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.normalBuffer);
@@ -521,6 +510,8 @@
         gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
         gl.drawArrays(object.mode, 0, object.vertices.length / 3);
 
+
+        // Check for nested children objects and draw Object again
         if (object.children) {
             for (i = 0; i < object.children.length; i += 1) {
                 drawObject(object.children[i]);
@@ -538,6 +529,16 @@
         // Clear the display.
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+        // Set the overall rotation
+        gl.uniformMatrix4fv(xRotationMatrix, gl.FALSE, new Float32Array(
+                Matrix4x4.rotate(rotationAroundX, 1.0, 0.0, 0.0).toWebGLMatrix().elements
+        ));
+
+        gl.uniformMatrix4fv(yRotationMatrix, gl.FALSE, new Float32Array(
+                Matrix4x4.rotate(rotationAroundY, 0.0, 1.0, 0.0).toWebGLMatrix().elements
+        ));
+
+        // Display the objects
         for(i = 0, maxi = objectsToDraw.length; i < maxi; i += 1) {
             drawObject(objectsToDraw[i]);
         }
@@ -562,29 +563,30 @@
     gl.uniform3fv(lightPosition, [1.0, 0.0, 0.0]);
     gl.uniform3fv(lightDiffuse, [1.0, 1.0, 1.0]);
 
-    // Draw the initial scene.
-    passVertices(objectsToDraw);
-    drawScene();
+    rotateScene = function (event) {
+        rotationAroundX = xRotationStart - yDragStart + event.clientY;
+        rotationAroundY = yRotationStart - xDragStart + event.clientX;
+        drawScene();
+    };
 
-    // Slider
-    // var currentValue = $('#currentValue');
-
-    // $('#defaultSlider').change(function(){
-    //     currentValue.html(this.value);
-    //     // honeyCombFrequency = this.value;
-    //     passVertices(objectsToDraw);
-    //     drawScene();
-    // });
-
-    // $('#defaultSlider').change();
+    // Instead of animation, we do interaction: let the mouse control rotation.
+    $(canvas).mousedown(function (event) {
+        xDragStart = event.clientX;
+        yDragStart = event.clientY;
+        xRotationStart = rotationAroundX;
+        yRotationStart = rotationAroundY;
+        $(canvas).mousemove(rotateScene);
+    }).mouseup(function (event) {
+        $(canvas).unbind("mousemove");
+    });
 
     // JDsl: Surprise!  With the increased speed, we actually have
     //     to decrease the increment significantly so that things
     //     don't move quite so fast!
-    var updateRipple = 0.01;
+    var currentSinRipple = 0.1,
+        updateRipple = 0.1;
 
-    // Animate Button
-    // JD: This is called "Frequency" on the web page---intentional?
+    // Animate the scene with an animate button
     $("#animate").click(function () {
         if (currentInterval) {
             clearInterval(currentInterval);
@@ -598,20 +600,6 @@
                     updateRipple = -updateRipple;
                 }
 
-                /* JDsl: Not needed when the shader is doing the work!
-
-                // create better stucture
-                if (objectsToDraw[1].children) {
-                    // JD: Yikes!!!  No wonder you're seeing performance problems---
-                    //     not only is JavaScript doing most of the heavy lifting,
-                    //     but it's doing a lot of duplicate work!  This definitely
-                    //     calls for more vertex shader action.
-                    objectsToDraw[1].children = honeyCombGenerator(currentSinRipple);
-                }
-                
-                passVertices(objectsToDraw);
-                */
-
                 // JDsl: Note the sole change that we make!  The "|| 1" comes from
                 //     the same "|| 1" logic in honeyCombGenerator.
                 gl.uniform1f(currentSinRippleGL, currentSinRipple || 1);
@@ -620,56 +608,7 @@
         } 
     });
 
-    // rotateScene = function (event) {
-    //     rotationAroundX = xRotationStart - yDragStart + event.clientY;
-    //     rotationAroundY = yRotationStart - xDragStart + event.clientX;
-    //     drawScene();
-    // };
-
-    // // Instead of animation, we do interaction: let the mouse control rotation.
-    // $(canvas).mousedown(function (event) {
-    //     xDragStart = event.clientX;
-    //     yDragStart = event.clientY;
-    //     xRotationStart = rotationAroundX;
-    //     yRotationStart = rotationAroundY;
-    //     $(canvas).mousemove(rotateScene);
-    // }).mouseup(function (event) {
-    //     $(canvas).unbind("mousemove");
-    // });
-
-    // Rotation event handling
-    $(canvas).mousedown(function (event) {
-        mouseDown = true;
-        lastMouseX = event.clientX;
-        lastMouseY = event.clientY;
-        drawScene();
-    });
-
-    $(canvas).mousemove(function (event) {
-        if (mouseDown) {
-            newX = event.clientX,
-            newY = event.clientY,
-            deltaX = newX - lastMouseX,
-            deltaY = newY - lastMouseY,
-
-            rotateX = Matrix4x4.rotate(deltaY, -1, 0, 0);
-            rotateY = Matrix4x4.rotate(deltaX, 0, -1, 0);
-            rotateXandY = rotateX.multiply(rotateY);
-
-            gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(
-                rotateXandY.toWebGLMatrix().elements)
-            );
-
-            drawScene();
-        }
-    });
-
-    // JD: In the absence of mouseup behavior, once the user holds the mouse
-    //     down to rotate the scene, the mouse then forever rotates it.
-    //     Is that really your intent?
-
-    // $(canvas).mouseup(function (event) {
-    //     mouseDown = false;
-    // });
-
+    // Draw the initial scene.
+    passVertices(objectsToDraw);
+    drawScene();
 }(document.getElementById("hello-webgl")));

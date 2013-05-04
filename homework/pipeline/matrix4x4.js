@@ -13,7 +13,9 @@ var Matrix4x4 = (function () {
              0, 0, 0, 1];
     };
 
-    // Multiply function which multiplies two Matrix4x4 objects and returns the result
+    /*
+     * Multiply function which multiplies two Matrix4x4 objects and returns the result
+     */
     matrix4x4.prototype.multiply = function (m) {
         var mRow,
             thisCollumn,
@@ -40,8 +42,10 @@ var Matrix4x4 = (function () {
         return result;
     };
 
-    // A translation function which takes three parameters dx, dy, and dz, returning a
-    // Matrix4x4 object that accurately represents this transformation.
+    /* 
+     * A translation function which takes three parameters dx, dy, and dz, returning a
+     * Matrix4x4 object that accurately represents this transformation.
+     */
     matrix4x4.translate = function (tx, ty, tz) {
         return new Matrix4x4(
             1, 0, 0, tx,
@@ -51,8 +55,10 @@ var Matrix4x4 = (function () {
         );
     };
 
-    // A scale function which takes three parameters sx, sy, and sz, returning a
-    // Matrix4x4 object that accurately represents this transformation.
+    /*
+     * A scale function which takes three parameters sx, sy, and sz, returning a
+     * Matrix4x4 object that accurately represents this transformation.
+     */
     matrix4x4.scale = function (sx, sy, sz) {
         return new Matrix4x4(
             sx,  0,  0, 0,
@@ -62,8 +68,10 @@ var Matrix4x4 = (function () {
         );
     };
 
-    // The rotate funtion given in the sample code, but refactored to fit the Matrix4x4
-    // object.
+    /*
+     * The rotate funtion given in the sample code, but refactored to fit the
+     * Matrix4x4 object.
+     */
     matrix4x4.rotate = function (angle, x, y, z) {
         var axisLength = Math.sqrt((x * x) + (y * y) + (z * z)),
             s = Math.sin(angle * Math.PI / 180.0),
@@ -99,15 +107,17 @@ var Matrix4x4 = (function () {
         zs = z * s;
 
         return new Matrix4x4(
-             (x2 * oneMinusC) + c, (xy * oneMinusC) - zs, (xz * oneMinusC) + ys, 0.0,
+            (x2 * oneMinusC) + c, (xy * oneMinusC) - zs, (xz * oneMinusC) + ys, 0.0,
             (xy * oneMinusC) + zs,  (y2 * oneMinusC) + c, (yz * oneMinusC) - xs, 0.0,
             (xz * oneMinusC) - ys, (yz * oneMinusC) + xs,  (z2 * oneMinusC) + c, 0.0,
                               0.0,                   0.0,                   0.0, 1.0    
         );
     };
 
-    // The ortho projection function given in the sample code, but refactored to fit
-    // the Matrix4x4 object.
+    /* 
+     * The ortho projection function given in the sample code, but refactored to fit
+     * the Matrix4x4 object.
+     */
     matrix4x4.ortho = function (left, right, bottom, top, zNear, zFar) {
         var width = right - left,
             height = top - bottom,
@@ -121,7 +131,9 @@ var Matrix4x4 = (function () {
         );
     };
 
-    // A frustum projection function based on the matrix derived from the course handout.
+    /*
+     * A frustum projection function based on the matrix derived from the course handout.
+     */
     matrix4x4.frustum = function (left, right, bottom, top, zNear, zFar) {
         var N = zNear,
             F = zFar,
@@ -139,8 +151,10 @@ var Matrix4x4 = (function () {
         );
     };
 
-    // Conversion/convenience function to prepare the matrix data afor direct consumption
-    // by WebGL and GLSL.
+    /*
+     * Conversion/convenience function to prepare the matrix data afor direct consumption
+     * by WebGL and GLSL.
+     */
     matrix4x4.prototype.toWebGLMatrix = function () {
         var result = new Matrix4x4(),
             i,
@@ -157,7 +171,9 @@ var Matrix4x4 = (function () {
         return result;
     };
 
-    // Combine the scale, rotate, and translate matrix transforms into one.
+    /* 
+     * Combine the scale, rotate, and translate matrix transforms into one.
+     */
     matrix4x4.instanceTransform = function (transform) {
         var translate = new Matrix4x4(),
             scale = new Matrix4x4(),
@@ -186,5 +202,4 @@ var Matrix4x4 = (function () {
     }
 
     return matrix4x4;
-
 })();
