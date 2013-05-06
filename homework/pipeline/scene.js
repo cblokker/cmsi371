@@ -32,6 +32,7 @@
 
         // The shader program to use.
         shaderProgram,
+        updateRippleEq,
 
         passVertices,
 
@@ -72,6 +73,7 @@
         yDragStart,
         xRotationStart,
         yRotationStart,
+        normals;
 
         // A boolean array for shape toggling
         //isShapeVisible = [];
@@ -126,13 +128,14 @@
                     vertices: Shapes.toRawTriangleArray(Shapes.polygon(0.1, 0.05, 3.0, 6)).vertices,
                     normals: Shapes.polygon().normals,
                     mode: gl.TRIANGLE_STRIP,
+                    // isRipple: true,
                     transform: {
                         tx: tx,
                         ty: ty,
                         tz: 3,
-                        angle: 0,
+                        angle: 135,
                         rx: 1,
-                        ry: 0,
+                        ry: 1,
                         rz: 0
                     }
                 });
@@ -140,7 +143,7 @@
         }
 
         return children;
-    },
+    };
 
     // telescope constants - make a helper function
     // var RADIUS = [],
@@ -151,29 +154,42 @@
     //     RADIUS.push(i);
     // }
 
+    var normal = function() {
+        var normals = [],
+            i;
+
+        for (i = 0; i < 30000; i += 1) {
+            normals.push(1.0, 0.0, 0.0);
+        }
+
+        return normals;
+    }
+
     // Build the objects to display.
     objectsToDraw = [
-        {
-            color: {r: 0.0, g: 0.5, b: 0.25},
-            vertices: Shapes.toRawTriangleArray(Shapes.cube()).vertices,
-            normals: Shapes.cube().normals,
-            mode: gl.TRIANGLES,
-            transform: {
-                tx: 5.2,
-                ty: 0.0,
-                tz: 0.0,
-                angle: 0,
-                rx: 1,
-                ry: 0,
-                rz: 0
-            }
-        },
+        // {
+        //     color: {r: 0.0, g: 0.5, b: 0.25},
+        //     vertices: Shapes.toRawTriangleArray(Shapes.cube()).vertices,
+        //     normals: Shapes.cube().normals,
+        //     mode: gl.TRIANGLES,
+        //     // isRipple: false,
+        //     transform: {
+        //         tx: 5.2,
+        //         ty: 0.0,
+        //         tz: 0.0,
+        //         angle: 0,
+        //         rx: 1,
+        //         ry: 0,
+        //         rz: 0
+        //     }
+        // },
 
         {
             color: {r: 1, g: 1, b: 0.0},
             vertices: Shapes.toRawTriangleArray(Shapes.polygon(1.0, 0.5, 3.0, 6)).vertices,
             normals: Shapes.polygon().normals,
             mode: gl.TRIANGLES,
+            // isRipple: false,
             transform: {
                 tx: 0.0,
                 ty: 0.0,
@@ -184,35 +200,73 @@
                 rz: 0
             },
             children: honeyCombGenerator(currentSinRipple)
-        }
+        },
 
         // {
-        //     colors: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.mobiusEquation)).colors,
-        //     vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.mobiusEquation)).vertices,
+        //     colors: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.kleinEquation)).colors,
+        //     vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.kleinEquation)).vertices,
         //     mode: gl.TRIANGLES,
+        //     normals: normal(),
+        //     // isRipple: true,
         //     transform: {
-        //         tx: 5.0,
+        //         tx: -.0,
         //         ty: 0.0,
         //         tz: 0.0,
         //         angle: 45,
-        //         rx: 0,
-        //         ry: 1,
+        //         rx: 1,
+        //         ry: 0,
         //         rz: 0
         //     }
         // },
 
         // {
-        //     colors: Shapes.toRawLineArray(Shapes.parametricGenerator(Shapes.kleinEquation)).colors,
-        //     vertices: Shapes.toRawLineArray(Shapes.parametricGenerator(Shapes.kleinEquation)).vertices,
-        //     mode: gl.LINES,
+        //     colors: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.mobiusEquation)).colors,
+        //     vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.mobiusEquation)).vertices,
+        //     mode: gl.TRIANGLES,
+        //     normals: normal(),
+        //     // isRipple: true,
         //     transform: {
-        //         tx: 6.0,
+        //         tx: 1.0,
         //         ty: 0.0,
-        //         tz: 5.0,
-        //         angle: 0,
+        //         tz: 0.0,
+        //         angle: 45,
         //         rx: 1,
         //         ry: 0,
-        //         rz: 1
+        //         rz: 0
+        //     }
+        // },
+
+        {
+            color: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.astroidalEllipseEquation)).colors,
+            vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.astroidalEllipseEquation)).vertices,
+            mode: gl.TRIANGLES,
+            normals: normal(),
+            // isRipple: true,
+            transform: {
+                tx: 1.0,
+                ty: 0.0,
+                tz: 0.0,
+                angle: 45,
+                rx: 1,
+                ry: 0,
+                rz: 0
+            }
+        },
+
+        // {
+        //     colors: {r: 1, g: 1, b: 0.0},
+        //     vertices: Shapes.toRawLineArray(Shapes.sphere()).vertices,
+        //     mode: gl.LINES,
+        //     normals: Shapes.normals(),
+        //     isRipple: false,
+        //     transform: {
+        //         tx: 0.0,
+        //         ty: 0.0,
+        //         tz: 0.0,
+        //         angle: 45,
+        //         rx: 1,
+        //         ry: 0,
+        //         rz: 0
         //     }
         // }
 
@@ -403,6 +457,7 @@
             shape[i].normalBuffer = GLSLUtilities.initVertexBuffer(gl,
                     shape[i].normals);
 
+            // Check for nested shapes and pass their vertices
             if (shape[i].children && shape[i].children.length !== 0) {
                 passVertices(shape[i].children);
             }
@@ -448,7 +503,6 @@
 
     // Finally, we come to the typical setup for transformation matrices:
     // model-view and projection, managed separately.
-    //rotationMatrix = gl.getUniformLocation(shaderProgram, "rotationMatrix");
     frustumMatrix = gl.getUniformLocation(shaderProgram, "frustumMatrix");
     orthoMatrix = gl.getUniformLocation(shaderProgram, "orthoMatrix");
     instanceMatrix = gl.getUniformLocation(shaderProgram, "instanceMatrix");
@@ -470,8 +524,9 @@
         var i;
 
         // JDsl: Default values in case there is no translation.
-        gl.uniform2fv(displacement, [ 0.0, 0.0 ]);
+        //gl.uniform2fv(displacement, [ 0.0, 0.0, 0.0 ]);
         if (object.transform) {
+
             gl.uniformMatrix4fv(instanceMatrix, gl.FALSE, new Float32Array(
                 Matrix4x4.instanceTransform(object.transform).toWebGLMatrix().elements
             ));
@@ -489,13 +544,9 @@
             //     to compute can be reflected in the instance transform*.
             if (object.transform.angle !== undefined) {
                 // JD: Just copied from honeyCombGenerator.
-                object.transform.angle = 0;
+                object.transform.angle = 135;
             }
         }
-
-        // gl.uniformMatrix4fv(rotationMatrix, gl.FALSE, new Float32Array(
-        //     rotateXandY.toWebGLMatrix().elements)
-        // );
 
         // Set the varying normal vectors.
         gl.bindBuffer(gl.ARRAY_BUFFER, object.normalBuffer);
@@ -510,8 +561,7 @@
         gl.vertexAttribPointer(vertexPosition, 3, gl.FLOAT, false, 0, 0);
         gl.drawArrays(object.mode, 0, object.vertices.length / 3);
 
-
-        // Check for nested children objects and draw Object again
+        // Check for nested children objects and draw object again
         if (object.children) {
             for (i = 0; i < object.children.length; i += 1) {
                 drawObject(object.children[i]);
@@ -584,28 +634,61 @@
     //     to decrease the increment significantly so that things
     //     don't move quite so fast!
     var currentSinRipple = 0.1,
-        updateRipple = 0.1;
+        updateRipple = 0.05;
 
-    // Animate the scene with an animate button
-    $("#animate").click(function () {
-        if (currentInterval) {
-            clearInterval(currentInterval);
-            currentInterval = null;
-        } else {
-            currentInterval = setInterval(function () {
+    updateRippleEq = function (objects) {
+        // for (var i = 0; i < objects.length; i += 1) {
+        //     if (objects[1].children[i].isRipple) {
                 currentSinRipple = currentSinRipple + updateRipple;
                 if (currentSinRipple >= 3.0) {
                     updateRipple = -updateRipple;
                 } else if (currentSinRipple <= -3.5) {
                     updateRipple = -updateRipple;
                 }
-
-                // JDsl: Note the sole change that we make!  The "|| 1" comes from
-                //     the same "|| 1" logic in honeyCombGenerator.
                 gl.uniform1f(currentSinRippleGL, currentSinRipple || 1);
                 drawScene();
+        //     } else {
+
+        //     }
+
+        //     // if (objects[i].children) {
+        //     //     updateRippleEq(objects[i].children)
+        //     // }
+        // }
+
+    };
+
+    $("#animate").click(function () {
+        if (currentInterval) {
+            clearInterval(currentInterval);
+            currentInterval = null;
+        } else {
+            currentInterval = setInterval(function () {
+                updateRippleEq(objectsToDraw);
             }, 1);
-        } 
+        }
+
+        //updateRippleEq(objectsToDraw);
+            // if (currentInterval) {
+            //     clearInterval(currentInterval);
+            //     currentInterval = null;
+            // } else {
+            //     currentInterval = setInterval(function () {
+            //         for (var i = 0; i < objectsToDraw[1].children.length; i += 1) {
+            //             if (objectsToDraw[1].children[i].isRipple) {
+            //                 currentSinRipple = currentSinRipple + updateRipple;
+            //                 if (currentSinRipple >= 3.0) {
+            //                     updateRipple = -updateRipple;
+            //                 } else if (currentSinRipple <= -3.5) {
+            //                     updateRipple = -updateRipple;
+            //                 }
+            //                 gl.uniform1f(currentSinRippleGL, currentSinRipple || 1);
+            //                 drawScene();
+            //             }
+            //         }
+            //     }, 1);
+            // }
+
     });
 
     // Draw the initial scene.

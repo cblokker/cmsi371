@@ -207,9 +207,6 @@ var Shapes = {
                 [i + 1, i + 2, i + 3]
             );
         }
-        //console.log(vertices.length);
-
-        //console.log(indices.length);
 
         // // Bottom of ring
         // for (i = 0; i <= numOfSides; i += 1) {
@@ -260,6 +257,7 @@ var Shapes = {
 
         // Set up normal array for outer ring
         // for (i = 0; i <= 2; i += 1) {
+
             normals.push(
                 0.58, 1.0, 0.0,
                 0.58, 1.0, 0.0,
@@ -375,7 +373,6 @@ var Shapes = {
         //     );
         // }
 
-
         return {
             vertices: vertices,
             indices: indices,
@@ -433,6 +430,72 @@ var Shapes = {
     },
 
     /*
+     * A function that returns an object for a mobius shape to be passed in
+     * the parametric generator function.
+     * Source: http://www.econym.demon.co.uk/isotut/parametric.htm
+     */
+    rippledSphereEqaution: function(u, v) {
+        return {
+            equation : [
+                2.0 * Math.sin(u) * Math.sin(v) + Math.cos(20 * v) * 0.05,
+                2.0 * Math.cos(u) * Math.sin(v) + Math.cos(20 * u) * 0.05,
+                2.0 * Math.cos(v)
+            ],
+            uStart    : -1.0 * Math.PI,
+            uEnd      : 1.0 * Math.PI,
+            uInterval : 0.1,
+            vStart    : -1.0 * Math.PI,
+            vEnd      : 1.0 * Math.PI,
+            vInterval : 0.1,
+            colorStart: [1.0, 0.0, 1.0],
+            colorEnd  : [0.0, 1.0, 0.75],
+            colorDivs : 2
+        };
+    },
+
+    spiralEquation: function(u, v) {
+        return {
+            equation : [
+                2.0 * u * v * Math.sin(15 * v),
+                2.0 * v,
+                2.0 * u * v * Math.cos(15 * v)
+            ],
+            uStart    : 0,
+            uEnd      : 1.0,
+            uInterval : 0.04,
+            vStart    : -1.0,
+            vEnd      : 1.0,
+            vInterval : 0.04,
+            colorStart: [1.0, 0.0, 1.0],
+            colorEnd  : [0.0, 1.0, 0.75],
+            colorDivs : 2
+        };
+    },
+
+    astroidalEllipseEquation: function(u, v) {
+        var a = 1,
+            b = 1,
+            c = 1;
+
+        return {
+            equation : [
+                2.0 * Math.pow(a * Math.cos(u) * Math.cos(v), 3),
+                2.0 * Math.pow(b * Math.sin(u) * Math.cos(v), 3),
+                2.0 * Math.pow(c * Math.sin(v), 3)
+            ],
+            uStart    : 0.0,
+            uEnd      : 2.0 * Math.PI,
+            uInterval : 0.1,
+            vStart    : 0.0,
+            vEnd      : 2.0 * Math.PI,
+            vInterval : 0.1,
+            colorStart: [1.0, 0.0, 1.0],
+            colorEnd  : [0.0, 1.0, 0.75],
+            colorDivs : 2
+        };
+    },
+
+    /*
      * The all powerful parametricGenerator function. Now, I can make a function
      * that returns an object for any set of 3D parametric functions I may find.
      * This function uses indices, so a general mesh can be applied to the shapes.
@@ -441,6 +504,7 @@ var Shapes = {
         var vertices = [],
             indices = [],
             colors = [],
+            normals = [],
 
             U_START = parametric().uStart,
             U_END = parametric().uEnd,
@@ -470,10 +534,16 @@ var Shapes = {
             );
         }
 
+        // Set up normal array
+        for (i = 0; i < indices.length * 10; i += 1) {
+            normals.push(1.0, 0.0, 0.0);
+        }
+
         return {
             vertices: vertices,
             indices: indices,
             colors: colors,
+            normals: normals,
             colorDivs: colorDivs
         };
     },
@@ -489,8 +559,9 @@ var Shapes = {
 
             latitudeBands = 20,
             longitudeBands = latitudeBands,
-            i,
-            j;
+            latNumber,
+            longNumber,
+            i;
 
         for (var latNumber = 0; latNumber <= latitudeBands; latNumber += 1) {
             var theta = latNumber * Math.PI / latitudeBands,
@@ -534,16 +605,6 @@ var Shapes = {
             j,
             maxi,
             maxj;
-            
-            // rStart = indexedVertices.colors[0],
-            // gStart = indexedVertices.colors[1],
-            // bStart = indexedVertices.colors[2],
-
-            // rEnd = indexedVertices.colors[3],
-            // gEnd = indexedVertices.colors[4],
-            // bEnd = indexedVertices.colors[5],
-
-            // colorDivs = indexedVertices.colorDivs;
 
         for (i = 0, maxi = indexedVertices.indices.length; i < maxi; i += 1) {
             for (j = 0, maxj = indexedVertices.indices[i].length; j < maxj; j += 1) {
@@ -555,26 +616,39 @@ var Shapes = {
             }
         }
 
-        // Color gradient
-        // for (i = 0; i < colorDivs; i += 1) {
-        //     if (i % 2 == 0) {
-        //         for (j = 0; j < vertices.length / (3 * colorDivs); j += 1) {
-        //             colors.push(
-        //                 rStart - (rStart - rEnd) * (j / (vertices.length / (3 * colorDivs))),
-        //                 gStart - (gStart - gEnd) * (j / (vertices.length / (3 * colorDivs))),
-        //                 bStart - (bStart - bEnd) * (j / (vertices.length / (3 * colorDivs)))
-        //             );
-        //         }
-        //     } else {
-        //         for (j = vertices.length / (3 * colorDivs); j > 0; j -= 1) {
-        //             colors.push(
-        //                 rStart - (rStart - rEnd) * (j / (vertices.length / (3 * colorDivs))),
-        //                 gStart - (gStart - gEnd) * (j / (vertices.length / (3 * colorDivs))),
-        //                 bStart - (bStart - bEnd) * (j / (vertices.length / (3 * colorDivs)))
-        //             );
-        //         }
-        //     }
-        // }
+        // Generate the color gradient
+        if (indexedVertices.colors) {
+            var rStart = indexedVertices.colors[0],
+                gStart = indexedVertices.colors[1],
+                bStart = indexedVertices.colors[2],
+
+                rEnd = indexedVertices.colors[3],
+                gEnd = indexedVertices.colors[4],
+                bEnd = indexedVertices.colors[5],
+
+                colorDivs = indexedVertices.colorDivs;
+
+            // Color gradient
+            for (i = 0; i < colorDivs; i += 1) {
+                if (i % 2 == 0) {
+                    for (j = 0; j < vertices.length / (3 * colorDivs); j += 1) {
+                        colors.push(
+                            rStart - (rStart - rEnd) * (j / (vertices.length / (3 * colorDivs))),
+                            gStart - (gStart - gEnd) * (j / (vertices.length / (3 * colorDivs))),
+                            bStart - (bStart - bEnd) * (j / (vertices.length / (3 * colorDivs)))
+                        );
+                    }
+                } else {
+                    for (j = vertices.length / (3 * colorDivs); j > 0; j -= 1) {
+                        colors.push(
+                            rStart - (rStart - rEnd) * (j / (vertices.length / (3 * colorDivs))),
+                            gStart - (gStart - gEnd) * (j / (vertices.length / (3 * colorDivs))),
+                            bStart - (bStart - bEnd) * (j / (vertices.length / (3 * colorDivs)))
+                        );
+                    }
+                }
+            }
+        }
 
         return {
             vertices: vertices,
