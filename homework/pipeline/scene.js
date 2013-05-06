@@ -108,37 +108,41 @@
             tz,
             txMax,
             tyMax,
+            tzMax,
             children = [],
 
             xFrequency = xFrequency || 0,
             yFrequency = yFrequency || 0,
             currentSinRipple = currentSinRipple || 1;
 
-        for (tx = -10, txMax = 10; tx <= txMax; tx += 0.3) {
-            for (ty = -10, tyMax = 10; ty < tyMax; ty += 0.3) {
+        // Generate the honeycomb mesh
+        for (tx = -2, txMax = 2; tx <= txMax; tx += 0.3) {
+            for (ty = -2, tyMax = 2; ty < tyMax; ty += 0.3) {
+                for (tz = -1, tzMax = 1; tz < tzMax; tz += 0.3) {
 
-                var rippleEquation = Math.sin(currentSinRipple * Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2))) * (1 / (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2))));
+                    var rippleEquation = Math.sin(currentSinRipple * Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2))) * (1 / (Math.sqrt(Math.pow(tx, 2) + Math.pow(ty, 2))));
 
-                children.push({
-                    color: {
-                        r: 2 * Math.abs(rippleEquation),
-                        g: 1.0,
-                        b: 0.1 * Math.abs(rippleEquation)
-                    },
-                    vertices: Shapes.toRawTriangleArray(Shapes.polygon(0.1, 0.05, 3.0, 6)).vertices,
-                    normals: Shapes.polygon().normals,
-                    mode: gl.TRIANGLE_STRIP,
-                    // isRipple: true,
-                    transform: {
-                        tx: tx,
-                        ty: ty,
-                        tz: 3,
-                        angle: 135,
-                        rx: 1,
-                        ry: 1,
-                        rz: 0
-                    }
-                });
+                    children.push({
+                        color: {
+                            r: 2 * Math.abs(rippleEquation),
+                            g: 1.0,
+                            b: 0.1 * Math.abs(rippleEquation)
+                        },
+                        vertices: Shapes.toRawTriangleArray(Shapes.polygon(0.1, 0.05, 1.0, 6)).vertices,
+                        normals: Shapes.polygon().normals,
+                        mode: gl.TRIANGLE_STRIP,
+                        // isRipple: true,
+                        transform: {
+                            tx: tx,
+                            ty: ty,
+                            tz: tz,
+                            angle: 135,
+                            rx: 1,
+                            ry: 1,
+                            rz: 0
+                        }
+                    });
+                }
             }
         }
 
@@ -236,22 +240,22 @@
         //     }
         // },
 
-        {
-            color: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.astroidalEllipseEquation)).colors,
-            vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.astroidalEllipseEquation)).vertices,
-            mode: gl.TRIANGLES,
-            normals: normal(),
-            // isRipple: true,
-            transform: {
-                tx: 1.0,
-                ty: 0.0,
-                tz: 0.0,
-                angle: 45,
-                rx: 1,
-                ry: 0,
-                rz: 0
-            }
-        },
+        // {
+        //     color: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.torusEquation)).colors,
+        //     vertices: Shapes.toRawTriangleArray(Shapes.parametricGenerator(Shapes.torusEquation)).vertices,
+        //     mode: gl.TRIANGLES,
+        //     normals: normal(),
+        //     // isRipple: true,
+        //     transform: {
+        //         tx: 1.0,
+        //         ty: 0.0,
+        //         tz: 0.0,
+        //         angle: 45,
+        //         rx: 1,
+        //         ry: 0,
+        //         rz: 0
+        //     }
+        // },
 
         // {
         //     colors: {r: 1, g: 1, b: 0.0},
@@ -524,7 +528,7 @@
         var i;
 
         // JDsl: Default values in case there is no translation.
-        //gl.uniform2fv(displacement, [ 0.0, 0.0, 0.0 ]);
+        gl.uniform3fv(displacement, [ 0.0, 0.0, 0.0 ]);
         if (object.transform) {
 
             gl.uniformMatrix4fv(instanceMatrix, gl.FALSE, new Float32Array(
@@ -533,8 +537,8 @@
 
             // JDsl: Displacement happens per object, so we set the uniform
             //     variables here.
-            if (object.transform.tx !== undefined && object.transform.ty !== undefined) {
-                gl.uniform2fv(displacement, [ object.transform.tx, object.transform.ty ]);
+            if (object.transform.tx !== undefined && object.transform.ty !== undefined && object.transform.tz !== undefined) {
+                gl.uniform3fv(displacement, [ object.transform.tx, object.transform.ty, object.transform.tz ]);
             }
 
             // JDsl: What we can't do as easily in the shader (without a lot

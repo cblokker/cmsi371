@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="scene.css" />
     </head>
     <body>
-        <h1>Honeycomb</h1>
+        <h1>Honeycomb Project</h1>
 
         <canvas id="hello-webgl" width="600" height="600">
             Sorry, your web browser does not appear to support
@@ -62,7 +62,7 @@
 
             // JDsl: Quick demonstration for moving more work to the vertex shader.
             uniform float currentSinRipple;
-            uniform vec2 displacement;
+            uniform vec3 displacement;
 
             // Define the sign function
             // float sign(float number);
@@ -84,8 +84,8 @@
 
                 //  // water drop
                 // float coefficient = sin(currentSinRipple *
-                //     sqrt(pow(displacement.x, 2.0) + pow(displacement.y, 2.0))) *
-                //     (1.0 / (sqrt(pow(displacement.x, 2.0) + pow(displacement.y, 2.0))));
+                //     sqrt(pow(displacement.x, 2.0) + pow(displacement.z, 2.0))) *
+                //     (1.0 / (sqrt(pow(displacement.x, 2.0) + pow(displacement.z, 2.0))));
 
                 // // ripples:  http://www.benjoffe.com/code/tools/functions3d/examples
                 // float coefficient = (sin(currentSinRipple * displacement.x) * cos(currentSinRipple * displacement.y)) / 5.0;
@@ -107,20 +107,25 @@
                 // float coefficient = pow(pow(1.4, 2.0) - pow(0.6 - pow(pow(displacement.x, 2.0) + pow(displacement.y, 2.0), 0.5), 2.0), 0.5);
                 
                 // Torus
-                float coefficient = 4.0 * sqrt(pow(0.4, 2.0) - pow(currentSinRipple - sqrt(pow(displacement.x * 0.3, 2.0) + pow(displacement.y * 0.3, 2.0)), 2.0)) - 2.0;
+                // float coefficient = 4.0 * sqrt(pow(0.4, 2.0) - pow(currentSinRipple - sqrt(pow(displacement.x * 0.3, 2.0) + pow(displacement.y * 0.3, 2.0)), 2.0)) - 2.0;
+
+                float xCoefficient = pow((pow(displacement.x, 2.0) - currentSinRipple * 0.5), 2.0);
+                float yCoefficient = pow((pow(displacement.y, 2.0) - currentSinRipple * 0.5), 2.0);
+                float zCoefficient = pow((pow(displacement.z, 2.0) - currentSinRipple * 0.5), 2.0);
 
 
 
                 vec3 rippledVertexColor = vec3(
-                        1.0 * abs(coefficient),
+                        1.0 * abs(xCoefficient),
                         vertexColor.g,
-                        0.1 * abs(coefficient)
+                        vertexColor.b
                     );
 
                 // JDsl: The same coefficient affects the z-coordinate.
                 vec4 rippledVertexPosition = vec4(
-                        vertexPosition.xy,
-                        vertexPosition.z + (6.0 * coefficient), 1.0
+                        vertexPosition.x + (6.0 * xCoefficient),
+                        vertexPosition.y + (6.0 * yCoefficient),
+                        vertexPosition.z + (6.0 * zCoefficient), 1.0
                     );
 
                 // JDsl: From this point, note how the new color and vertex replace

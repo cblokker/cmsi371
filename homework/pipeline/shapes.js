@@ -495,6 +495,30 @@ var Shapes = {
         };
     },
 
+    torusEquation: function(u, v) {
+        var radiusOfTube = 3.0,
+            radiusOfTorus = 1.0;
+
+        return {
+            equation : [
+                (radiusOfTube + radiusOfTorus * Math.cos(u)) * Math.cos(v),
+                (radiusOfTube + radiusOfTorus * Math.cos(u)) * Math.sin(v),
+                radiusOfTorus * Math.sin(u),
+            ],
+            uStart    : 0.0,
+            uEnd      : 2.1 * Math.PI,
+            uInterval : 0.1,
+            vStart    : 0.0,
+            vEnd      : 2.1 * Math.PI,
+            vInterval : 0.1,
+            colorStart: [1.0, 0.0, 1.0],
+            colorEnd  : [0.0, 1.0, 0.75],
+            colorDivs : 2
+        };
+    },
+
+
+
     /*
      * The all powerful parametricGenerator function. Now, I can make a function
      * that returns an object for any set of 3D parametric functions I may find.
