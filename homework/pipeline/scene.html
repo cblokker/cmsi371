@@ -22,6 +22,10 @@
 
         <!-- Shapes is a library that generates "canned" shapes. -->
         <script src="shapes.js"></script>
+        <!-- JD: Because you have created a copy of matrix4x4.js, the files in
+                 your separate matrix4x4.js folder are going stale.  Ideally,
+                 you should use the same code so that things stay sync-ed up and
+                 you don't get any undue duplication. -->
         <script src="matrix4x4.js"></script>
 
 <!--         <input id="defaultSlider" type="range" min="0" max="500" />
@@ -81,6 +85,9 @@
                 // JDsl: Change the base color according to currentSinRipple.
                 //     I know this is not the same as your prior code, but
                 //     the intent here is just to show it's done.
+
+                // JD: Oh man, this looks fun.  Hope you find a way to show all
+                //     of these.
 
                 //  // water drop
                 // float coefficient = sin(currentSinRipple *
